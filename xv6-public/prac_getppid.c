@@ -7,13 +7,13 @@
 #include "x86.h"
 #include "syscall.h"
 
-//Wrapper for getppid
 int
 getppid(void)
 {
     return proc->parent->pid;
 }
 
+//Wrapper for getppid
 int
 sys_getppid(void)
 {
