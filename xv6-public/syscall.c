@@ -98,8 +98,10 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_my_syscall(void);
+extern int sys_getppid(void);
 
-static int (*syscalls[])(void) = {
+static int (*syscalls[])(void) = {// the array of function pointer
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
 [SYS_wait]    sys_wait,
@@ -121,6 +123,8 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_my_syscall]    sys_my_syscall,//this line is added. system call handler 구현. handler는 어떤 function으로 갈지 선택해주는 것.
+[SYS_getppid]   sys_getppid,
 };
 
 void
