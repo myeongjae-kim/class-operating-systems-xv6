@@ -25,7 +25,7 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 
-#define DEBUGGING false
+/** #define DEBUGGING */
 
 static const int STR_BUFF_SIZE = 512;
 static const char* STDIN_FILEPATH = "/dev/fd/0";
@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
             readInstruction(argv[i]);
         }
     }
-
     return 0;
 }
 
@@ -98,9 +97,11 @@ void readInstruction(const char* filePath){
         } else {
             /* end of the file */
             if (interactiveMode) {
-                if (DEBUGGING) {
+
+#ifdef DEBUGGING
                     printf("\nProgram terminated\n");
-                }
+#endif
+
                 exit(EXIT_FAILURE);
             } else {
                 /** do nothing.
@@ -157,21 +158,17 @@ void parseAndExecute(char* inputString, int* numberOfChildProcesses) {
         statementArgs[statementArgsIdx++] = statementArgsToken;
     }
 
-    if (DEBUGGING) {
+#ifdef DEBUGGING
         for (int i = 0; i < statementArgsIdx; ++i) {
             printf("statement %d: %s\n", i, statementArgs[i]);
         }
-    }
+#endif
 
     /** for every statment */
     for (int i = 0; i < statementArgsIdx; ++i) {
         /** remove spacebar before the programPath */
         while ( *(statementArgs[i]) == ' ') {
             statementArgs[i]++;
-        }
-
-        if (DEBUGGING) {
-            printf("statement: %s\n", statementArgs[i]);
         }
 
         /** optionArgs intialization */
@@ -214,13 +211,13 @@ void parseAndExecute(char* inputString, int* numberOfChildProcesses) {
             optionArgs[optionArgsIdx++] = optionArgsToken;
         }
 
-        if (DEBUGGING) {
+#ifdef DEBUGGING
             printf("Token: %s", optionArgs[0]);
             for (int i = 1; i < optionArgsIdx; ++i) {
                 printf(", %s", optionArgs[i]);
             }
             putchar('\n');
-        }
+#endif
 
         if (optionArgs[0] == NULL) {
             /** no program path. do nothing. */
