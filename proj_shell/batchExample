@@ -1,0 +1,4 @@
+ls
+ls -a
+ls -alF
+ls ;pwd ;cat batchExample
