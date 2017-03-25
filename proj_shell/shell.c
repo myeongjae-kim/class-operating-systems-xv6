@@ -59,6 +59,10 @@ int main(int argc, char *argv[])
 void readInstruction(const char* filePath){
     /** Read file to the end. */
     FILE* fp = fopen(filePath, "r");
+    if (fp == NULL) {
+        // file open failed. do nothing.
+        return;
+    }
     
     bool interactiveMode = false;
     if(strncmp(STDIN_FILEPATH, filePath, sizeof(STDIN_FILEPATH) / sizeof(char)) == 0) {
@@ -77,11 +81,12 @@ void readInstruction(const char* filePath){
 
         if ( fgets(strBuffer, STR_BUFF_SIZE, fp) != NULL ) {
             /** fgets catches '\n' */
+            strtok(strBuffer, "\n"); // remove '\n'. If you cannot understand, learn how strtok() is implemented.
             /** Parse user inputs and run the process using fork(). */
 
             if (interactiveMode == false) {
                 // batch mode
-                printf("%s", strBuffer);
+                printf("%s\n", strBuffer);
             }
 
             int numberOfChildProcesses = 0;
@@ -114,103 +119,115 @@ void parseAndExecute(char* inputString, int* numberOfChildProcesses) {
     // statement is partitioned by ';'.
     // statement is composed of programPath and options.
 
-    char statement[STR_BUFF_SIZE];
-    int statementIdx = 0;
+    // statement tokenzation
 
-    char programPath[STR_BUFF_SIZE];
-    int programPathIdx = 0;
 
-    char options[STR_BUFF_SIZE];
-    int optionsIdx = 0;
+    int numberOfStatements = 1;
+    char** statementArgs = (char**)calloc(numberOfStatements, sizeof(char*));
+    assert(statementArgs != NULL);
 
-    while (*inputString != '\n' && *inputString != '\0') {
-        //parse inputString to statements.
-        memset(statement, '\0', STR_BUFF_SIZE);
-        statementIdx = 0;
-        while( *inputString != ';' && *inputString != '\n' && *inputString != '\0') {
-            statement[statementIdx++] = *inputString;
-            inputString++;
+    // options Tokenization
+    char* statementArgsToken;
+    const char delimitorOfStatement[2] = ";";
+    int statementArgsIdx = 0;
+
+    // get the first token
+    statementArgsToken = strtok(inputString, delimitorOfStatement);
+    if (statementArgsToken == NULL) {
+        // no program path.
+        return;
+    }
+    statementArgs[statementArgsIdx++] = statementArgsToken; // first statement
+
+    while (true) {
+        statementArgsToken = strtok(NULL, delimitorOfStatement);
+        if (statementArgsToken == NULL) {
+            // end of the loop.
+            break;
         }
-        inputString++; // *inputString is ';' so increment 1.
 
-        //parse statements to programPath and options.
-        memset(programPath, '\0', STR_BUFF_SIZE);
-        programPathIdx= 0;
-        memset(options, '\0', STR_BUFF_SIZE);
-        optionsIdx = 0;
+        // if the allocated memory is not enough, reallocate.
+        if (numberOfStatements == statementArgsIdx) {
+            numberOfStatements *= 2;
+            statementArgs = (char**)realloc(statementArgs, numberOfStatements * sizeof(char*));
+            assert(statementArgs != NULL);
+        }
 
-        // programPath
-        statementIdx = 0;
+        statementArgs[statementArgsIdx++] = statementArgsToken;
+    }
+    statementArgsIdx--; // 
 
+    if (DEBUGGING) {
+        for (int i = 0; i <= statementArgsIdx; ++i) {
+            printf("statement %d: %s\n", i, statementArgs[i]);
+        }
+    }
+
+    // for every statment
+    for (int i = 0; i <= statementArgsIdx; ++i) {
         //remove space before the programPath
-        while (statement[statementIdx] == ' ') {
-            //do nothing;
-            statementIdx++;
-        }
-        while(statement[statementIdx] != ' ' && statement[statementIdx] != '\0') {
-            programPath[programPathIdx++] = statement[statementIdx++];
-        }
-
-        // options
-        while(statement[statementIdx] != '\0') {
-            options[optionsIdx++] = statement[statementIdx++];
+        while ( *(statementArgs[i]) == ' ') {
+            statementArgs[i]++;
         }
 
         if (DEBUGGING) {
-            printf("programPath: %s, options: %s\n", programPath, options);
+            printf("statement: %s\n", statementArgs[i]);
         }
 
-        // options Tokenization
-        char* optionArgsToken;
-        const char delimitor[2] = " ";
-
-        // get the first token
-        optionArgsToken = strtok(options, delimitor);
-
+        // optionArgs intialization
         int numberOfOptionArgs = 2;
         char** optionArgs = (char**)calloc(numberOfOptionArgs, sizeof(char*));
         assert(optionArgs != NULL);
 
+        // options Tokenization
+        char* optionArgsToken;
+        const char delimitorOfOptions[2] = " ";
         int optionArgsIdx = 0;
-        /** strncpy(optionArgs[optionArgsIdx++], programPath, programPathIdx); */
-        optionArgs[optionArgsIdx++] = programPath;
-        optionArgs[optionArgsIdx++] = optionArgsToken;
+
+        // get the first token
+        optionArgsToken = strtok(statementArgs[i], delimitorOfOptions);
+        optionArgs[optionArgsIdx++] = optionArgsToken; //optionArgs[0] is program path.
 
         while (optionArgsToken != NULL) {
-            // allocated memory is not enough, reallocate.
+            // if the allocated memory is not enough, reallocate.
             if (numberOfOptionArgs == optionArgsIdx) {
                 numberOfOptionArgs *= 2;
                 optionArgs = (char**)realloc(optionArgs, numberOfOptionArgs * sizeof(char*));
                 assert(optionArgs != NULL);
             }
 
-            optionArgsToken = strtok(NULL, delimitor);
+            optionArgsToken = strtok(NULL, delimitorOfOptions);
             optionArgs[optionArgsIdx++] = optionArgsToken;
         }
         optionArgsIdx--; // 
 
         if (DEBUGGING) {
-            printf("Token: %s", optionArgs[1]);
-            for (int i = 2; i < optionArgsIdx; ++i) {
+            printf("Token: %s", optionArgs[0]);
+            for (int i = 1; i < optionArgsIdx; ++i) {
                 printf(", %s", optionArgs[i]);
             }
             putchar('\n');
         }
 
+        if (optionArgs[0] == NULL) {
+            // no program path. do nothing.
+            continue;
+        }
+
         // if "quit" is inputted, exit the program.
-        if (strncmp(programPath, "quit", sizeof("quit")) == 0) {
+        if (strncmp(optionArgs[0], "quit", sizeof("quit")) == 0) {
             exit(0);
         }
 
         // fork and execute
         if (fork() == 0) {
             /** child proess */
-            execvp(programPath, optionArgs);
+            execvp(optionArgs[0], optionArgs);
         } else {
             /** parent process */
             (*numberOfChildProcesses)++;
         }
         free(optionArgs);
     }
-
+    free(statementArgs);
 }
