@@ -5,17 +5,19 @@
  * Compilation Standard : c11 */
 
 /** Design Document
- * If argc is zero, interactive mode, else batch mode.
+ *  If argc is 1, interactive mode, else batch mode.
  *
- * Parsing function is needed. It returns idx and char** and idxs of char*. Memory should be allocated before entering the function.
+ *  Both interactive and batch mode are using same function. 
+ *  The difference is that when interactive mode "prompt> " is printed 
+ * but batch mode, an instruction is printed.
  *
- * in interactive mode,
- *   Read standard input infinitely. Parse user inputs and run the process using fork().
+ *  First, parse input string to statements.
+ *  Next, parse statments to a program path and options.
+ *  Make a child process and execute the program.
  *
- * in batch mode
- *   Read file to the end. Parse strings and run the process using fork().
+ *  The shell will run children processes simultaneously and wait all of them.
  *
- * when the shell meets "quit", it terminates.*/
+ *  When the shell meets "quit", it terminates.*/
 
 #include <stdio.h>
 #include <unistd.h>
@@ -28,12 +30,12 @@
 /** #define DEBUGGING */
 
 static const int STR_BUFF_SIZE = 512;
-static const char* STDIN_FILEPATH = "/dev/fd/0";
+static const char* const STDIN_FILEPATH = "/dev/fd/0";
 
-void readInstruction(const char* filePath);
-void parseAndExecute(char* instructionBuffer, int* numberOfChildProcesses);
+void readInstruction(const char* const filePath);
+void parseAndExecute(char* const instructionBuffer, int* const numberOfChildProcesses);
 
-int main(int argc, char *argv[])
+int main(const int argc, const char* const argv[])
 {
     /** If argc is zero, interactive mode, else batch mode. */
     if (argc == 1) {
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void readInstruction(const char* filePath){
+void readInstruction(const char* const filePath){
     /** Read file to the end. */
     FILE* fp = fopen(filePath, "r");
     if (fp == NULL) {
@@ -113,7 +115,7 @@ void readInstruction(const char* filePath){
     free(instructionBuffer);
 }
 
-void parseAndExecute(char* inputString, int* numberOfChildProcesses) {
+void parseAndExecute(char* const inputString, int* const numberOfChildProcesses) {
     /** Parse user inputs and run the process using fork(). */
 
     /** statement is partitioned by ';'.
