@@ -116,11 +116,11 @@ void readInstruction(const char* const filePath){
         } else {
             /* end of the file */
             if (interactiveMode) {
-
+                /** in interactive mode, input is at least '\n'.
+                 * this case cannot exists. */
 #ifdef DEBUGGING
-                    printf("\nProgram terminated\n");
+                    ERROR_MSG("\nProgram terminated.\n");
 #endif
-
                 exit(EXIT_FAILURE);
             } else {
                 /** do nothing.
