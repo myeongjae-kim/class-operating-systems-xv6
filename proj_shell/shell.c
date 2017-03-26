@@ -29,6 +29,17 @@
 
 /** #define DEBUGGING */
 
+#define ANSI_COLOR_RED      "\x1b[31m"
+#define ANSI_COLOR_GREEN    "\x1b[32m"
+#define ANSI_COLOR_YELLOW   "\x1b[33m"
+#define ANSI_COLOR_BLUE     "\x1b[34m"
+#define ANSI_COLOR_MAGENTA  "\x1b[35m"
+#define ANSI_COLOR_CYAN     "\x1b[36m"
+#define ANSI_COLOR_RESET    "\x1b[0m"
+
+#define ERROR_MSG( msg ) \
+    fprintf( stderr, ANSI_COLOR_RED "\tERROR: "ANSI_COLOR_YELLOW"%s" ANSI_COLOR_RESET, ( msg ) )
+
 static const int STR_BUFF_SIZE = 512;
 static const char* const STDIN_FILEPATH = "/dev/fd/0";
 
@@ -55,6 +66,8 @@ void readInstruction(const char* const filePath){
     FILE* fp = fopen(filePath, "r");
     if (fp == NULL) {
         /** file open failed. do nothing. */
+        ERROR_MSG("Batch mode\n");
+        ERROR_MSG("File opening is failed. Check the arguments.\n");
         return;
     }
     
