@@ -92,6 +92,10 @@ void readInstruction(const char* const filePath){
 
             /** remove '\n'. If you cannot understand below, learn how strtok() works. */
             strtok(instructionBuffer, "\n");
+            if (*instructionBuffer == '\n') {
+                /** no input. do nothing */
+                continue;
+            }
 
             /** print instruction when batch mode. */
             if (interactiveMode == false) {
