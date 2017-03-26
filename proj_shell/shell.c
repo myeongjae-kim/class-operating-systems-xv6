@@ -251,6 +251,9 @@ void parseAndExecute(char* const inputString, int* const numberOfChildProcesses)
                 ERROR_MSG("Program execution is failed.\n");
                 ERROR_MSG("Check the instruction: ");
                 printf("%s\n", optionArgs[0]);
+
+                /** terminate child process */
+                exit(0); 
             }
         } else {
             /** parent process */
