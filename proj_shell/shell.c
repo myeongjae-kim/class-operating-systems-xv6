@@ -252,9 +252,8 @@ void parseAndExecute(char* const inputString, int* const numberOfChildProcesses)
         if (fork() == 0) {
             /** child proess */
             if (execvp(optionArgs[0], optionArgs)) {
-                ERROR_MSG("Program execution is failed.\n");
-                ERROR_MSG("Check the instruction: ");
-                printf("%s\n", optionArgs[0]);
+                /** invalid input */
+                printf("%s: command not found\n", optionArgs[0]);
 
                 /** terminate child process */
                 exit(0); 
