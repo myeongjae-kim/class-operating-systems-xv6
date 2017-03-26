@@ -247,7 +247,11 @@ void parseAndExecute(char* const inputString, int* const numberOfChildProcesses)
         /** fork and execute */
         if (fork() == 0) {
             /** child proess */
-            execvp(optionArgs[0], optionArgs);
+            if (execvp(optionArgs[0], optionArgs)) {
+                ERROR_MSG("Program execution is failed.\n");
+                ERROR_MSG("Check the instruction: ");
+                printf("%s\n", optionArgs[0]);
+            }
         } else {
             /** parent process */
             (*numberOfChildProcesses)++;
