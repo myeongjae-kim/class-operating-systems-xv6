@@ -130,6 +130,8 @@ void readInstruction(const char* const filePath){
     }
 
     free(instructionBuffer);
+    fclose(fp);
+    fp = NULL;
 }
 
 void parseAndExecute(char* const inputString, int* const numberOfChildProcesses) {
