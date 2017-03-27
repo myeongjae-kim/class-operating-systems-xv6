@@ -26,6 +26,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 
 /** #define DEBUGGING */
 
@@ -251,7 +252,8 @@ void parseAndExecute(char* const inputString, int* const numberOfChildProcesses)
         }
 
         /** fork and execute */
-        if (fork() == 0) {
+        pid_t pid = fork();
+        if (pid == 0) {
             /** child proess */
             if (execvp(optionArgs[0], optionArgs)) {
                 /** invalid input */
@@ -260,9 +262,12 @@ void parseAndExecute(char* const inputString, int* const numberOfChildProcesses)
                 /** terminate child process */
                 exit(0); 
             }
-        } else {
+        } else if (pid > 0){
             /** parent process */
             (*numberOfChildProcesses)++;
+        } else {
+            /** parent process, fork() error */
+            ERROR_MSG("fork() is failed.");
         }
         free(optionArgs);
     }
