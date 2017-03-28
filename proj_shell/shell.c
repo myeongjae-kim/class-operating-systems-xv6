@@ -109,8 +109,31 @@ void readInstruction(const char* const filePath){
             parseAndExecute(instructionBuffer, &numberOfChildProcesses);
 
             /** run child processes simultaneously */
+            pid_t childPid;
+            int status = 0;
             for (int i = 0; i < numberOfChildProcesses; ++i) {
-                wait(NULL);
+                childPid = wait(&status);
+
+                /** error in wait function */
+                if (childPid == -1) {
+                    perror("waitpid");
+                } else {
+                    /** wait() has succeeded. Do nothing. */
+                }
+
+                /** print debugging information. */
+#ifdef DEBUGGING
+                printf("Process number %d: ", childPid);
+                if (WIFEXITED(status)) {
+                    printf("exited, status=%d\n", WEXITSTATUS(status));
+                } else if (WIFSIGNALED(status)) {
+                    printf("killed by signal %d\n", WTERMSIG(status));
+                } else if (WIFSTOPPED(status)) {
+                    printf("stopped by signal %d\n", WSTOPSIG(status));
+                } else if (WIFCONTINUED(status)) {
+                    printf("continued\n");
+                }
+#endif
             }
 
             memset(instructionBuffer, 0, STR_BUFF_SIZE);
