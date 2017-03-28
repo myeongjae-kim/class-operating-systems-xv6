@@ -72,9 +72,10 @@ void readInstruction(const char* const filePath){
         return;
     }
     
-    /** if file is stdin, turn on interactiveMode. */
     bool interactiveMode = false;
-    if(strncmp(STDIN_FILEPATH, filePath, sizeof(STDIN_FILEPATH) / sizeof(char)) == 0) {
+    /** Turn on interactiveMode
+      * when addresses of below pointers are same. */
+    if(STDIN_FILEPATH == filePath) {
         interactiveMode = true;
     }
 
