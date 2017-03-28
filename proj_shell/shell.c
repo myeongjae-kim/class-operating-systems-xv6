@@ -140,12 +140,9 @@ void readInstruction(const char* const filePath){
         } else {
             /* end of the file */
             if (interactiveMode) {
-                /** in interactive mode, input is at least '\n'.
-                 * this case cannot exists. */
-#ifdef DEBUGGING
-                    ERROR_MSG("\nProgram terminated.\n");
-#endif
-                exit(EXIT_FAILURE);
+                /* Ctrl+D */
+                putchar('\n');
+
             } else {
                 /** do nothing.
                   * next while loop, loop ends. */
