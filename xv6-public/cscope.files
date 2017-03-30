@@ -14,6 +14,7 @@
 ./kbd.c
 ./entry.S
 ./mp.c
+./prac_getppid.c
 ./lapic.c
 ./my_userapp.c
 ./mmu.h
@@ -24,7 +25,6 @@
 ./x86.h
 ./log.c
 ./sh.c
-./getppid.c
 ./file.h
 ./memide.c
 ./init.c
@@ -62,6 +62,7 @@
 ./stressfs.c
 ./umalloc.c
 ./grep.c
+./test.c
 ./sleeplock.c
 ./printf.c
 ./fcntl.h

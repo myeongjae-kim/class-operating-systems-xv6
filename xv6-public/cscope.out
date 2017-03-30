@@ -1,4 +1,4 @@
-cscope 15 $HOME/xv6/xv6-public -q 0000001896 0000199914
+cscope 15 $HOME/xv6/xv6-public -q 0000001898 0000200414
 	@asm.h
 
 5 
@@ -9476,28 +9476,6 @@ ushÜt
 DIRSIZ
 ];
 
-	@getppid.c
-
-1 
-	~"ty³s.h
-"
-
-2 
-	~"defs.h
-"
-
-5 
-	$g‘µid
-()
-
-7 
-	`g‘pid
-();
-
-8 
-	}
-}
-
 	@grep.c
 
 3 
@@ -18854,6 +18832,68 @@ i
 	}
 }
 
+	@prac_getppid.c
+
+1 
+	~"ty³s.h
+"
+
+2 
+	~"defs.h
+"
+
+3 
+	~"·¿m.h
+"
+
+4 
+	~"memÏyout.h
+"
+
+5 
+	~"mmu.h
+"
+
+6 
+	~"´oc.h
+"
+
+7 
+	~"x86.h
+"
+
+8 
+	~"sysÿÎ.h
+"
+
+11 
+	$g‘µid
+()
+
+13  
+´oc
+->
+·»Á
+->
+pid
+;
+
+14 
+	}
+}
+
+18 
+	$sys_g‘µid
+()
+
+20  
+	`g‘µid
+();
+
+21 
+	}
+}
+
 	@prac_syscall.c
 
 1 
@@ -26990,6 +27030,36 @@ xticks
 	}
 }
 
+	@test.c
+
+1 
+	~"ty³s.h
+"
+
+2 
+	~"¡©.h
+"
+
+3 
+	~"u£r.h
+"
+
+14 
+	$maš
+(
+¬gc
+, *
+¬gv
+[])
+
+16 
+	`__asm__
+("int $128");
+
+18 
+	}
+}
+
 	@timer.c
 
 5 
@@ -27134,43 +27204,43 @@ IRQ_TIMER
 	~"¥šlock.h
 "
 
-12 
+14 
 g©edesc
  
 	gidt
 [256];
 
-13 
+15 
 ušt
  
 veùÜs
 [];
 
-14 
+16 
 ¥šlock
  
 	gtick¦ock
 ;
 
-15 
+17 
 ušt
  
 	gticks
 ;
 
-18 
+20 
 	$tvš™
 ()
 
-20 
+22 
 i
 ;
 
-22 
+24 
 i
  = 0; i < 256; i++)
 
-23 
+25 
 	`SETGATE
 (
 idt
@@ -27182,7 +27252,7 @@ SEG_KCODE
 veùÜs
 [i], 0);
 
-24 
+26 
 	`SETGATE
 (
 idt
@@ -27196,31 +27266,45 @@ veùÜs
 DPL_USER
 );
 
-26 
+27 
+	`SETGATE
+(
+idt
+[
+T_USER_INT
+], 1, 
+SEG_KCODE
+<<3, 
+veùÜs
+[T_USER_INT], 
+DPL_USER
+);
+
+29 
 	`š™lock
 (&
 tick¦ock
 , "time");
 
-27 
+30 
 	}
 }
 
-30 
+33 
 	$idtš™
 ()
 
-32 
+35 
 	`lidt
 (
 idt
 , (idt));
 
-33 
+36 
 	}
 }
 
-37 
+40 
 	$Œ­
 (
 Œ­äame
@@ -27228,7 +27312,7 @@ idt
 tf
 )
 
-39 if(
+42 if(
 tf
 ->
 Œ­no
@@ -27236,141 +27320,153 @@ tf
 T_SYSCALL
 ){
 
-40 if(
+43 if(
 ´oc
 ->
 kžËd
 )
 
-41 
+44 
 	`ex™
 ();
 
-42 
+45 
 ´oc
 ->
 tf
  =f;
 
-43 
+46 
 	`sysÿÎ
 ();
 
-44 if(
+47 if(
 ´oc
 ->
 kžËd
 )
 
-45 
+48 
 	`ex™
 ();
 
-49 
+52 if(
+tf
+->
+Œ­no
+ =ð
+T_USER_INT
+){
+
+53 
+	`ýrštf
+("user interrupt 128 called!\n");
+
+57 
 tf
 ->
 Œ­no
 ){
 
-50 
+58 
 T_IRQ0
  + 
 IRQ_TIMER
 :
 
-51 if(
+59 if(
 	`ýunum
 () == 0){
 
-52 
+60 
 	`acquœe
 (&
 tick¦ock
 );
 
-53 
+61 
 ticks
 ++;
 
-54 
+62 
 	`wakeup
 (&
 ticks
 );
 
-55 
+63 
 	`»Ëa£
 (&
 tick¦ock
 );
 
-57 
+65 
 	`Ïpiûoi
 ();
 
-59 
+67 
 T_IRQ0
  + 
 IRQ_IDE
 :
 
-60 
+68 
 	`idešŒ
 ();
 
-61 
+69 
 	`Ïpiûoi
 ();
 
-63 
+71 
 T_IRQ0
  + 
 IRQ_IDE
 +1:
 
-66 
+74 
 T_IRQ0
  + 
 IRQ_KBD
 :
 
-67 
+75 
 	`kbdšŒ
 ();
 
-68 
+76 
 	`Ïpiûoi
 ();
 
-70 
+78 
 T_IRQ0
  + 
 IRQ_COM1
 :
 
-71 
+79 
 	`u¬tšŒ
 ();
 
-72 
+80 
 	`Ïpiûoi
 ();
 
-74 
+82 
 T_IRQ0
  + 7:
 
-75 
+83 
 T_IRQ0
  + 
 IRQ_SPURIOUS
 :
 
-76 
+84 
 	`ýrštf
 ("cpu%d: spurious interrupt‡t %x:%x\n",
 
-77 
+85 
 	`ýunum
 (), 
 tf
@@ -27380,11 +27476,11 @@ cs
 e
 );
 
-78 
+86 
 	`Ïpiûoi
 ();
 
-83 if(
+91 if(
 ´oc
  =ð0 || (
 tf
@@ -27392,11 +27488,11 @@ tf
 cs
 &3) == 0){
 
-85 
+93 
 	`ýrštf
 ("unexpectedrap %d from cpu %dƒip %x (cr2=0x%x)\n",
 
-86 
+94 
 tf
 ->
 Œ­no
@@ -27408,15 +27504,15 @@ e
 	`rü2
 ());
 
-87 
+95 
 	`·nic
 ("trap");
 
-90 
+98 
 	`ýrštf
 ("pid %d %s:rap %dƒrr %d on cpu %d "
 
-92 
+100 
 ´oc
 ->
 pid
@@ -27434,17 +27530,17 @@ tf
 e
 ,
 
-93 
+101 
 	`rü2
 ());
 
-94 
+102 
 ´oc
 ->
 kžËd
  = 1;
 
-100 if(
+108 if(
 ´oc
  &&…roc->
 kžËd
@@ -27456,11 +27552,11 @@ cs
 DPL_USER
 )
 
-101 
+109 
 	`ex™
 ();
 
-105 if(
+113 if(
 ´oc
  &&…roc->
 ¡©e
@@ -27476,11 +27572,11 @@ T_IRQ0
 IRQ_TIMER
 )
 
-106 
+114 
 	`y›ld
 ();
 
-109 if(
+117 if(
 ´oc
  &&…roc->
 kžËd
@@ -27492,11 +27588,11 @@ cs
 DPL_USER
 )
 
-110 
+118 
 	`ex™
 ();
 
-111 
+119 
 	}
 }
 
@@ -27805,52 +27901,56 @@ $0x8
  64
 
 28 
+	#T_USER_INT
+ 128
+
+29 
 	#T_DEFAULT
  500
 
-29 
+30 
 
 	)
 
-30 
+31 
 	#T_IRQ0
  32
 
-31 
+32 
 
 	)
 
-32 
+33 
 	#IRQ_TIMER
  0
 
 	)
 
-33 
+34 
 	#IRQ_KBD
  1
 
 	)
 
-34 
+35 
 	#IRQ_COM1
  4
 
 	)
 
-35 
+36 
 	#IRQ_IDE
  14
 
 	)
 
-36 
+37 
 	#IRQ_ERROR
  19
 
 	)
 
-37 
+38 
 	#IRQ_SPURIOUS
  31
 
@@ -45966,8 +46066,8 @@ ushÜt
 1
 .
 0
-80
-646
+81
+658
 asm.h
 bio.c
 bootasm.S
@@ -45988,7 +46088,6 @@ file.h
 forktest.c
 fs.c
 fs.h
-getppid.c
 grep.c
 ide.c
 init.c
@@ -46014,6 +46113,7 @@ my_userapp.c
 param.h
 picirq.c
 pipe.c
+prac_getppid.c
 prac_syscall.c
 printf.c
 proc.c
@@ -46032,6 +46132,7 @@ syscall.c
 syscall.h
 sysfile.c
 sysproc.c
+test.c
 timer.c
 trap.c
 trapasm.S

@@ -7,6 +7,8 @@
 #include "x86.h"
 #include "traps.h"
 #include "spinlock.h"
+/** #include "stat.h" */
+/** #include "user.h" */
 
 // Interrupt descriptor table (shared by all CPUs).
 struct gatedesc idt[256];
@@ -22,6 +24,7 @@ tvinit(void)
   for(i = 0; i < 256; i++)
     SETGATE(idt[i], 0, SEG_KCODE<<3, vectors[i], 0);
   SETGATE(idt[T_SYSCALL], 1, SEG_KCODE<<3, vectors[T_SYSCALL], DPL_USER);
+  SETGATE(idt[T_USER_INT], 1, SEG_KCODE<<3, vectors[T_USER_INT], DPL_USER);
 
   initlock(&tickslock, "time");
 }
@@ -43,6 +46,11 @@ trap(struct trapframe *tf)
     syscall();
     if(proc->killed)
       exit();
+    return;
+  }
+
+  if(tf->trapno == T_USER_INT){
+      cprintf("user interrupt 128 called!\n");
     return;
   }
 
