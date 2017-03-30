@@ -51,6 +51,7 @@ trap(struct trapframe *tf)
 
   if(tf->trapno == T_USER_INT){
       cprintf("user interrupt 128 called!\n");
+      exit();
     return;
   }
 
