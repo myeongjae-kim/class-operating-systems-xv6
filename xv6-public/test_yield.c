@@ -5,7 +5,7 @@
 int
 main(int argc, char *argv[])
 {
-    uint pid, i, count = 10;
+    uint pid, i, count = 100;
     pid = fork();
 
     if (pid == 0) {
