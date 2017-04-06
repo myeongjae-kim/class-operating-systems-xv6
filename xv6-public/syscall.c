@@ -100,6 +100,7 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_my_syscall(void);
 extern int sys_getppid(void);
+extern int sys_my_yield(void);
 
 static int (*syscalls[])(void) = {// the array of function pointer
 [SYS_fork]    sys_fork,
@@ -125,6 +126,7 @@ static int (*syscalls[])(void) = {// the array of function pointer
 [SYS_close]   sys_close,
 [SYS_my_syscall]    sys_my_syscall,//this line is added. system call handler 구현. handler는 어떤 function으로 갈지 선택해주는 것.
 [SYS_getppid]   sys_getppid,
+[SYS_my_yield]   sys_my_yield,
 };
 
 void

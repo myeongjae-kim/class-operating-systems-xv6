@@ -1,4 +1,5 @@
 ./timer.c
+./a.c
 ./types.h
 ./kill.c
 ./echo.c
@@ -67,7 +68,6 @@
 ./printf.c
 ./fcntl.h
 ./syscall.c
-./vectors.S
 ./main.c
 ./console.c
 ./param.h
