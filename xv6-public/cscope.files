@@ -52,6 +52,7 @@
 ./exec.c
 ./fs.c
 ./kalloc.c
+./test_yield.c
 ./asm.h
 ./buf.h
 ./trap.c
@@ -60,6 +61,7 @@
 ./picirq.c
 ./forktest.c
 ./prac_syscall.c
+./prac_yield.c
 ./stressfs.c
 ./umalloc.c
 ./grep.c

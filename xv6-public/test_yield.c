@@ -5,18 +5,18 @@
 int
 main(int argc, char *argv[])
 {
-    uint pid, i;
+    uint pid, i, count = 10;
     pid = fork();
 
     if (pid == 0) {
         /* child*/
-        for (;;) {
+        for (i = 0; i < count; ++i) {
             printf(1, "Child\n");
             my_yield();
         }
     } else if (pid > 0) {
         /** parent */
-        for(;;) {
+        for (i = 0; i < count; ++i) {
             printf(1, "Parent\n");
             my_yield();
         }
