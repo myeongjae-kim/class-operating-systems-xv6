@@ -22,4 +22,4 @@
 #define SYS_close  21
 #define SYS_my_syscall 22
 #define SYS_getppid 23
-#define SYS_my_yield 24
+#define SYS_sys_yield 24

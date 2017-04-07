@@ -70,6 +70,7 @@
 ./printf.c
 ./fcntl.h
 ./syscall.c
+./vectors.S
 ./main.c
 ./console.c
 ./param.h

@@ -2,7 +2,7 @@
 #include "defs.h"
 
 int
-my_yield(void)
+sys_yield(void)
 {
     yield();
     /** cprintf("my_yield() is called\n"); */
@@ -11,7 +11,7 @@ my_yield(void)
 
 //Wrapper
 int
-sys_my_yield(void)
+sys_sys_yield(void)
 {
-    return my_yield();
+    return sys_yield();
 }
