@@ -9,7 +9,7 @@
 
 struct {
   struct spinlock lock;
-  struct proc proc[NPROC];
+  struct proc procQueues[NPROC];
 } ptable;
 
 static struct proc *initproc;
@@ -39,7 +39,7 @@ allocproc(void)
 
   acquire(&ptable.lock);
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++)
     if(p->state == UNUSED)
       goto found;
 
@@ -211,7 +211,7 @@ exit(void)
   wakeup1(proc->parent);
 
   // Pass abandoned children to init.
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
     if(p->parent == proc){
       p->parent = initproc;
       if(p->state == ZOMBIE)
@@ -237,7 +237,7 @@ wait(void)
   for(;;){
     // Scan through table looking for exited children.
     havekids = 0;
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
       if(p->parent != proc)
         continue;
       havekids = 1;
@@ -287,7 +287,7 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
@@ -411,7 +411,7 @@ wakeup1(void *chan)
 {
   struct proc *p;
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan)
       p->state = RUNNABLE;
 }
@@ -434,7 +434,7 @@ kill(int pid)
   struct proc *p;
 
   acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
@@ -468,7 +468,7 @@ procdump(void)
   char *state;
   uint pc[10];
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
