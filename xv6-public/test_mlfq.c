@@ -11,14 +11,14 @@ main(int argc, char *argv[])
     if (pid == 0) {
         /* child*/
         for (i = 0; i < count; ++i) {
-            printf(1, "Child ");
+            printf(1, "Child. getlev(): %d. ", sys_getlev());
             /** sys_yield(); */
         }
         printf(1, "\n");
     } else if (pid > 0) {
         /** parent */
         for (i = 0; i < count; ++i) {
-            printf(1, "Parent ");
+            printf(1, "Parent. getlev(): %d. ", sys_getlev());
             /** sys_yield(); */
         }
         printf(1, "\n");

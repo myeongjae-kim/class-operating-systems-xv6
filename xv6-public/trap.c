@@ -16,7 +16,7 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
-extern int time_quantum[];
+extern int time_quantum[]; // in proc.c: time quantums of each queue.
 
 void
 tvinit(void)
