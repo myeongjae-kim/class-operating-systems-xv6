@@ -63,6 +63,9 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+
+  int tick_used;               // It is incremented every tick.
+  int level_of_MLFQ;           // level of MLFQ a process belong to. Default is zero.
 };
 
 // Process memory is laid out contiguously, low addresses first:

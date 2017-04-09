@@ -16,6 +16,8 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
+extern int time_quantum[];
+
 void
 tvinit(void)
 {
@@ -111,8 +113,30 @@ trap(struct trapframe *tf)
 
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
-  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER)
-    yield();
+
+  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER) {
+    // Design Document 1-1-2-2.
+    proc->tick_used++;
+
+    // Debugging information
+    cprintf("\n\
+          Timer interrupt has been occured. 'ticks' is increased.\n\
+          pid: %d\n\
+          tf->trapno: %d\n\
+          system ticks:%d\n\
+          tick_used: %d\n",proc->pid, tf->trapno, ticks, proc->tick_used);
+
+    // yield if it uses whole time quantum
+    if(proc->tick_used >= time_quantum[proc->level_of_MLFQ]) { //TODO sys_getlev() 사용해서 만들어라
+      
+      // Debugging Information
+      cprintf("**********************************\n");
+      cprintf("    Full of the time quantum\n");
+      cprintf("            Yield!\n");
+      cprintf("**********************************\n");
+      yield();
+    }
+  }
 
   // Check if the process has been killed since we yielded
   if(proc && proc->killed && (tf->cs&3) == DPL_USER)

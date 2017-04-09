@@ -1,6 +1,7 @@
 #include "types.h"
 #include "defs.h"
 
+// Design Document 1-1-2-3.
 int
 sys_yield(void)
 {

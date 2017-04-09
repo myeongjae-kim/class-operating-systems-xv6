@@ -9,8 +9,13 @@
 
 struct {
   struct spinlock lock;
-  struct proc procQueues[NPROC];
+
+  // Design Document 1-1-2-4.
+  struct proc proc_queues[NMLFQ][NPROC];
 } ptable;
+
+// Design Document 1-1-2-4.
+int time_quantum[NMLFQ];
 
 static struct proc *initproc;
 
@@ -23,7 +28,15 @@ static void wakeup1(void *chan);
 void
 pinit(void)
 {
+  int i;
+  int default_ticks = 5;
   initlock(&ptable.lock, "ptable");
+
+  //initializing time quantum
+  for (i = 0; i < NMLFQ; ++i) {
+      time_quantum[i] = default_ticks;
+      default_ticks *= 2;
+  }
 }
 
 //PAGEBREAK: 32
@@ -39,7 +52,7 @@ allocproc(void)
 
   acquire(&ptable.lock);
 
-  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++)
+  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++)
     if(p->state == UNUSED)
       goto found;
 
@@ -173,6 +186,11 @@ fork(void)
 
   acquire(&ptable.lock);
 
+  // Design Document 1-1-2-2.
+  // initializing values used in MLFQ.
+  np->tick_used = 0;
+  np->level_of_MLFQ = 0;
+
   np->state = RUNNABLE;
 
   release(&ptable.lock);
@@ -211,7 +229,7 @@ exit(void)
   wakeup1(proc->parent);
 
   // Pass abandoned children to init.
-  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
+  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
     if(p->parent == proc){
       p->parent = initproc;
       if(p->state == ZOMBIE)
@@ -237,7 +255,7 @@ wait(void)
   for(;;){
     // Scan through table looking for exited children.
     havekids = 0;
-    for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
+    for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
       if(p->parent != proc)
         continue;
       havekids = 1;
@@ -287,7 +305,7 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
+    for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
@@ -297,6 +315,10 @@ scheduler(void)
       proc = p;
       switchuvm(p);
       p->state = RUNNING;
+
+      // Design Document 1-1-2-2.
+      p->tick_used = 0;
+
       swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
       switchkvm();
 
@@ -411,7 +433,7 @@ wakeup1(void *chan)
 {
   struct proc *p;
 
-  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++)
+  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan)
       p->state = RUNNABLE;
 }
@@ -434,7 +456,7 @@ kill(int pid)
   struct proc *p;
 
   acquire(&ptable.lock);
-  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
+  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
@@ -468,7 +490,7 @@ procdump(void)
   char *state;
   uint pc[10];
 
-  for(p = ptable.procQueues; p < &ptable.procQueues[NPROC]; p++){
+  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
     if(p->state == UNUSED)
       continue;
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
