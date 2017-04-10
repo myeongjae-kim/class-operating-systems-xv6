@@ -68,6 +68,11 @@ struct proc {
   int tick_used;               // It is increased at every tick. Reinitialized in priority_boost()
   int time_quantum_used;       // It is increased at every tick. Reinitialized in yield()
   int level_of_MLFQ;           // level of MLFQ a process belong to. Default is zero.
+
+  // Design Document 1-2-2-2
+  int cpu_share;               // If it is zero, MLFQ. If it is not zero, stride queue.
+  int stride;                  // It means a stride a process can pass
+  int stride_count;            // Sum of passed strides.
 };
 
 // Process memory is laid out contiguously, low addresses first:

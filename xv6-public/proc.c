@@ -13,6 +13,9 @@ struct {
   // Design Document 1-1-2-4.
   struct proc proc[NPROC];
   int time_quantum[NMLFQ];
+
+  // Design Document 1-2-2-3.
+  int sum_cpu_share;
 } ptable;
 
 static struct proc *initproc;
@@ -23,9 +26,29 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+// getters and setters
 int
-get_time_quantum(int level) {
+get_time_quantum(int level) 
+{
   return ptable.time_quantum[level];
+}
+
+// Design Document 1-2-2-3
+int
+get_sum_cpu_share(void) 
+{
+  return ptable.sum_cpu_share;
+}
+// Design Document 1-2-2-3
+int
+set_sum_cpu_share(int sum_cpu_share)
+{
+  // if cpu share is too much.
+  if ( ! (1 <= sum_cpu_share && sum_cpu_share <= 80) ) 
+    return -1;
+
+  ptable.sum_cpu_share = sum_cpu_share;
+  return 0;
 }
 
 void
@@ -41,6 +64,10 @@ pinit(void)
       ptable.time_quantum[queue_level] = default_ticks;
       default_ticks *= 2;
   }
+
+  // Design Document 1-2-2-3.
+  // initializing sum_cpu_share
+  ptable.sum_cpu_share = 0;
 }
 
 //PAGEBREAK: 32
@@ -196,6 +223,12 @@ fork(void)
   np->level_of_MLFQ = 0;
   np->time_quantum_used = 0;
 
+  // Design Document 1-2-2-2.
+  // Initializing cpu_share
+  np->cpu_share = 0;
+  np->stride = 0;
+  np->stride_count = 0;
+
   np->state = RUNNABLE;
 
   release(&ptable.lock);
@@ -303,7 +336,13 @@ void
 scheduler(void)
 {
   struct proc *p;
+
+  // Design Document 1-1-2-5
   int queue_level;
+  
+  // Design Document 1-2-2-5
+  unsigned int MLFQ_or_stride;
+  unsigned long randstate = 1;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -312,34 +351,44 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
-    for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
-      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    // Design Document 1-2-2-5. Choosing the stride queue or MLFQ
+    randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
+    MLFQ_or_stride = randstate % 100;
 
-        // Design document 1-1-2-5. Finding a process to be run
-        if(p->state == RUNNABLE && p->level_of_MLFQ <= queue_level) {
-          // A process to be run has been found!
+    if (MLFQ_or_stride < ptable.sum_cpu_share) {
+      // The stride queue is seleceted.
+      // TODO
+    } else {
+      // The MLFQ is seleceted
+      for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
+        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+          // Design document 1-1-2-5. Finding a process to be run
+          if(p->state == RUNNABLE && p->level_of_MLFQ <= queue_level) {
+            // A process to be run has been found!
+          }
+          else {
+            // A process to be run has not been found. Keep finding.
+            continue;
+          }
+
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
+
+          swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
+          switchkvm();
+
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+          proc = 0;
         }
-        else {
-          // A process to be run has not been found. Keep finding.
-          continue;
-        }
-
-        // Switch to chosen process.  It is the process's job
-        // to release ptable.lock and then reacquire it
-        // before jumping back to us.
-        proc = p;
-        switchuvm(p);
-        p->state = RUNNING;
-
-        swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
-        switchkvm();
-
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        proc = 0;
-
       }
     }
+      
     release(&ptable.lock);
 
   }

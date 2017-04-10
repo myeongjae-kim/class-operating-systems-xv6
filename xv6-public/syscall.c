@@ -102,6 +102,7 @@ extern int sys_my_syscall(void);
 extern int sys_getppid(void);
 extern int sys_yield(void);
 extern int sys_getlev(void);
+extern int sys_set_cpu_share(void);
 
 static int (*syscalls[])(void) = {// the array of function pointer
 [SYS_fork]    sys_fork,
@@ -129,6 +130,7 @@ static int (*syscalls[])(void) = {// the array of function pointer
 [SYS_getppid] sys_getppid,
 [SYS_yield]   sys_yield,
 [SYS_getlev]  sys_getlev,
+[SYS_set_cpu_share]  sys_set_cpu_share,
 };
 
 void

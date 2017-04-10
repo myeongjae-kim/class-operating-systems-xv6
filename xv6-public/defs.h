@@ -186,6 +186,7 @@ int             my_syscall(char *);
 int             getppid(void);
 void            yield(void);
 int             getlev(void);
+int             set_cpu_share(int);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
