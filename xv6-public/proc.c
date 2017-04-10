@@ -307,6 +307,16 @@ wait(void)
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
+
+        // Design document 1-1-2-2 and 1-2-2-2.
+        p->tick_used = 0;
+        p->time_quantum_used= 0;
+        p->level_of_MLFQ = 0;
+        ptable.sum_cpu_share = ptable.sum_cpu_share - p->cpu_share;
+        p->cpu_share = 0;
+        p->stride = 0;
+        p->stride_count= 0;
+
         p->state = UNUSED;
         release(&ptable.lock);
         return pid;
@@ -357,13 +367,24 @@ scheduler(void)
 
     if (MLFQ_or_stride < ptable.sum_cpu_share) {
       // The stride queue is seleceted.
-      // TODO
+
+#ifdef MJ_DEBUGGING
+      cprintf("\n\n ** The stride queue is selceted. **\n");
+          cprintf(" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
+          cprintf(" **       MLFQ_or_stride: %d      **\n\n", MLFQ_or_stride);
+#endif
+
+    //TODO: Implement priority queue. 
+    //      Elements are indices of a proc structure array.
+    //      Key value is proc->stride_count.
+
     } else {
       // The MLFQ is seleceted
       for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
           // Design document 1-1-2-5. Finding a process to be run
+          // TODO: skip a process whose the value of cpu_share is not zero.
           if(p->state == RUNNABLE && p->level_of_MLFQ <= queue_level) {
             // A process to be run has been found!
           }

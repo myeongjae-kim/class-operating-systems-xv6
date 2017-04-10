@@ -38,6 +38,7 @@
 ./uart.c
 ./pipe.c
 ./initcode.S
+./test_stride_mj.c
 ./zombie.c
 ./cat.c
 ./syscall.h
@@ -81,5 +82,6 @@
 ./proc.c
 ./string.c
 ./vm.c
+./prac_set_cpu_share.c
 ./wc.c
 ./swtch.S
