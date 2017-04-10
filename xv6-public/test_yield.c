@@ -2,6 +2,8 @@
 #include "stat.h"
 #include "user.h"
 
+extern void yield(void);
+
 int
 main(int argc, char *argv[])
 {

@@ -1,11 +1,11 @@
 ./timer.c
-./a.c
 ./types.h
 ./kill.c
 ./echo.c
 ./usys.S
 ./sysproc.c
 ./memlayout.h
+./test_mlfq.c
 ./ls.c
 ./user.h
 ./defs.h
@@ -33,6 +33,7 @@
 ./ioapic.c
 ./rm.c
 ./bootmain.c
+./prac_getlev.c
 ./uart.c
 ./pipe.c
 ./initcode.S

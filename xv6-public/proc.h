@@ -64,7 +64,9 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 
-  int tick_used;               // It is incremented every tick.
+  // Design Document 1-1-2-2
+  int tick_used;               // It is increased at every tick. Reinitialized in priority_boost()
+  int time_quantum_used;       // It is increased at every tick. Reinitialized in yield()
   int level_of_MLFQ;           // level of MLFQ a process belong to. Default is zero.
 };
 

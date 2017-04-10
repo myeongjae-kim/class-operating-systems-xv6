@@ -11,11 +11,9 @@ struct {
   struct spinlock lock;
 
   // Design Document 1-1-2-4.
-  struct proc proc_queues[NMLFQ][NPROC];
+  struct proc proc[NPROC];
+  int time_quantum[NMLFQ];
 } ptable;
-
-// Design Document 1-1-2-4.
-int time_quantum[NMLFQ];
 
 static struct proc *initproc;
 
@@ -25,16 +23,22 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+int
+get_time_quantum(int level) {
+  return ptable.time_quantum[level];
+}
+
 void
 pinit(void)
 {
-  int i;
+  // Design Document 1-1-2-4. Initializing the time_quantum array.
+  int queue_level;
   int default_ticks = 5;
   initlock(&ptable.lock, "ptable");
 
   //initializing time quantum
-  for (i = 0; i < NMLFQ; ++i) {
-      time_quantum[i] = default_ticks;
+  for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
+      ptable.time_quantum[queue_level] = default_ticks;
       default_ticks *= 2;
   }
 }
@@ -52,7 +56,7 @@ allocproc(void)
 
   acquire(&ptable.lock);
 
-  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++)
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == UNUSED)
       goto found;
 
@@ -190,6 +194,7 @@ fork(void)
   // initializing values used in MLFQ.
   np->tick_used = 0;
   np->level_of_MLFQ = 0;
+  np->time_quantum_used = 0;
 
   np->state = RUNNABLE;
 
@@ -229,7 +234,7 @@ exit(void)
   wakeup1(proc->parent);
 
   // Pass abandoned children to init.
-  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->parent == proc){
       p->parent = initproc;
       if(p->state == ZOMBIE)
@@ -255,7 +260,7 @@ wait(void)
   for(;;){
     // Scan through table looking for exited children.
     havekids = 0;
-    for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->parent != proc)
         continue;
       havekids = 1;
@@ -298,6 +303,7 @@ void
 scheduler(void)
 {
   struct proc *p;
+  int queue_level;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -305,26 +311,34 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+    for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
-      // Design Document 1-1-2-2.
-      p->tick_used = 0;
+        // Design document 1-1-2-5. Finding a process to be run
+        if(p->state == RUNNABLE && p->level_of_MLFQ <= queue_level) {
+          // A process to be run has been found!
+        }
+        else {
+          // A process to be run has not been found. Keep finding.
+          continue;
+        }
 
-      swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
-      switchkvm();
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
+        proc = p;
+        switchuvm(p);
+        p->state = RUNNING;
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      proc = 0;
+        swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
+        switchkvm();
+
+        // Process is done running for now.
+        // It should have changed its p->state before coming back.
+        proc = 0;
+
+      }
     }
     release(&ptable.lock);
 
@@ -351,9 +365,16 @@ sched(void)
     panic("sched running");
   if(readeflags()&FL_IF)
     panic("sched interruptible");
+
   intena = cpu->intena;
   swtch(&proc->context, cpu->scheduler); // sched는 한 타임에 return되는게 아니다. 자고 있다가, 깨워지면 다시 시작한다.
   // swtch가 return되는 곳은 scheduler안에서다. scheduler 진행
+  
+  // 이거맞나? TODO 
+  if(proc) {
+    proc->time_quantum_used = 0;
+  }
+
   cpu->intena = intena;
 }
 
@@ -433,7 +454,7 @@ wakeup1(void *chan)
 {
   struct proc *p;
 
-  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++)
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan)
       p->state = RUNNABLE;
 }
@@ -456,7 +477,7 @@ kill(int pid)
   struct proc *p;
 
   acquire(&ptable.lock);
-  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
@@ -490,7 +511,7 @@ procdump(void)
   char *state;
   uint pc[10];
 
-  for(p = ptable.proc_queues[0]; p < &ptable.proc_queues[0][NPROC]; p++){
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
@@ -504,5 +525,18 @@ procdump(void)
         cprintf(" %p", pc[i]);
     }
     cprintf("\n");
+  }
+}
+
+// Design Document 1-1-2-5. priority_boost()
+void
+priority_boost(void) {
+  struct proc *p;
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    p->level_of_MLFQ = 0;
+    p->tick_used = 0;
+    //
+    // Design Docuemtn 1-1-2-2. Reinitializing time_quantum_used
+    p->time_quantum_used = 0;
   }
 }

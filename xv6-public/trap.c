@@ -16,7 +16,8 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
-extern int time_quantum[]; // in proc.c: time quantums of each queue.
+extern int get_time_quantum(int level); // in proc.c: return time quantums of each queue.
+extern int priority_boost(void); // in proc.c: move every process to the highest queue
 
 void
 tvinit(void)
@@ -114,9 +115,19 @@ trap(struct trapframe *tf)
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
 
+
+  // Design Document 1-1-2-5. Priority boost
+  if (ticks % 100 == 0) {
+    // Debugging Information
+    cprintf("\n\n*** Priority Boost ***\n\n");
+    priority_boost();
+  }
+
+
   if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER) {
     // Design Document 1-1-2-2.
     proc->tick_used++;
+    proc->time_quantum_used++;
 
     // Debugging information
     cprintf("\n\
@@ -124,16 +135,26 @@ trap(struct trapframe *tf)
           pid: %d\n\
           tf->trapno: %d\n\
           system ticks:%d\n\
-          tick_used: %d\n",proc->pid, tf->trapno, ticks, proc->tick_used);
+          tick_used: %d\n\
+          time_quantum_used: %d\n",proc->pid, tf->trapno, ticks, proc->tick_used, proc->time_quantum_used);
 
     // yield if it uses whole time quantum
-    if(proc->tick_used >= time_quantum[proc->level_of_MLFQ]) { //TODO sys_getlev() 사용해서 만들어라
+    if(proc->time_quantum_used >= get_time_quantum(proc->level_of_MLFQ)) {
       
       // Debugging Information
       cprintf("**********************************\n");
       cprintf("    Full of the time quantum\n");
       cprintf("            Yield!\n");
       cprintf("**********************************\n");
+      
+
+      // Design Document 1-1-2-5. Moving a process to the lower level
+      if (proc->level_of_MLFQ < NMLFQ - 1) {
+        proc->level_of_MLFQ++;
+      }
+
+      // Design Document 1-1-2-2
+      proc->time_quantum_used = 0;
       yield();
     }
   }
