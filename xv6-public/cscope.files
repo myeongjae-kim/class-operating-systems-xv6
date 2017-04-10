@@ -62,7 +62,6 @@
 ./picirq.c
 ./forktest.c
 ./prac_syscall.c
-./prac_yield.c
 ./stressfs.c
 ./umalloc.c
 ./grep.c
@@ -71,7 +70,6 @@
 ./printf.c
 ./fcntl.h
 ./syscall.c
-./vectors.S
 ./main.c
 ./console.c
 ./param.h
