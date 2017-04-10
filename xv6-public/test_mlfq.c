@@ -1,36 +1,60 @@
+/**
+ *  This program periodically counts the level(priority) of queue of the
+ * MLFQ scheduler which is containing this process.
+ *  Periodically yield if given parameter value is 1
+ *  Do not yield itself if given parameter value is 0
+ */
+
 #include "types.h"
 #include "stat.h"
 #include "user.h"
 
+#define LIFETIME        200000000   // (iteration)
+#define YIELD_PERIOD    10000       // (iteration)
+
+// Number of level(priority) of MLFQ scheduler
+#define MLFQ_LEVEL      3
+
 int
 main(int argc, char *argv[])
 {
-    uint pid, i, j, count = 100;
-    pid = fork();
+    uint i;
+    int cnt_level[MLFQ_LEVEL] = {0, 0, 0};
+    int do_yield;
+    int curr_mlfq_level;
 
-    if (pid == 0) {
-        /* child*/
-        for (i = 0; i < count; ++i) {
-            printf(1, "Child. getlev(): %d.\n", sys_getlev());
-            for (j = 0; j < 50000000; ++j) {
-              
-            }
-        }
-        printf(1, "\n");
-    } else if (pid > 0) {
-        /** parent */
-        for (i = 0; i < count; ++i) {
-            printf(1, "Parent. getlev(): %d.\n", sys_getlev());
-            for (j = 0; j < 50000000; ++j) {
-              
-            }
-        }
-    } else {
-        printf(1, "fork() error\nTerminate the program.\n");
+    if (argc < 2) {
+        printf(1, "usage: sched_test_mlfq do_yield_or_not(0|1)\n");
         exit();
     }
-    /** parent process should wait till child is terminated */
-    wait();
+
+    do_yield = atoi(argv[1]);
+
+    i = 0;
+    while (1) {
+        i++;
+        
+        // Prevent code optimization
+        __sync_synchronize();
+
+        if (i % YIELD_PERIOD == 0) {
+            // Get current MLFQ level(priority) of this process
+            curr_mlfq_level = getlev();
+            cnt_level[curr_mlfq_level]++;
+
+            if (i > LIFETIME) {
+                printf(1, "MLFQ(%s), lev[0]: %d, lev[1]: %d, lev[2]: %d\n",
+                        do_yield==0 ? "compute" : "yield",
+                        cnt_level[0], cnt_level[1], cnt_level[2]);
+                break;
+            }
+
+            if (do_yield) {
+                // Yield process itself, not by timer interrupt
+                yield();
+            }
+        }
+    }
 
     exit();
 }

@@ -28,6 +28,7 @@
 ./sh.c
 ./file.h
 ./memide.c
+./test_mlfq_mj.c
 ./init.c
 ./kbd.h
 ./ioapic.c
@@ -70,6 +71,7 @@
 ./printf.c
 ./fcntl.h
 ./syscall.c
+./vectors.S
 ./main.c
 ./console.c
 ./param.h

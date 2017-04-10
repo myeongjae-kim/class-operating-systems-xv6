@@ -18,6 +18,7 @@ uint ticks;
 
 extern int get_time_quantum(int level); // in proc.c: return time quantums of each queue.
 extern int priority_boost(void); // in proc.c: move every process to the highest queue
+/** static int strcmp(const char *p, const char *q); */
 
 void
 tvinit(void)
@@ -36,6 +37,16 @@ void
 idtinit(void)
 {
   lidt(idt, sizeof(idt));
+}
+
+// below strcmp() is in 'ulib.c'.
+// I declared it as a static function so it could be used only in this file.
+static int
+strcmp(const char *p, const char *q)
+{
+  while(*p && *p == *q)
+    p++, q++;
+  return (uchar)*p - (uchar)*q;
 }
 
 //PAGEBREAK: 41
@@ -116,10 +127,18 @@ trap(struct trapframe *tf)
   // If interrupts were on while locks held, would need to check nlock.
 
 
+
   // Design Document 1-1-2-5. Priority boost
   if (ticks % 100 == 0) {
-    // Debugging Information
+
+    // This is for test_mlfq
+    if(proc && strcmp(proc->name, "test_mlfq") == 0) {
+      cprintf("[do boosting!]\n");
+    }
+
+#ifdef MJ_DEBUGGING
     cprintf("\n\n*** Priority Boost ***\n\n");
+#endif
     priority_boost();
   }
 
@@ -129,7 +148,7 @@ trap(struct trapframe *tf)
     proc->tick_used++;
     proc->time_quantum_used++;
 
-    // Debugging information
+#ifdef MJ_DEBUGGING
     cprintf("\n\
           Timer interrupt has been occured. 'ticks' is increased.\n\
           pid: %d\n\
@@ -137,15 +156,17 @@ trap(struct trapframe *tf)
           system ticks:%d\n\
           tick_used: %d\n\
           time_quantum_used: %d\n",proc->pid, tf->trapno, ticks, proc->tick_used, proc->time_quantum_used);
+#endif
 
     // yield if it uses whole time quantum
     if(proc->time_quantum_used >= get_time_quantum(proc->level_of_MLFQ)) {
       
-      // Debugging Information
+#ifdef MJ_DEBUGGING
       cprintf("**********************************\n");
       cprintf("    Full of the time quantum\n");
       cprintf("            Yield!\n");
       cprintf("**********************************\n");
+#endif
       
 
       // Design Document 1-1-2-5. Moving a process to the lower level

@@ -388,9 +388,10 @@ yield(void)
   release(&ptable.lock);
 }
 // Wrapper
-void
+int
 sys_yield(void) {
-  return yield();
+  yield();
+  return 0;
 }
 
 // A fork child's very first scheduling by scheduler()
