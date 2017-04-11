@@ -19,6 +19,10 @@ uint ticks;
 extern int get_time_quantum(int level); // in proc.c: return time quantums of each queue.
 extern int priority_boost(void); // in proc.c: move every process to the highest queue
 
+extern int get_MLFQ_tick_used(void);          // in proc.c
+extern void initialize_MLFQ_tick_used(void);  // in proc.c
+extern void increase_MLFQ_tick_used(void);    // in proc.c
+
 void
 tvinit(void)
 {
@@ -128,7 +132,8 @@ trap(struct trapframe *tf)
 
 
   // Design Document 1-1-2-5. Priority boost
-  if (ticks % 100 == 0) {
+  if (get_MLFQ_tick_used() >= 100) {
+    initialize_MLFQ_tick_used();
 
 #ifdef MJ_DEBUGGING
     cprintf("\n\n*** Priority Boost ***\n\n");
@@ -143,14 +148,19 @@ trap(struct trapframe *tf)
     proc->tick_used++;
     proc->time_quantum_used++;
 
+    if(proc->cpu_share == 0) {
+      increase_MLFQ_tick_used();
+    }
+
 #ifdef MJ_DEBUGGING
     cprintf("\n\
           Timer interrupt has been occured. 'ticks' is increased.\n\
           pid: %d\n\
           tf->trapno: %d\n\
           system ticks:%d\n\
+          MLFQ_tick_used: %d\n\
           tick_used: %d\n\
-          time_quantum_used: %d\n",proc->pid, tf->trapno, ticks, proc->tick_used, proc->time_quantum_used);
+          time_quantum_used: %d\n",proc->pid, tf->trapno, ticks,get_MLFQ_tick_used() ,proc->tick_used, proc->time_quantum_used);
 #endif
 
     // yield if it uses whole time quantum

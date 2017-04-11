@@ -12,6 +12,6 @@
 #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
 #define FSSIZE       1000  // size of file system in blocks
 
-#define MJ_DEBUGGING       // just define. for debugging code
+// #define MJ_DEBUGGING       // just define. for debugging code
 #define NMLFQ         3  // the number of queues in MLFQ
 #define NSTRIDE   10000  // Design Document 1-2-2-1. It will be divided by required cpu share.

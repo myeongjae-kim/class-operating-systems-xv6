@@ -12,7 +12,8 @@ struct {
 
   // Design Document 1-1-2-4.
   struct proc proc[NPROC];
-  int time_quantum[NMLFQ];
+  int MLFQ_time_quantum[NMLFQ];
+  int MLFQ_tick_used;
 
   // Design Document 1-2-2-3.
   int sum_cpu_share;
@@ -30,7 +31,7 @@ static void wakeup1(void *chan);
 int
 get_time_quantum(int level) 
 {
-  return ptable.time_quantum[level];
+  return ptable.MLFQ_time_quantum[level];
 }
 
 // Design Document 1-2-2-3
@@ -51,6 +52,23 @@ set_sum_cpu_share(int sum_cpu_share)
   return 0;
 }
 
+// Design Document 1-1-2-4
+int get_MLFQ_tick_used(void)
+{
+  return ptable.MLFQ_tick_used;
+}
+
+void initialize_MLFQ_tick_used(void)
+{
+  ptable.MLFQ_tick_used = 0;
+}
+
+void increase_MLFQ_tick_used(void)
+{
+  ptable.MLFQ_tick_used++;
+}
+
+
 void
 pinit(void)
 {
@@ -61,7 +79,7 @@ pinit(void)
 
   //initializing time quantum
   for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
-      ptable.time_quantum[queue_level] = default_ticks;
+      ptable.MLFQ_time_quantum[queue_level] = default_ticks;
       default_ticks *= 2;
   }
 
@@ -353,6 +371,8 @@ scheduler(void)
   // Design Document 1-2-2-5
   unsigned int MLFQ_or_stride;
   unsigned long randstate = 1;
+  int stride_is_selceted;
+  int choose_algorithm;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -361,57 +381,77 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
-    // Design Document 1-2-2-5. Choosing the stride queue or MLFQ
-    randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
-    MLFQ_or_stride = randstate % 100;
+    choose_algorithm = 1;
 
-    if (MLFQ_or_stride < ptable.sum_cpu_share) {
-      // The stride queue is seleceted.
+    for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        // Design Document 1-2-2-5. Choosing the stride queue or MLFQ
+        if(choose_algorithm) {
+          randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
+          MLFQ_or_stride = randstate % 100;
 
+          if (MLFQ_or_stride < ptable.sum_cpu_share) {
+            // The stride queue is seleceted.
+            stride_is_selceted = 1;
+          } else {
+            // MLFQ is seleceted
+            stride_is_selceted = 0;
+          }
+        } else {
+          // choose_algorithm == 0
+          // do nothing. keep finding a process in MLFQ
+        }
+
+        // Design document 1-1-2-5. Finding a process to be run
+        if(stride_is_selceted) {
+          // Find a process in the stride queue
+          
 #ifdef MJ_DEBUGGING
-      cprintf("\n\n ** The stride queue is selceted. **\n");
-          cprintf(" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
-          cprintf(" **       MLFQ_or_stride: %d      **\n\n", MLFQ_or_stride);
+            cprintf("\n\n ** The stride queue is selceted. **\n");
+            cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
+            cprintf    (" **       MLFQ_or_stride: %d      **\n\n", MLFQ_or_stride);
 #endif
 
-    //TODO: Implement priority queue. 
-    //      Elements are indices of a proc structure array.
-    //      Key value is proc->stride_count.
+          //TODO: Implement priority queue. 
+          //      Elements are indices of a proc structure array.
+          //      Key value is proc->stride_count.
 
-    } else {
-      // The MLFQ is seleceted
-      for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
-        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+          //TODO: below two instructions are just temporary. Remove it.
+          p--;
+          continue;
+        } else {
+          // Find a process in MLFQ 
+          // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
-          // Design document 1-1-2-5. Finding a process to be run
-          // TODO: skip a process whose the value of cpu_share is not zero.
+
+          // 밑에꺼 주석 풀면 멈춤 현상이 발생하는데, stride 완전히 구현하면 해결된다. 돌고있는 프로세스가 stride queue에 있으면 진행이 안되기 때문. 아직 구현 안해서.
+          /** if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level) { */
           if(p->state == RUNNABLE && p->level_of_MLFQ <= queue_level) {
             // A process to be run has been found!
-          }
-          else {
+            choose_algorithm = 1;
+          } else {
             // A process to be run has not been found. Keep finding.
+            choose_algorithm = 0;
             continue;
           }
-
-          // Switch to chosen process.  It is the process's job
-          // to release ptable.lock and then reacquire it
-          // before jumping back to us.
-          proc = p;
-          switchuvm(p);
-          p->state = RUNNING;
-
-          swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
-          switchkvm();
-
-          // Process is done running for now.
-          // It should have changed its p->state before coming back.
-          proc = 0;
         }
+        
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
+        proc = p;
+        switchuvm(p);
+        p->state = RUNNING;
+        swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
+        switchkvm();
+        // Process is done running for now.
+        // It should have changed its p->state before coming back.
+        proc = 0;
+
+        choose_algorithm = 1;
       }
     }
-      
     release(&ptable.lock);
-
   }
 }
 
