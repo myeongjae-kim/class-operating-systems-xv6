@@ -544,9 +544,8 @@ scheduler(void)
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
 
-          // 밑에꺼 주석 풀면 멈춤 현상이 발생하는데, stride 완전히 구현하면 해결된다. 돌고있는 프로세스가 stride queue에 있으면 진행이 안되기 때문. 아직 구현 안해서.
-          /** if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level) { */
-          if(p->state == RUNNABLE && p->level_of_MLFQ <= queue_level) {
+          // skip processes in the stride queue
+          if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level) {
             // A process to be run has been found!
             choose_algorithm = 1;
           } else {
