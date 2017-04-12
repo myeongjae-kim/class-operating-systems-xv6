@@ -16,6 +16,10 @@ struct {
   int MLFQ_tick_used;
 
   // Design Document 1-2-2-3.
+  struct proc* stride_queue[NSTRIDE_QUEUE]; // Index will be used from 1 to 64.
+  int stride_queue_size;
+  int stride_time_quantum;
+
   int sum_cpu_share;
 } ptable;
 
@@ -27,29 +31,21 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+
+static void stride_queue_heapify_up(int stride_idx);
+static void stride_queue_heapify_down(int stride_idx);
+
+
 // getters and setters
 int
-get_time_quantum(int level) 
+get_time_quantum() 
 {
-  return ptable.MLFQ_time_quantum[level];
-}
-
-// Design Document 1-2-2-3
-int
-get_sum_cpu_share(void) 
-{
-  return ptable.sum_cpu_share;
-}
-// Design Document 1-2-2-3
-int
-set_sum_cpu_share(int sum_cpu_share)
-{
-  // if cpu share is too much.
-  if ( ! (1 <= sum_cpu_share && sum_cpu_share <= 80) ) 
-    return -1;
-
-  ptable.sum_cpu_share = sum_cpu_share;
-  return 0;
+  if(proc && proc->cpu_share != 0) {
+    // the stride time_quantum
+    return (int)(ptable.stride_time_quantum * (proc->cpu_share * 0.01));
+  } else {
+    return ptable.MLFQ_time_quantum[proc->level_of_MLFQ];
+  }
 }
 
 // Design Document 1-1-2-4
@@ -78,14 +74,21 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 
   //initializing time quantum
+  ptable.stride_time_quantum = 0;
   for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
       ptable.MLFQ_time_quantum[queue_level] = default_ticks;
+      ptable.stride_time_quantum += default_ticks;
       default_ticks *= 2;
   }
+  // Design Document 1-2-2-3.
+  // the stride_time_quantum is an average of MLFQ_time_quantum array
+  ptable.stride_time_quantum /= NMLFQ;
 
   // Design Document 1-2-2-3.
-  // initializing sum_cpu_share
+  // initializing ptable variables.
   ptable.sum_cpu_share = 0;
+  memset(ptable.stride_queue, 0, sizeof(ptable.stride_queue));
+  ptable.stride_queue_size = 0;
 }
 
 //PAGEBREAK: 32
@@ -262,6 +265,7 @@ exit(void)
 {
   struct proc *p;
   int fd;
+  int stride_idx;
 
   if(proc == initproc)
     panic("init exiting");
@@ -280,6 +284,58 @@ exit(void)
   proc->cwd = 0;
 
   acquire(&ptable.lock);
+
+  // delete a process in stride queue
+  if (proc->cpu_share != 0) {
+    int heapify_up;
+
+#ifdef MJ_DEBUGGING
+    cprintf("stirde_queue process exit()\n");
+#endif
+
+    // subtract cpu_share from sum_cpu_share
+    ptable.sum_cpu_share -= proc->cpu_share;
+
+    // find where it is in the stride queue
+    for (stride_idx = 1; stride_idx < NSTRIDE_QUEUE; ++stride_idx) {
+      if (ptable.stride_queue[stride_idx] == proc) {
+        break;
+      }
+    }
+
+    if (stride_idx == NSTRIDE_QUEUE) {
+      panic("exit(): a process is not in the stride scheduler");
+    }
+
+    // delete a process from a heap
+    ptable.stride_queue[stride_idx] = ptable.stride_queue[ptable.stride_queue_size];
+    ptable.stride_queue[ptable.stride_queue_size--] = 0;
+
+    // do heapify
+    if (stride_idx == 1) {
+      //heapify_down
+      heapify_up = 0;
+    } else {
+      //select heapify_up or down
+      heapify_up = ptable.stride_queue[stride_idx]->stride_count 
+                   < ptable.stride_queue[stride_idx / 2]->stride_count 
+                   ? 1 : 0;
+    }
+
+    if (ptable.stride_queue_size == 0 || ptable.stride_queue_size == 1) {
+      //do nothing
+    } else {
+      // increase key
+      if (heapify_up) {
+        stride_queue_heapify_down(stride_idx);
+      } else {
+        stride_queue_heapify_up(stride_idx);
+      }
+    }
+
+
+
+  }
 
   // Parent might be sleeping in wait().
   wakeup1(proc->parent);
@@ -330,7 +386,6 @@ wait(void)
         p->tick_used = 0;
         p->time_quantum_used= 0;
         p->level_of_MLFQ = 0;
-        ptable.sum_cpu_share = ptable.sum_cpu_share - p->cpu_share;
         p->cpu_share = 0;
         p->stride = 0;
         p->stride_count= 0;
@@ -351,6 +406,67 @@ wait(void)
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
 }
+void stride_queue_heapify_up(int stride_idx) {
+  struct proc* target_proc = ptable.stride_queue[stride_idx];
+  while (stride_idx != 1) {
+    // if child is smaller than parent
+    if (ptable.stride_queue[stride_idx] < ptable.stride_queue[stride_idx / 2]) {
+      ptable.stride_queue[stride_idx] = ptable.stride_queue[stride_idx / 2];
+      stride_idx /= 2;
+      
+    // parent is smaller than child
+    } else {
+      break;
+    }
+  }
+  // locate a process to right position
+  ptable.stride_queue[stride_idx] = target_proc;
+
+}
+
+void stride_queue_heapify_down(int stride_idx) {
+  struct proc* p = ptable.stride_queue[stride_idx];
+
+  while(stride_idx <= ptable.stride_queue_size) {
+    if (ptable.stride_queue[stride_idx * 2] 
+        && ptable.stride_queue[stride_idx * 2 + 1]) {
+      // two childen
+
+      // get smaller one among children
+      stride_idx = ptable.stride_queue[stride_idx * 2]->stride_count 
+                    > ptable.stride_queue[stride_idx * 2 + 1]->stride_count 
+                    ? stride_idx * 2 : stride_idx * 2 + 1;
+
+      // if children's minimum is smaller than parent, swap
+      if (ptable.stride_queue[stride_idx]->stride_count < p->stride_count) {
+        ptable.stride_queue[stride_idx / 2] = ptable.stride_queue[stride_idx];
+      } else {
+        stride_idx /= 2;
+        //stride_idx is the place the current process should go.
+        break;
+      }
+
+    } else if (ptable.stride_queue[stride_idx * 2]) {
+      // only left child (== the last element)
+      stride_idx *= 2;
+      // if left child's value is smaller than parent, swap
+      if(ptable.stride_queue[stride_idx]->stride_count < p->stride_count) {
+        ptable.stride_queue[stride_idx / 2] = ptable.stride_queue[stride_idx];
+      } else {
+        stride_idx /= 2;
+      }
+      break;
+    } else {
+      // no child
+      // do nothing. it will escape the loop.
+      break;
+    }
+  }
+  
+  // current process' place
+  ptable.stride_queue[stride_idx] = p;
+
+}
 
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
@@ -369,7 +485,7 @@ scheduler(void)
   int queue_level;
   
   // Design Document 1-2-2-5
-  unsigned int MLFQ_or_stride;
+  unsigned int queue_selector;
   unsigned long randstate = 1;
   int stride_is_selceted;
   int choose_algorithm;
@@ -385,12 +501,14 @@ scheduler(void)
 
     for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        // back up MLFQ pointer for removing side effect of the stride algorithm.
+        struct proc* p_mlfq = p;
         // Design Document 1-2-2-5. Choosing the stride queue or MLFQ
         if(choose_algorithm) {
           randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
-          MLFQ_or_stride = randstate % 100;
+          queue_selector = randstate % 100;
 
-          if (MLFQ_or_stride < ptable.sum_cpu_share) {
+          if (queue_selector < ptable.sum_cpu_share) {
             // The stride queue is seleceted.
             stride_is_selceted = 1;
           } else {
@@ -407,18 +525,20 @@ scheduler(void)
           // Find a process in the stride queue
           
 #ifdef MJ_DEBUGGING
-            cprintf("\n\n ** The stride queue is selceted. **\n");
-            cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
-            cprintf    (" **       MLFQ_or_stride: %d      **\n\n", MLFQ_or_stride);
+          cprintf("\n\n ** The stride queue is selceted. **\n");
+          cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
+          cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
 #endif
 
           //TODO: Implement priority queue. 
           //      Elements are indices of a proc structure array.
           //      Key value is proc->stride_count.
 
-          //TODO: below two instructions are just temporary. Remove it.
-          p--;
-          continue;
+          // Increase key
+          p = ptable.stride_queue[1];
+          p->stride_count += p->stride;
+          stride_queue_heapify_down(1);
+
         } else {
           // Find a process in MLFQ 
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
@@ -448,7 +568,10 @@ scheduler(void)
         // It should have changed its p->state before coming back.
         proc = 0;
 
-        choose_algorithm = 1;
+        if(stride_is_selceted) {
+          p = p_mlfq;
+          p--;
+        }
       }
     }
     release(&ptable.lock);
@@ -655,4 +778,89 @@ priority_boost(void) {
     // Design Docuemtn 1-1-2-2. Reinitializing time_quantum_used
     p->time_quantum_used = 0;
   }
+}
+
+// Design Document 1-1-2-4
+int
+set_cpu_share(int required) 
+{
+  int cpu_share_already_set;
+  int desired_sum_cpu_share; // a variable indicating a value when set_cpu_share() succeeds
+  const int MIN_CPU_SHARE = 1;
+  const int MAX_CPU_SHARE = 80;
+  int is_new;
+  int idx;
+
+  // function argument is not valid
+  if ( ! (MIN_CPU_SHARE <= required && required <= MAX_CPU_SHARE) ) 
+    goto exception;
+
+  cpu_share_already_set = proc->cpu_share;
+
+  if (cpu_share_already_set == 0) {
+    is_new = 1;
+  } else {
+    is_new = 0;
+  }
+
+  desired_sum_cpu_share = ptable.sum_cpu_share - cpu_share_already_set + required;
+
+  // If a required cpu share is too much.
+  if (desired_sum_cpu_share > MAX_CPU_SHARE )
+    goto exception;
+
+  // It is okay to set cpu_share
+  ptable.sum_cpu_share = desired_sum_cpu_share;
+  proc->cpu_share = required;
+  proc->stride = NSTRIDE / required;
+
+  if(is_new) {
+    // Priority Queue Push
+    // We do not need to check whether the stride queue is full because process cannot be generated more than 64
+
+    // new process's stride_count should be minimum stride_count in queue for preventing schuelder from being monopolized.
+    if(ptable.stride_queue[1]) {
+      proc->stride_count = ptable.stride_queue[1]->stride_count;
+    }
+
+    // Heapify
+    idx = ++ptable.stride_queue_size;
+    while(idx != 1) {
+      ptable.stride_queue[idx] = ptable.stride_queue[idx/2];
+      idx /= 2;
+    }
+    ptable.stride_queue[idx] = proc;
+  } else {
+    // if a process is already in the stride queue,
+    // do nothing.
+  }
+
+
+#ifdef MJ_DEBUGGING
+  cprintf("set_cpu_share(%d): cpu_share has been set\n", required);
+  cprintf("set_cpu_share(%d): proc->cpu_share: %d, proc->stride: %d, ptable->sum_cpu_share: %d\n"
+      , required, required, proc->stride, desired_sum_cpu_share);
+#endif
+
+  return 0;
+
+exception:
+#ifdef MJ_DEBUGGING
+  cprintf("set_cpu_share(%d): exception has occurred\n", required);
+#endif
+
+  return -1;
+}
+
+int
+sys_set_cpu_share(void) 
+{
+  int required;
+  //Decode argument using argint
+
+  if (argint(0, &required) < 0) {
+    return -1;
+  }
+
+  return set_cpu_share(required);
 }

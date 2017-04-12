@@ -16,7 +16,7 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
-extern int get_time_quantum(int level); // in proc.c: return time quantums of each queue.
+extern int get_time_quantum(); // in proc.c: return time quantums of each queue.
 extern int priority_boost(void); // in proc.c: move every process to the highest queue
 
 extern int get_MLFQ_tick_used(void);          // in proc.c
@@ -164,7 +164,7 @@ trap(struct trapframe *tf)
 #endif
 
     // yield if it uses whole time quantum
-    if(proc->time_quantum_used >= get_time_quantum(proc->level_of_MLFQ)) {
+    if(proc->time_quantum_used >= get_time_quantum()) {
       
 #ifdef MJ_DEBUGGING
       cprintf("**********************************\n");
