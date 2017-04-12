@@ -543,6 +543,16 @@ scheduler(void)
           // Find a process in MLFQ 
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
+          //get highest priority
+          int highest_priority = NMLFQ - 1;
+          struct proc* proc_pointer;
+
+          for (proc_pointer = ptable.proc; proc_pointer < &ptable.proc[NPROC]; ++proc_pointer) {
+            if (proc_pointer->state == RUNNABLE && proc_pointer->level_of_MLFQ < highest_priority) {
+              highest_priority = proc_pointer->level_of_MLFQ;
+            }
+          }
+          queue_level = highest_priority;
 
           // skip processes in the stride queue
           if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level) {
