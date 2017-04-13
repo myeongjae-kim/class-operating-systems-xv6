@@ -36,8 +36,10 @@
 ./bootmain.c
 ./prac_getlev.c
 ./uart.c
+./test_master.c
 ./pipe.c
 ./initcode.S
+./test_stride.c
 ./test_stride_mj.c
 ./zombie.c
 ./cat.c
@@ -59,6 +61,7 @@
 ./asm.h
 ./buf.h
 ./trap.c
+./test_master_mj.c
 ./bootasm.S
 ./usertests.c
 ./picirq.c
@@ -72,6 +75,7 @@
 ./printf.c
 ./fcntl.h
 ./syscall.c
+./vectors.S
 ./main.c
 ./console.c
 ./param.h

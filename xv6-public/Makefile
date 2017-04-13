@@ -31,7 +31,6 @@ OBJS = \
 	prac_syscall.o\
 	prac_getppid.o\
 	prac_getlev.o\
-	# prac_set_cpu_share.o\
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf

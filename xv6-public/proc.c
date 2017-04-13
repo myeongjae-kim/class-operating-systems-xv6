@@ -45,7 +45,8 @@ get_time_quantum()
 {
   if(proc && proc->cpu_share != 0) {
     // the stride time_quantum
-    return (int)(ptable.stride_time_quantum * (proc->cpu_share * 0.01));
+    /** return (int)(ptable.stride_time_quantum * (proc->cpu_share * 0.01)); */
+    return 1;
   } else {
     return ptable.MLFQ_time_quantum[proc->level_of_MLFQ];
   }
@@ -482,12 +483,11 @@ void
 scheduler(void)
 {
   struct proc *p;
-
   
   // Design Document 1-2-2-5
   unsigned int queue_selector;
   unsigned long randstate = 1;
-  int stride_is_selceted;
+  int stride_is_seleceted;
   int choose_algorithm;
 
   for(;;){
@@ -510,6 +510,7 @@ scheduler(void)
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         // back up MLFQ pointer for removing side effect of the stride algorithm.
         struct proc* p_mlfq = p;
+
         // Design Document 1-2-2-5. Choosing the stride queue or MLFQ
         if(choose_algorithm) {
           randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
@@ -517,10 +518,10 @@ scheduler(void)
 
           if (queue_selector < ptable.sum_cpu_share) {
             // The stride queue is seleceted.
-            stride_is_selceted = 1;
+            stride_is_seleceted = 1;
           } else {
             // MLFQ is seleceted
-            stride_is_selceted = 0;
+            stride_is_seleceted = 0;
           }
         } else {
           // choose_algorithm == 0
@@ -528,13 +529,16 @@ scheduler(void)
         }
 
         // Design document 1-1-2-5. Finding a process to be run
-        if(stride_is_selceted) {
+        if(stride_is_seleceted) {
+          int stride_find_idx;
           // Find a process in the stride queue
           
-#ifdef MJ_DEBUGGING
-          cprintf("\n\n ** The stride queue is selceted. **\n");
-          cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
-          cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
+#ifdef STRIDE_DEBUGGING
+          if(ticks % 100 == 0) {
+            cprintf("\n\n ** The stride queue is selceted. **\n");
+            cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
+            cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
+          }
 #endif
 
           //TODO: Implement priority queue. 
@@ -542,11 +546,73 @@ scheduler(void)
           //      Key value is proc->stride_count.
 
           // Increase key
-          p = ptable.stride_queue[1];
-          p->stride_count += p->stride;
-          stride_queue_heapify_down(1);
+
+          // Find a process to be run
+          stride_find_idx = 1;
+          while (stride_find_idx < ptable.stride_queue_size) {
+
+            //Found
+            if (ptable.stride_queue[stride_find_idx]->state == RUNNABLE) {
+              p = ptable.stride_queue[stride_find_idx];
+              p->stride_count += p->stride;
+              stride_queue_heapify_down(stride_find_idx);
+
+              break;
+
+              //Not found
+            } else {
+              // select between children whose stirde_value is smaller
+              int left_child = stride_find_idx * 2;
+              int right_child = stride_find_idx * 2 + 1;
+              enum {NO_CHILD, LEFT_ONLY, BOTH} child_status;
+
+              if (right_child <= ptable.stride_queue_size) {
+                child_status = BOTH;
+              } else if (left_child > ptable.stride_queue_size) {
+                child_status = NO_CHILD;
+              } else {
+                child_status = LEFT_ONLY;
+              }
+
+              if (child_status == BOTH) {
+                if (ptable.stride_queue[left_child]->stride_count
+                    < ptable.stride_queue[right_child]->stride_count) {
+                  // left is smaller
+                  stride_find_idx = left_child;
+                } else {
+                  // right is smaller
+                  stride_find_idx = right_child;
+                }
+              } else if (child_status == LEFT_ONLY) {
+                stride_find_idx = left_child;
+              } else {
+                // NO_CHILD
+                // do nothing. loop will end
+              }
+            }
+          }
+
+          if (stride_find_idx > ptable.stride_queue_size) {
+            // No process to be run in stride_queue. go to MLFQ
+            stride_is_seleceted = 0;
+            choose_algorithm = 0;
+            continue;
+          }
+
+        //process found
+        p = ptable.stride_queue[stride_find_idx];
 
         } else {
+#ifdef STRIDE_DEBUGGING
+          if(ticks % 100 == 0) {
+            cprintf("\n\n **  The MLFQ queue is selceted.  **\n");
+            cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
+            cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
+            cprintf    (" **       MLFQ_tick_used: %d      **\n\n", ptable.MLFQ_tick_used);
+          }
+#endif
+
+
           // Find a process in MLFQ 
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
@@ -581,7 +647,7 @@ scheduler(void)
         // It should have changed its p->state before coming back.
         proc = 0;
 
-        if(stride_is_selceted) {
+        if(stride_is_seleceted) {
           p = p_mlfq;
           p--;
         }
