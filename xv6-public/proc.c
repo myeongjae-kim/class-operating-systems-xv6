@@ -31,7 +31,6 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-
 static void stride_queue_heapify_up(int stride_idx);
 static void stride_queue_heapify_down(int stride_idx);
 
@@ -477,7 +476,7 @@ scheduler(void)
   struct proc *p;
 
   // Design Document 1-1-2-5
-  int queue_level;
+  int queue_level_at_most;
   
   // Design Document 1-2-2-5
   unsigned int queue_selector;
@@ -495,11 +494,12 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
+    // choose the stride queue or MLFQ
     choose_algorithm = 1;
 
     // When while loop is end, there are only processes of last level of queue.
-    queue_level = NMLFQ - 1; // last level
-    while(queue_level < NMLFQ) {
+    queue_level_at_most = NMLFQ - 1; // last level
+    while(queue_level_at_most < NMLFQ) {
 
       min_process_runned_level = NMLFQ - 1;
 
@@ -546,9 +546,9 @@ scheduler(void)
           // Find a process in MLFQ 
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
-          // a process which priority is equal or higher than queue_level can be runned.
+          // a process which priority is equal or higher than queue_level_at_most can be runned.
           // skip processes in the stride queue
-          if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level) {
+          if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level_at_most) {
             // A process to be run has been found!
             choose_algorithm = 1;
           } else {
@@ -566,9 +566,9 @@ scheduler(void)
         p->state = RUNNING;
 
 
-        // Minimum level of runned processes should be queue_level for next scheduling.
-        queue_level = p->level_of_MLFQ < queue_level ? p->level_of_MLFQ : queue_level;
-        min_process_runned_level = queue_level;
+        // Minimum level of runned processes should be queue_level_at_most for next scheduling.
+        queue_level_at_most = p->level_of_MLFQ < queue_level_at_most ? p->level_of_MLFQ : queue_level_at_most;
+        min_process_runned_level = queue_level_at_most;
 
 
         swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
@@ -586,7 +586,7 @@ scheduler(void)
       if(min_process_runned_level == NMLFQ - 1)  {
         // 1) no process runned. Increase queue level.
         // 2) processes are only in queue of last level. Break the while loop
-        queue_level++;
+        queue_level_at_most++;
       } else {
         // run a queue of same level again.
       }
