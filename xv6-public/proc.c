@@ -14,6 +14,10 @@ struct {
   struct proc proc[NPROC];
   int MLFQ_time_quantum[NMLFQ];
   int MLFQ_tick_used;
+  
+  // Design Document 1-1-2-4. variables used in scheduler()
+  int queue_level_at_most;
+  int min_of_run_proc_level;
 
   // Design Document 1-2-2-3.
   struct proc* stride_queue[NSTRIDE_QUEUE]; // Index will be used from 1 to 64.
@@ -246,6 +250,10 @@ fork(void)
 
   np->state = RUNNABLE;
 
+  //Design Document 1-1-2-5. A new process is generated.
+  /** ptable.min_of_run_proc_level = 0; */
+  /** ptable.queue_level_at_most = 0; */
+
   release(&ptable.lock);
 
   return pid;
@@ -475,17 +483,12 @@ scheduler(void)
 {
   struct proc *p;
 
-  // Design Document 1-1-2-5
-  int queue_level_at_most;
   
   // Design Document 1-2-2-5
   unsigned int queue_selector;
   unsigned long randstate = 1;
   int stride_is_selceted;
   int choose_algorithm;
-
-
-  int min_process_runned_level;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -498,10 +501,11 @@ scheduler(void)
     choose_algorithm = 1;
 
     // When while loop is end, there are only processes of last level of queue.
-    queue_level_at_most = NMLFQ - 1; // last level
-    while(queue_level_at_most < NMLFQ) {
+    ptable.queue_level_at_most = NMLFQ - 1; // last level
+    while(ptable.queue_level_at_most < NMLFQ) {
 
-      min_process_runned_level = NMLFQ - 1;
+      //initialize it before traversing the proc array
+      ptable.min_of_run_proc_level = NMLFQ - 1;
 
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         // back up MLFQ pointer for removing side effect of the stride algorithm.
@@ -546,9 +550,9 @@ scheduler(void)
           // Find a process in MLFQ 
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
-          // a process which priority is equal or higher than queue_level_at_most can be runned.
+          // a process which priority is equal or higher than ptable.queue_level_at_most can be run.
           // skip processes in the stride queue
-          if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level_at_most) {
+          if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= ptable.queue_level_at_most) {
             // A process to be run has been found!
             choose_algorithm = 1;
           } else {
@@ -566,9 +570,9 @@ scheduler(void)
         p->state = RUNNING;
 
 
-        // Minimum level of runned processes should be queue_level_at_most for next scheduling.
-        queue_level_at_most = p->level_of_MLFQ < queue_level_at_most ? p->level_of_MLFQ : queue_level_at_most;
-        min_process_runned_level = queue_level_at_most;
+        // Minimum level of run processes should be ptable.queue_level_at_most for next scheduling.
+        ptable.queue_level_at_most = p->level_of_MLFQ < ptable.queue_level_at_most ? p->level_of_MLFQ : ptable.queue_level_at_most;
+        ptable.min_of_run_proc_level = ptable.queue_level_at_most;
 
 
         swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
@@ -583,10 +587,10 @@ scheduler(void)
         }
       }
 
-      if(min_process_runned_level == NMLFQ - 1)  {
-        // 1) no process runned. Increase queue level.
+      if(ptable.min_of_run_proc_level == NMLFQ - 1)  {
+        // 1) no process run. Increase queue level.
         // 2) processes are only in queue of last level. Break the while loop
-        queue_level_at_most++;
+        ptable.queue_level_at_most++;
       } else {
         // run a queue of same level again.
       }
