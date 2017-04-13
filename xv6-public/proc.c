@@ -490,6 +490,10 @@ scheduler(void)
   int stride_is_selceted;
   int choose_algorithm;
 
+
+  int process_runned[NMLFQ];
+  int process_runned_idx;
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
@@ -499,7 +503,12 @@ scheduler(void)
 
     choose_algorithm = 1;
 
-    for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
+    for (queue_level = 0; queue_level < NMLFQ; queue_level++) {
+
+      for (process_runned_idx = 0;process_runned_idx < NMLFQ; ++process_runned_idx) {
+        process_runned[process_runned_idx] = 0;
+      }
+
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         // back up MLFQ pointer for removing side effect of the stride algorithm.
         struct proc* p_mlfq = p;
@@ -543,17 +552,6 @@ scheduler(void)
           // Find a process in MLFQ 
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
-          //get highest priority
-          int highest_priority = NMLFQ - 1;
-          struct proc* proc_pointer;
-
-          for (proc_pointer = ptable.proc; proc_pointer < &ptable.proc[NPROC]; ++proc_pointer) {
-            if (proc_pointer->state == RUNNABLE && proc_pointer->level_of_MLFQ < highest_priority) {
-              highest_priority = proc_pointer->level_of_MLFQ;
-            }
-          }
-          queue_level = highest_priority;
-
           // skip processes in the stride queue
           if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level) {
             // A process to be run has been found!
@@ -571,6 +569,12 @@ scheduler(void)
         proc = p;
         switchuvm(p);
         p->state = RUNNING;
+
+        process_runned[p->level_of_MLFQ] = 1;
+        queue_level = p->level_of_MLFQ < queue_level ? p->level_of_MLFQ : queue_level;
+
+
+
         swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
         switchkvm();
         // Process is done running for now.
@@ -582,6 +586,14 @@ scheduler(void)
           p--;
         }
       }
+      
+      for (process_runned_idx = 0; process_runned_idx < NMLFQ; ++process_runned_idx) {
+        if( process_runned[process_runned_idx] == 1 ) {
+          queue_level = process_runned_idx - 1;
+          break;
+        }
+      }
+
     }
     release(&ptable.lock);
   }
