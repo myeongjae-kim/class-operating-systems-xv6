@@ -54,11 +54,6 @@ int get_MLFQ_tick_used(void)
   return ptable.MLFQ_tick_used;
 }
 
-void initialize_MLFQ_tick_used(void)
-{
-  ptable.MLFQ_tick_used = 0;
-}
-
 void increase_MLFQ_tick_used(void)
 {
   ptable.MLFQ_tick_used++;
@@ -491,8 +486,7 @@ scheduler(void)
   int choose_algorithm;
 
 
-  int process_runned[NMLFQ];
-  int process_runned_idx;
+  int min_process_runned_level;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -503,11 +497,11 @@ scheduler(void)
 
     choose_algorithm = 1;
 
-    for (queue_level = 0; queue_level < NMLFQ; queue_level++) {
+    // When while loop is end, there are only processes of last level of queue.
+    queue_level = NMLFQ - 1; // last level
+    while(queue_level < NMLFQ) {
 
-      for (process_runned_idx = 0;process_runned_idx < NMLFQ; ++process_runned_idx) {
-        process_runned[process_runned_idx] = 0;
-      }
+      min_process_runned_level = NMLFQ - 1;
 
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         // back up MLFQ pointer for removing side effect of the stride algorithm.
@@ -552,6 +546,7 @@ scheduler(void)
           // Find a process in MLFQ 
           // skip a process whose value of cpu_share is not zero which is in the stride_queue
 
+          // a process which priority is equal or higher than queue_level can be runned.
           // skip processes in the stride queue
           if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= queue_level) {
             // A process to be run has been found!
@@ -570,9 +565,10 @@ scheduler(void)
         switchuvm(p);
         p->state = RUNNING;
 
-        process_runned[p->level_of_MLFQ] = 1;
-        queue_level = p->level_of_MLFQ < queue_level ? p->level_of_MLFQ : queue_level;
 
+        // Minimum level of runned processes should be queue_level for next scheduling.
+        queue_level = p->level_of_MLFQ < queue_level ? p->level_of_MLFQ : queue_level;
+        min_process_runned_level = queue_level;
 
 
         swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
@@ -586,14 +582,14 @@ scheduler(void)
           p--;
         }
       }
-      
-      for (process_runned_idx = 0; process_runned_idx < NMLFQ; ++process_runned_idx) {
-        if( process_runned[process_runned_idx] == 1 ) {
-          queue_level = process_runned_idx - 1;
-          break;
-        }
-      }
 
+      if(min_process_runned_level == NMLFQ - 1)  {
+        // 1) no process runned. Increase queue level.
+        // 2) processes are only in queue of last level. Break the while loop
+        queue_level++;
+      } else {
+        // run a queue of same level again.
+      }
     }
     release(&ptable.lock);
   }
@@ -792,12 +788,18 @@ procdump(void)
 void
 priority_boost(void) {
   struct proc *p;
+  
+  cprintf("[do boosting!]\n");
+
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
     p->level_of_MLFQ = 0;
     p->tick_used = 0;
     //
     // Design Docuemtn 1-1-2-2. Reinitializing time_quantum_used
     p->time_quantum_used = 0;
+
+
+    ptable.MLFQ_tick_used = 0;
   }
 }
 

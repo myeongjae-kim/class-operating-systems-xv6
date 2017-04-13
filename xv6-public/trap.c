@@ -20,7 +20,6 @@ extern int get_time_quantum(); // in proc.c: return time quantums of each queue.
 extern int priority_boost(void); // in proc.c: move every process to the highest queue
 
 extern int get_MLFQ_tick_used(void);          // in proc.c
-extern void initialize_MLFQ_tick_used(void);  // in proc.c
 extern void increase_MLFQ_tick_used(void);    // in proc.c
 
 void
@@ -133,12 +132,9 @@ trap(struct trapframe *tf)
 
   // Design Document 1-1-2-5. Priority boost
   if (get_MLFQ_tick_used() >= 100) {
-    initialize_MLFQ_tick_used();
-
 #ifdef MJ_DEBUGGING
     cprintf("\n\n*** Priority Boost ***\n\n");
 #endif
-
     priority_boost();
   }
 
