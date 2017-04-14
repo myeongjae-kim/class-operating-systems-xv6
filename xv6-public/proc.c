@@ -646,21 +646,30 @@ scheduler(void)
             continue;
           }
         }
+        int before_mlfq_used_tick;
 
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
 #ifdef STRIDE_DEBUGGING
-        cprintf("ContChange. is_stride:%d, proc_name:%s, proc_id:%d, MLFQ_tick:%d, level:%d, stride_tick:%d, cpu_share:%d\n", stride_is_seleceted, p->name, p->pid, ptable.MLFQ_tick_used,p->level_of_MLFQ , ptable.stride_tick_used, p->cpu_share);
+        cprintf("ContChange. stride_is_selected:%d, proc_name:%s, proc_id:%d, MLFQ_tick:%d, level:%d, stride_tick:%d, cpu_share:%d, sum_cpu_share: %d\n", stride_is_seleceted, p->name, p->pid, ptable.MLFQ_tick_used,p->level_of_MLFQ , ptable.stride_tick_used, p->cpu_share, ptable.sum_cpu_share);
 #endif
         proc = p;
         switchuvm(p);
         p->state = RUNNING;
 
+        before_mlfq_used_tick = ptable.MLFQ_tick_used;
+
         swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
         switchkvm();
         // Process is done running for now.
         // It should have changed its p->state before coming back.
+        //
+
+        if(p->state == RUNNABLE && ptable.sum_cpu_share != 0 && p->cpu_share == 0 && ptable.MLFQ_tick_used == before_mlfq_used_tick) {
+          choose_algorithm = 0;
+          p--;
+        } 
         
         
 
