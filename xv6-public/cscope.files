@@ -85,6 +85,5 @@
 ./proc.c
 ./string.c
 ./vm.c
-./prac_set_cpu_share.c
 ./wc.c
 ./swtch.S

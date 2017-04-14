@@ -23,6 +23,7 @@ struct {
   struct proc* stride_queue[NSTRIDE_QUEUE]; // Index will be used from 1 to 64.
   int stride_queue_size;
   int stride_time_quantum;
+  int stride_tick_used;
 
   int sum_cpu_share;
 } ptable;
@@ -61,6 +62,17 @@ int get_MLFQ_tick_used(void)
 void increase_MLFQ_tick_used(void)
 {
   ptable.MLFQ_tick_used++;
+#ifdef STRIRDE_DEBUGGING
+  cprintf("\rMLFQ_tick_used: %d", ptable.MLFQ_tick_used);
+#endif
+}
+
+void increase_stride_tick_used(void)
+{
+  ptable.stride_tick_used++;
+#ifdef STRIRDE_DEBUGGING
+  cprintf("\rstride_tick_used: %d", ptable.stride_tick_used);
+#endif
 }
 
 
@@ -88,6 +100,11 @@ pinit(void)
   ptable.sum_cpu_share = 0;
   memset(ptable.stride_queue, 0, sizeof(ptable.stride_queue));
   ptable.stride_queue_size = 0;
+  ptable.MLFQ_tick_used = 0;
+  ptable.queue_level_at_most = NMLFQ - 1;
+  ptable.min_of_run_proc_level = NMLFQ - 1;
+  ptable.stride_tick_used = 0;
+
 }
 
 //PAGEBREAK: 32
@@ -335,9 +352,6 @@ exit(void)
         stride_queue_heapify_up(stride_idx);
       }
     }
-
-
-
   }
 
   // Parent might be sleeping in wait().
@@ -485,7 +499,7 @@ scheduler(void)
   struct proc *p;
   
   // Design Document 1-2-2-5
-  unsigned int queue_selector;
+  unsigned int queue_selector = 0;
   unsigned long randstate = 1;
   int stride_is_seleceted;
   int choose_algorithm;
@@ -534,11 +548,11 @@ scheduler(void)
           // Find a process in the stride queue
           
 #ifdef STRIDE_DEBUGGING
-          if(ticks % 100 == 0) {
-            cprintf("\n\n ** The stride queue is selceted. **\n");
-            cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
-            cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
-          }
+          /** if(ticks % 100 == 0) {
+            *   cprintf("\n\n ** The stride queue is selceted. **\n");
+            *   cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
+            *   cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
+            * } */
 #endif
 
           //TODO: Implement priority queue. 
@@ -604,12 +618,12 @@ scheduler(void)
 
         } else {
 #ifdef STRIDE_DEBUGGING
-          if(ticks % 100 == 0) {
-            cprintf("\n\n **  The MLFQ queue is selceted.  **\n");
-            cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
-            cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
-            cprintf    (" **       MLFQ_tick_used: %d      **\n\n", ptable.MLFQ_tick_used);
-          }
+          /** if(ticks % 100 == 0) {
+            *   cprintf("\n\n **  The MLFQ queue is selceted.  **\n");
+            *   cprintf    (" **       sum_cpu_share:  %d      **\n", ptable.sum_cpu_share);
+            *   cprintf    (" **       queue_selector: %d      **\n\n", queue_selector);
+            *   cprintf    (" **       MLFQ_tick_used: %d      **\n\n", ptable.MLFQ_tick_used);
+            * } */
 #endif
 
 
@@ -621,30 +635,35 @@ scheduler(void)
           if(p->state == RUNNABLE && p->cpu_share == 0 && p->level_of_MLFQ <= ptable.queue_level_at_most) {
             // A process to be run has been found!
             choose_algorithm = 1;
+            
+            // Minimum level of run processes should be ptable.queue_level_at_most for next scheduling.
+            ptable.queue_level_at_most = p->level_of_MLFQ < ptable.queue_level_at_most ? p->level_of_MLFQ : ptable.queue_level_at_most;
+            ptable.min_of_run_proc_level = ptable.queue_level_at_most;
+
           } else {
             // A process to be run has not been found. Keep finding.
             choose_algorithm = 0;
             continue;
           }
         }
-        
+
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
+#ifdef STRIDE_DEBUGGING
+        cprintf("ContChange. is_stride:%d, proc_name:%s, proc_id:%d, MLFQ_tick:%d, level:%d, stride_tick:%d, cpu_share:%d\n", stride_is_seleceted, p->name, p->pid, ptable.MLFQ_tick_used,p->level_of_MLFQ , ptable.stride_tick_used, p->cpu_share);
+#endif
         proc = p;
         switchuvm(p);
         p->state = RUNNING;
-
-
-        // Minimum level of run processes should be ptable.queue_level_at_most for next scheduling.
-        ptable.queue_level_at_most = p->level_of_MLFQ < ptable.queue_level_at_most ? p->level_of_MLFQ : ptable.queue_level_at_most;
-        ptable.min_of_run_proc_level = ptable.queue_level_at_most;
-
 
         swtch(&cpu->scheduler, p->context); // 이걸 call하면 sched 함수 안에서 return한다? 프로세스 진행.
         switchkvm();
         // Process is done running for now.
         // It should have changed its p->state before coming back.
+        
+        
+
         proc = 0;
 
         if(stride_is_seleceted) {

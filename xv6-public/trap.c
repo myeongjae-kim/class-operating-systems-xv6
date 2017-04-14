@@ -21,6 +21,7 @@ extern int priority_boost(void); // in proc.c: move every process to the highest
 
 extern int get_MLFQ_tick_used(void);          // in proc.c
 extern void increase_MLFQ_tick_used(void);    // in proc.c
+extern void increase_stride_tick_used(void);  // in proc.c
 
 void
 tvinit(void)
@@ -146,6 +147,8 @@ trap(struct trapframe *tf)
 
     if(proc->cpu_share == 0) {
       increase_MLFQ_tick_used();
+    } else {
+      increase_stride_tick_used();
     }
 
 #ifdef MJ_DEBUGGING
