@@ -21,11 +21,11 @@ struct {
 
   // Design Document 1-2-2-3.
   struct proc* stride_queue[NSTRIDE_QUEUE]; // Index will be used from 1 to 64.
+  int sum_cpu_share;
   int stride_queue_size;
   int stride_time_quantum;
   int stride_tick_used;
 
-  int sum_cpu_share;
 } ptable;
 
 static struct proc *initproc;
@@ -45,9 +45,7 @@ int
 get_time_quantum() 
 {
   if(proc && proc->cpu_share != 0) {
-    // the stride time_quantum
-    /** return (int)(ptable.stride_time_quantum * (proc->cpu_share * 0.01)); */
-    return 1;
+    return ptable.stride_time_quantum;
   } else {
     return ptable.MLFQ_time_quantum[proc->level_of_MLFQ];
   }
@@ -84,25 +82,22 @@ pinit(void)
   int default_ticks = 5;
   initlock(&ptable.lock, "ptable");
 
-  //initializing time quantum
-  ptable.stride_time_quantum = 0;
+  // Initializing ptable variables.
+  // Design Document 1-2-2-3.
+  // Initializing time quantum
   for (queue_level = 0; queue_level < NMLFQ; ++queue_level) {
       ptable.MLFQ_time_quantum[queue_level] = default_ticks;
-      ptable.stride_time_quantum += default_ticks;
       default_ticks *= 2;
   }
-  // Design Document 1-2-2-3.
-  // the stride_time_quantum is an average of MLFQ_time_quantum array
-  ptable.stride_time_quantum /= NMLFQ;
-
-  // Design Document 1-2-2-3.
-  // initializing ptable variables.
-  ptable.sum_cpu_share = 0;
-  memset(ptable.stride_queue, 0, sizeof(ptable.stride_queue));
-  ptable.stride_queue_size = 0;
   ptable.MLFQ_tick_used = 0;
+
   ptable.queue_level_at_most = NMLFQ - 1;
   ptable.min_of_run_proc_level = NMLFQ - 1;
+
+  memset(ptable.stride_queue, 0, sizeof(ptable.stride_queue));
+  ptable.sum_cpu_share = 0;
+  ptable.stride_queue_size = 0;
+  ptable.stride_time_quantum = 1; // It could be changed by designer.
   ptable.stride_tick_used = 0;
 
 }
@@ -327,7 +322,7 @@ exit(void)
       panic("exit(): a process is not in the stride scheduler");
     }
 
-    // delete a process from a heap
+    // delete a process from the heap
     ptable.stride_queue[stride_idx] = ptable.stride_queue[ptable.stride_queue_size];
     ptable.stride_queue[ptable.stride_queue_size--] = 0;
 
@@ -549,10 +544,10 @@ int select_stride_or_MLFQ() {
   queue_selector = randstate % 100;
 
   if (queue_selector < ptable.sum_cpu_share) {
-    // The stride queue is seleceted.
+    // The stride queue is selected.
     return 1;
   } else {
-    // MLFQ is seleceted
+    // MLFQ is selected
     return 0;;
   }
 }
@@ -571,8 +566,8 @@ scheduler(void)
   struct proc *p;
   
   // Design Document 1-2-2-5
-  int stride_is_seleceted = 0;
-  int choose_algorithm;
+  int choosing_stride_or_MLFQ;
+  int stride_is_selected = 0;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -582,7 +577,7 @@ scheduler(void)
     acquire(&ptable.lock);
 
     // choose the stride queue or MLFQ
-    choose_algorithm = 1;
+    choosing_stride_or_MLFQ = 1;
 
     // When while loop is end, there are only processes of last level of queue.
     ptable.queue_level_at_most = NMLFQ - 1; // last level
@@ -592,21 +587,18 @@ scheduler(void)
       ptable.min_of_run_proc_level = NMLFQ - 1;
 
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        // back up MLFQ pointer for removing side effect of the stride algorithm.
-        struct proc* p_mlfq = p;
-
         // Design Document 1-2-2-5. Choosing the stride queue or MLFQ
-        if(ptable.sum_cpu_share != 0 && choose_algorithm) {
+        if(ptable.sum_cpu_share != 0 && choosing_stride_or_MLFQ) {
           // If the stride queue is selceted, the value of 'stride_is_selected' will be 1.
           // If not, zero.
-          stride_is_seleceted = select_stride_or_MLFQ();
+          stride_is_selected = select_stride_or_MLFQ();
         } else {
-          // choose_algorithm == 0
+          // choosing_stride_or_MLFQ == 0
           // do nothing. keep finding a process in MLFQ
         }
 
         // Design document 1-1-2-5. Finding a process to be run
-        if(stride_is_seleceted) {
+        if(stride_is_selected) {
           // The stride queue is selceted.
           
           int stride_idx_to_be_run;
@@ -619,8 +611,8 @@ scheduler(void)
             p = ptable.stride_queue[stride_idx_to_be_run];
           } else {
             // No process to be run in stride_queue. go to MLFQ
-            stride_is_seleceted = 0;
-            choose_algorithm = 0;
+            stride_is_selected = 0;
+            choosing_stride_or_MLFQ = 0;
             continue;
           }
         } else {
@@ -639,24 +631,27 @@ scheduler(void)
 
           } else {
             // A process to be run has not been found. Keep finding it in MLFQ.
-            choose_algorithm = 0;
+            choosing_stride_or_MLFQ = 0;
             continue;
           }
         }
         // A proces to be run is found.
         // Below codes are used in both the stride and MLFQ.
         
-        // MLFQ should use at least one tick when any processes are in the stride queue
-        int before_mlfq_used_tick;
+        // back up MLFQ pointer for removing side effect of the stride algorithm.
+        struct proc* p_mlfq = p;
 
-        // Switch to chosen process.  It is the process's job
+        // MLFQ should use at least one tick when any processes are in the stride queue
+        int before_MLFQ_used_tick;
+
+        // Switch to chosen process. It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
 
 #ifdef STRIDE_DEBUGGING
         // Below codes show current context before changing context.
         cprintf("ContChange. ");
-        cprintf("stride_is_selected:%d, ", stride_is_seleceted);
+        cprintf("stride_is_selected:%d, ", stride_is_selected);
         cprintf("proc_name:%s, ", p->name);
         cprintf("proc_id:%d, ", p->pid);
         cprintf("MLFQ_tick:%d, ", ptable.MLFQ_tick_used,p->level_of_MLFQ);
@@ -666,7 +661,7 @@ scheduler(void)
         cprintf("sum_cpu_share: %d, ", ptable.sum_cpu_share);
         cprintf("stride:%d, ", p->stride);
         cprintf("stride_count:%d\n", p->stride_count);
-        /** cprintf("ContChange. stride_is_selected:%d, proc_name:%s, proc_id:%d, MLFQ_tick:%d, level:%d, stride_tick:%d, cpu_share:%d, sum_cpu_share: %d, stride:%d, stride_count:%d\n", stride_is_seleceted, p->name, p->pid, ptable.MLFQ_tick_used,p->level_of_MLFQ , ptable.stride_tick_used, p->cpu_share, ptable.sum_cpu_share, p->stride, p->stride_count); */
+        /** cprintf("ContChange. stride_is_selected:%d, proc_name:%s, proc_id:%d, MLFQ_tick:%d, level:%d, stride_tick:%d, cpu_share:%d, sum_cpu_share: %d, stride:%d, stride_count:%d\n", stride_is_selected, p->name, p->pid, ptable.MLFQ_tick_used,p->level_of_MLFQ , ptable.stride_tick_used, p->cpu_share, ptable.sum_cpu_share, p->stride, p->stride_count); */
 #endif
         proc = p;
         switchuvm(p);
@@ -674,7 +669,7 @@ scheduler(void)
 
         // Back up MLFQ tick for check whether a process in MLFQ uses at least one tick.
         // I did not use 'if', so in this code is executed in stride algorithm, but it does not make problem.
-        before_mlfq_used_tick = ptable.MLFQ_tick_used;
+        before_MLFQ_used_tick = ptable.MLFQ_tick_used;
 
         swtch(&cpu->scheduler, p->context); // This function returns in sched().
         switchkvm();
@@ -686,29 +681,29 @@ scheduler(void)
         // 2) Current process is runnable               (p->state == RUNNING)
         // 3) Any processes are in the stride queue     (ptable.sum_cpu_share != 0)
         // 4) The process running now is in MLFQ        (p->cpu_share == 0)
-        if(stride_is_seleceted == 0
+        if(stride_is_selected == 0
             && ptable.sum_cpu_share != 0 
             && p->state == RUNNABLE 
             && p->cpu_share == 0 
-            && ptable.MLFQ_tick_used == before_mlfq_used_tick)
+            && ptable.MLFQ_tick_used == before_MLFQ_used_tick)
         {
           // When these conditions are satisfied, 
           // it means that current process are in MLFQ and it does not use at least one tick.
           
           // To make the process use one tick, re-run current process:
           // 1) Do not consider choosing between the MLFQ of the stride.
-          choose_algorithm = 0;
+          choosing_stride_or_MLFQ = 0;
 
           // 2) To re-run current process, decrease pointer's value. 
           //    It will be increased in 'for' statement, so current process will be re-selected.
           p--;
         } else {
-          choose_algorithm = 1;
+          choosing_stride_or_MLFQ = 1;
         }
 
         proc = 0;
 
-        if(stride_is_seleceted) {
+        if(stride_is_selected) {
           // To remove the side effect of stride algorithm, restore the process pointer and decrase it.
           // It will be increased in 'for' statement, so the status of MLFQ is same.
           p = p_mlfq;
@@ -950,9 +945,9 @@ set_cpu_share(int required)
   // function argument is not valid
   if ( ! (MIN_CPU_SHARE <= required && required <= MAX_CPU_SHARE) ) 
     goto exception;
-
+  
+  // Check whether a process is already in the stride queue
   cpu_share_already_set = proc->cpu_share;
-
   if (cpu_share_already_set == 0) {
     is_new = 1;
   } else {
@@ -960,8 +955,7 @@ set_cpu_share(int required)
   }
 
   desired_sum_cpu_share = ptable.sum_cpu_share - cpu_share_already_set + required;
-
-  // If a required cpu share is too much.
+  // If a required cpu share is too much, an exception occurs.
   if (desired_sum_cpu_share > MAX_CPU_SHARE )
     goto exception;
 
@@ -974,12 +968,12 @@ set_cpu_share(int required)
     // Priority Queue Push
     // We do not need to check whether the stride queue is full because process cannot be generated more than 64
 
-    // new process's stride_count should be minimum stride_count in queue for preventing schuelder from being monopolized.
+    // new process's stride_count should be minimum of a stride_count in the queue for preventing schuelder from being monopolized.
     if(ptable.stride_queue[1]) {
       proc->stride_count = ptable.stride_queue[1]->stride_count;
     }
 
-    // Heapify
+    // Heapify. Inserted process should be root of the queue because its stride_count is minium among processes in the stride queue.
     idx = ++ptable.stride_queue_size;
     while(idx != 1) {
       ptable.stride_queue[idx] = ptable.stride_queue[idx/2];
@@ -990,21 +984,9 @@ set_cpu_share(int required)
     // if a process is already in the stride queue,
     // do nothing.
   }
-
-
-#ifdef MJ_DEBUGGING
-  cprintf("set_cpu_share(%d): cpu_share has been set\n", required);
-  cprintf("set_cpu_share(%d): proc->cpu_share: %d, proc->stride: %d, ptable->sum_cpu_share: %d\n"
-      , required, required, proc->stride, desired_sum_cpu_share);
-#endif
-
   return 0;
 
 exception:
-#ifdef MJ_DEBUGGING
-  cprintf("set_cpu_share(%d): exception has occurred\n", required);
-#endif
-
   return -1;
 }
 
