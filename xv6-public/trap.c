@@ -132,7 +132,7 @@ trap(struct trapframe *tf)
 
 
   // Design Document 1-1-2-5. Priority boost
-  if (get_MLFQ_tick_used() >= 100) {
+  if(get_MLFQ_tick_used() >= 100){
 #ifdef MJ_DEBUGGING
     cprintf("\n\n*** Priority Boost ***\n\n");
 #endif
@@ -140,14 +140,14 @@ trap(struct trapframe *tf)
   }
 
 
-  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER) {
+  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER){
     // Design Document 1-1-2-2.
     proc->tick_used++;
     proc->time_quantum_used++;
 
-    if(proc->cpu_share == 0) {
+    if(proc->cpu_share == 0){
       increase_MLFQ_tick_used();
-    } else {
+    }else{
       increase_stride_tick_used();
     }
 
@@ -163,7 +163,7 @@ trap(struct trapframe *tf)
 #endif
 
     // yield if it uses whole time quantum
-    if(proc->time_quantum_used >= get_time_quantum()) {
+    if(proc->time_quantum_used >= get_time_quantum()){
       
 #ifdef MJ_DEBUGGING
       cprintf("**********************************\n");
@@ -174,7 +174,7 @@ trap(struct trapframe *tf)
       
 
       // Design Document 1-1-2-5. Moving a process to the lower level
-      if (proc->level_of_MLFQ < NMLFQ - 1) {
+      if(proc->level_of_MLFQ < NMLFQ - 1){
         proc->level_of_MLFQ++;
       }
 

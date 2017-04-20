@@ -1,4 +1,4 @@
-cscope 15 $HOME/xv6/xv6-public -q 0000001982 0000217187
+cscope 15 $HOME/xv6/xv6-public -q 0000001979 0000216801
 	@asm.h
 
 5 
@@ -18080,6 +18080,10 @@ MAXOPBLOCKS
 
 	)
 
+16 
+	#STRIDE_DEBUGGING
+
+
 17 
 	#NMLFQ
  3
@@ -19510,9 +19514,15 @@ chª
 ´oc
  &&…roc->
 ýu_sh¬e
- != 0) {
+ != 0){
 
-52  
+48  
+±abË
+.
+¡ride_time_quªtum
+;
+
+50  
 ±abË
 .
 MLFQ_time_quªtum
@@ -19522,25 +19532,25 @@ MLFQ_time_quªtum
 Ëv–_of_MLFQ
 ];
 
-54 
+52 
 	}
 }
 
-57 
+56 
 	$g‘_MLFQ_tick_u£d
 ()
 
-59  
+58  
 ±abË
 .
 MLFQ_tick_u£d
 ;
 
-60 
+59 
 	}
 }
 
-62 
+62 
 	$šü—£_MLFQ_tick_u£d
 ()
 
@@ -19566,21 +19576,21 @@ MLFQ_tick_u£d
 	}
 }
 
-70 
+71 
 	$šü—£_¡ride_tick_u£d
 ()
 
-72 
+73 
 ±abË
 .
 ¡ride_tick_u£d
 ++;
 
-73 #ifdeà
+74 #ifdeà
 STRIRDE_DEBUGGING
 
 
-74 
+75 
 	`ýrštf
 ("\r¡ride_tick_u£d: %d", 
 ±abË
@@ -19588,23 +19598,23 @@ STRIRDE_DEBUGGING
 ¡ride_tick_u£d
 );
 
-76 
+77 
 	}
 }
 
-80 
+81 
 	$pš™
 ()
 
-83 
+84 
 queue_Ëv–
 ;
 
-84 
+85 
 deçuÉ_ticks
  = 5;
 
-85 
+86 
 	`š™lock
 (&
 ±abË
@@ -19612,19 +19622,13 @@ deçuÉ_ticks
 lock
 , "ptable");
 
-88 
-±abË
-.
-¡ride_time_quªtum
- = 0;
-
-89 
+91 
 queue_Ëv–
  = 0; queue_Ëv– < 
 NMLFQ
-; ++queue_level) {
+; ++queue_level){
 
-90 
+92 
 ±abË
 .
 MLFQ_time_quªtum
@@ -19634,39 +19638,45 @@ queue_Ëv–
 deçuÉ_ticks
 ;
 
-91 
-±abË
-.
-¡ride_time_quªtum
- +ð
-deçuÉ_ticks
-;
-
-92 
+93 
 deçuÉ_ticks
  *= 2;
 
-96 
+95 
 ±abË
 .
-¡ride_time_quªtum
- /ð
-NMLFQ
-;
-
-100 
-±abË
-.
-sum_ýu_sh¬e
+MLFQ_tick_u£d
  = 0;
 
-101 
+97 
+±abË
+.
+queue_Ëv–_©_mo¡
+ = 
+NMLFQ
+ - 1;
+
+98 
+±abË
+.
+mš_of_run_´oc_Ëv–
+ = 
+NMLFQ
+ - 1;
+
+100 
 	`mem£t
 (
 ±abË
 .
 ¡ride_queue
 , 0, (ptable.stride_queue));
+
+101 
+±abË
+.
+sum_ýu_sh¬e
+ = 0;
 
 102 
 ±abË
@@ -19677,54 +19687,38 @@ sum_ýu_sh¬e
 103 
 ±abË
 .
-MLFQ_tick_u£d
- = 0;
+¡ride_time_quªtum
+ = 1;
 
 104 
-±abË
-.
-queue_Ëv–_©_mo¡
- = 
-NMLFQ
- - 1;
-
-105 
-±abË
-.
-mš_of_run_´oc_Ëv–
- = 
-NMLFQ
- - 1;
-
-106 
 ±abË
 .
 ¡ride_tick_u£d
  = 0;
 
-108 
+106 
 	}
 }
 
-115 
+113 
 ´oc
 *
 
-116 
+114 
 	$®loýroc
 ()
 
-118 
+116 
 ´oc
  *
 p
 ;
 
-119 *
+117 *
 ¥
 ;
 
-121 
+119 
 	`acquœe
 (&
 ±abË
@@ -19732,7 +19726,7 @@ p
 lock
 );
 
-123 
+121 
 p
  = 
 ±abË
@@ -19742,7 +19736,7 @@ p
 NPROC
 ];…++)
 
-124 if(
+122 if(
 p
 ->
 ¡©e
@@ -19750,11 +19744,11 @@ p
 UNUSED
 )
 
-125 
+123 
 found
 ;
 
-127 
+125 
 	`»Ëa£
 (&
 ±abË
@@ -19762,11 +19756,11 @@ found
 lock
 );
 
-130 
+128 
 found
 :
 
-131 
+129 
 p
 ->
 ¡©e
@@ -19774,7 +19768,7 @@ p
 EMBRYO
 ;
 
-132 
+130 
 p
 ->
 pid
@@ -19782,7 +19776,7 @@ pid
 Ãxid
 ++;
 
-134 
+132 
 	`»Ëa£
 (&
 ±abË
@@ -19790,7 +19784,7 @@ pid
 lock
 );
 
-137 if((
+135 if((
 p
 ->
 k¡ack
@@ -19798,7 +19792,7 @@ k¡ack
 	`k®loc
 ()) == 0){
 
-138 
+136 
 p
 ->
 ¡©e
@@ -19806,7 +19800,7 @@ p
 UNUSED
 ;
 
-141 
+139 
 ¥
  = 
 p
@@ -19816,7 +19810,7 @@ k¡ack
 KSTACKSIZE
 ;
 
-144 
+142 
 ¥
  -ð *
 p
@@ -19824,7 +19818,7 @@ p
 tf
 ;
 
-145 
+143 
 p
 ->
 tf
@@ -19834,11 +19828,11 @@ tf
 ¥
 ;
 
-149 
+147 
 ¥
  -= 4;
 
-150 *(
+148 *(
 ušt
 *)
 ¥
@@ -19846,7 +19840,7 @@ ušt
 Œ­»t
 ;
 
-152 
+150 
 ¥
  -ð *
 p
@@ -19854,7 +19848,7 @@ p
 cÚ‹xt
 ;
 
-153 
+151 
 p
 ->
 cÚ‹xt
@@ -19862,7 +19856,7 @@ cÚ‹xt
 ¥
 ;
 
-154 
+152 
 	`mem£t
 (
 p
@@ -19870,7 +19864,7 @@ p
 cÚ‹xt
 , 0,  *p->context);
 
-155 
+153 
 p
 ->
 cÚ‹xt
@@ -19882,43 +19876,43 @@ ušt
 fÜk»t
 ;
 
-157  
+155  
 p
 ;
 
-158 
+156 
 	}
 }
 
-163 
+161 
 	$u£rš™
 ()
 
-165 
+163 
 ´oc
  *
 p
 ;
 
-166 
+164 
 _bš¬y_š™code_¡¬t
 [], 
 _bš¬y_š™code_size
 [];
 
-168 
+166 
 p
  = 
 	`®loýroc
 ();
 
-170 
+168 
 š™´oc
  = 
 p
 ;
 
-171 if((
+169 if((
 p
 ->
 pgdœ
@@ -19926,11 +19920,11 @@ pgdœ
 	`£tupkvm
 ()) == 0)
 
-172 
+170 
 	`·nic
 ("userinit: out of memory?");
 
-173 
+171 
 	`š™uvm
 (
 p
@@ -19942,7 +19936,7 @@ _bš¬y_š™code_¡¬t
 _bš¬y_š™code_size
 );
 
-174 
+172 
 p
 ->
 sz
@@ -19950,7 +19944,7 @@ sz
 PGSIZE
 ;
 
-175 
+173 
 	`mem£t
 (
 p
@@ -19958,7 +19952,7 @@ p
 tf
 , 0, (*p->tf));
 
-176 
+174 
 p
 ->
 tf
@@ -19970,7 +19964,7 @@ SEG_UCODE
 DPL_USER
 ;
 
-177 
+175 
 p
 ->
 tf
@@ -19982,7 +19976,7 @@ SEG_UDATA
 DPL_USER
 ;
 
-178 
+176 
 p
 ->
 tf
@@ -19992,7 +19986,7 @@ es
 ds
 ;
 
-179 
+177 
 p
 ->
 tf
@@ -20002,7 +19996,7 @@ ss
 ds
 ;
 
-180 
+178 
 p
 ->
 tf
@@ -20012,7 +20006,7 @@ eæags
 FL_IF
 ;
 
-181 
+179 
 p
 ->
 tf
@@ -20022,7 +20016,7 @@ e¥
 PGSIZE
 ;
 
-182 
+180 
 p
 ->
 tf
@@ -20030,7 +20024,7 @@ tf
 e
  = 0;
 
-184 
+182 
 	`§ã¡rýy
 (
 p
@@ -20038,7 +20032,7 @@ p
 Çme
 , "initcode", (p->name));
 
-185 
+183 
 p
 ->
 cwd
@@ -20046,7 +20040,7 @@ cwd
 	`Çmei
 ("/");
 
-191 
+189 
 	`acquœe
 (&
 ±abË
@@ -20054,7 +20048,7 @@ cwd
 lock
 );
 
-193 
+191 
 p
 ->
 ¡©e
@@ -20062,7 +20056,7 @@ p
 RUNNABLE
 ;
 
-195 
+193 
 	`»Ëa£
 (&
 ±abË
@@ -20070,33 +20064,33 @@ RUNNABLE
 lock
 );
 
-196 
+194 
 	}
 }
 
-201 
+199 
 	$grow´oc
 (
 n
 )
 
-203 
+201 
 ušt
  
 sz
 ;
 
-205 
+203 
 sz
  = 
 ´oc
 ->sz;
 
-206 if(
+204 if(
 n
  > 0){
 
-207 if((
+205 if((
 sz
  = 
 	`®locuvm
@@ -20108,11 +20102,11 @@ pgdœ
 n
 )) == 0)
 
-209 } if(
+207 }if(
 n
  < 0){
 
-210 if((
+208 if((
 sz
  = 
 	`d—Îocuvm
@@ -20124,45 +20118,45 @@ pgdœ
 n
 )) == 0)
 
-213 
+211 
 ´oc
 ->
 sz
  = sz;
 
-214 
+212 
 	`sw™chuvm
 (
 ´oc
 );
 
-216 
+214 
 	}
 }
 
-222 
+220 
 	$fÜk
 ()
 
-224 
+222 
 i
 , 
 pid
 ;
 
-225 
+223 
 ´oc
  *
 Å
 ;
 
-228 if((
+226 if((
 Å
  = 
 	`®loýroc
 ()) == 0){
 
-233 if((
+231 if((
 Å
 ->
 pgdœ
@@ -20174,7 +20168,7 @@ pgdœ
 sz
 )) == 0){
 
-234 
+232 
 	`kä“
 (
 Å
@@ -20182,13 +20176,13 @@ sz
 k¡ack
 );
 
-235 
+233 
 Å
 ->
 k¡ack
  = 0;
 
-236 
+234 
 Å
 ->
 ¡©e
@@ -20196,7 +20190,7 @@ k¡ack
 UNUSED
 ;
 
-239 
+237 
 Å
 ->
 sz
@@ -20204,7 +20198,7 @@ sz
 ´oc
 ->sz;
 
-240 
+238 
 Å
 ->
 ·»Á
@@ -20212,7 +20206,7 @@ sz
 ´oc
 ;
 
-241 *
+239 *
 Å
 ->
 tf
@@ -20220,7 +20214,7 @@ tf
 ´oc
 ->tf;
 
-244 
+242 
 Å
 ->
 tf
@@ -20228,13 +20222,13 @@ tf
 —x
  = 0;
 
-246 
+244 
 i
  = 0; i < 
 NOFILE
 ; i++)
 
-247 if(
+245 if(
 ´oc
 ->
 ofže
@@ -20242,7 +20236,7 @@ ofže
 i
 ])
 
-248 
+246 
 Å
 ->
 ofže
@@ -20254,7 +20248,7 @@ i
 ´oc
 ->ofile[i]);
 
-249 
+247 
 Å
 ->
 cwd
@@ -20264,7 +20258,7 @@ cwd
 ´oc
 ->cwd);
 
-251 
+249 
 	`§ã¡rýy
 (
 Å
@@ -20274,13 +20268,13 @@ cwd
 ´oc
 ->name, (proc->name));
 
-253 
+251 
 pid
  = 
 Å
 ->pid;
 
-255 
+253 
 	`acquœe
 (&
 ±abË
@@ -20288,43 +20282,43 @@ pid
 lock
 );
 
-259 
+257 
 Å
 ->
 tick_u£d
  = 0;
 
-260 
+258 
 Å
 ->
 Ëv–_of_MLFQ
  = 0;
 
-261 
+259 
 Å
 ->
 time_quªtum_u£d
  = 0;
 
-265 
+263 
 Å
 ->
 ýu_sh¬e
  = 0;
 
-266 
+264 
 Å
 ->
 ¡ride
  = 0;
 
-267 
+265 
 Å
 ->
 ¡ride_couÁ
  = 0;
 
-269 
+267 
 Å
 ->
 ¡©e
@@ -20332,7 +20326,7 @@ time_quªtum_u£d
 RUNNABLE
 ;
 
-275 
+273 
 	`»Ëa£
 (&
 ±abË
@@ -20340,49 +20334,49 @@ RUNNABLE
 lock
 );
 
-277  
+275  
 pid
 ;
 
-278 
+276 
 	}
 }
 
-284 
+282 
 	$ex™
 ()
 
-286 
+284 
 ´oc
  *
 p
 ;
 
-287 
+285 
 fd
 ;
 
-288 
+286 
 ¡ride_idx
 ;
 
-290 if(
+288 if(
 ´oc
  =ð
 š™´oc
 )
 
-291 
+289 
 	`·nic
 ("initƒxiting");
 
-294 
+292 
 fd
  = 0; fd < 
 NOFILE
 ; fd++){
 
-295 if(
+293 if(
 ´oc
 ->
 ofže
@@ -20390,7 +20384,7 @@ ofže
 fd
 ]){
 
-296 
+294 
 	`fžeþo£
 (
 ´oc
@@ -20400,7 +20394,7 @@ ofže
 fd
 ]);
 
-297 
+295 
 ´oc
 ->
 ofže
@@ -20408,11 +20402,11 @@ ofže
 fd
 ] = 0;
 
-301 
+299 
 	`begš_Ý
 ();
 
-302 
+300 
 	`ut
 (
 ´oc
@@ -20420,17 +20414,17 @@ fd
 cwd
 );
 
-303 
+301 
 	`’d_Ý
 ();
 
-304 
+302 
 ´oc
 ->
 cwd
  = 0;
 
-306 
+304 
 	`acquœe
 (&
 ±abË
@@ -20438,25 +20432,25 @@ cwd
 lock
 );
 
-309 ià(
+307 if(
 ´oc
 ->
 ýu_sh¬e
- != 0) {
+ != 0){
 
-310 
+308 
 h—pify_up
 ;
 
-312 #ifdeà
+310 #ifdeà
 MJ_DEBUGGING
 
 
-313 
+311 
 	`ýrštf
 ("stirde_queue…rocessƒxit()\n");
 
-317 
+315 
 ±abË
 .
 sum_ýu_sh¬e
@@ -20466,13 +20460,13 @@ sum_ýu_sh¬e
 ýu_sh¬e
 ;
 
-320 
+318 
 ¡ride_idx
  = 1; sŒide_idx < 
 NSTRIDE_QUEUE
-; ++stride_idx) {
+; ++stride_idx){
 
-321 ià(
+319 if(
 ±abË
 .
 ¡ride_queue
@@ -20480,19 +20474,19 @@ NSTRIDE_QUEUE
 ¡ride_idx
 ] =ð
 ´oc
-) {
+){
 
-326 ià(
+324 if(
 ¡ride_idx
  =ð
 NSTRIDE_QUEUE
-) {
+){
 
-327 
+325 
 	`·nic
 ("exit():‡…rocess is‚ot inhe stride scheduler");
 
-331 
+329 
 ±abË
 .
 ¡ride_queue
@@ -20502,7 +20496,7 @@ NSTRIDE_QUEUE
 ¡ride_queue_size
 ];
 
-332 
+330 
 ±abË
 .
 ¡ride_queue
@@ -20510,15 +20504,15 @@ NSTRIDE_QUEUE
 ¡ride_queue_size
 --] = 0;
 
-335 ià(
+333 if(
 ¡ride_idx
- == 1) {
+ == 1){
 
-337 
+335 
 h—pify_up
  = 0;
 
-340 
+338 
 h—pify_up
  = 
 ±abË
@@ -20530,7 +20524,7 @@ h—pify_up
 ¡ride_couÁ
 
 
-341 < 
+339 < 
 ±abË
 .
 ¡ride_queue
@@ -20540,29 +20534,29 @@ h—pify_up
 ¡ride_couÁ
 
 
-345 ià(
+343 if(
 ±abË
 .
 ¡ride_queue_size
- == 0 ||…table.stride_queue_size == 1) {
+ == 0 ||…table.stride_queue_size == 1){
 
-349 ià(
+347 if(
 h—pify_up
-) {
+){
 
-350 
+348 
 	`¡ride_queue_h—pify_down
 (
 ¡ride_idx
 );
 
-352 
+350 
 	`¡ride_queue_h—pify_up
 (
 ¡ride_idx
 );
 
-358 
+356 
 	`wakeup1
 (
 ´oc
@@ -20570,7 +20564,7 @@ h—pify_up
 ·»Á
 );
 
-361 
+359 
 p
  = 
 ±abË
@@ -20580,7 +20574,7 @@ p
 NPROC
 ];…++){
 
-362 if(
+360 if(
 p
 ->
 ·»Á
@@ -20588,7 +20582,7 @@ p
 ´oc
 ){
 
-363 
+361 
 p
 ->
 ·»Á
@@ -20596,7 +20590,7 @@ p
 š™´oc
 ;
 
-364 if(
+362 if(
 p
 ->
 ¡©e
@@ -20604,13 +20598,13 @@ p
 ZOMBIE
 )
 
-365 
+363 
 	`wakeup1
 (
 š™´oc
 );
 
-370 
+368 
 ´oc
 ->
 ¡©e
@@ -20618,35 +20612,35 @@ ZOMBIE
 ZOMBIE
 ;
 
-371 
+369 
 	`sched
 ();
 
-372 
+370 
 	`·nic
 ("zombieƒxit");
 
-373 
+371 
 	}
 }
 
-378 
+376 
 	$wa™
 ()
 
-380 
+378 
 ´oc
  *
 p
 ;
 
-381 
+379 
 havekids
 , 
 pid
 ;
 
-383 
+381 
 	`acquœe
 (&
 ±abË
@@ -20654,11 +20648,11 @@ pid
 lock
 );
 
-386 
+384 
 havekids
  = 0;
 
-387 
+385 
 p
  = 
 ±abË
@@ -20668,7 +20662,7 @@ p
 NPROC
 ];…++){
 
-388 if(
+386 if(
 p
 ->
 ·»Á
@@ -20676,11 +20670,11 @@ p
 ´oc
 )
 
-390 
+388 
 havekids
  = 1;
 
-391 if(
+389 if(
 p
 ->
 ¡©e
@@ -20688,13 +20682,13 @@ p
 ZOMBIE
 ){
 
-393 
+391 
 pid
  = 
 p
 ->pid;
 
-394 
+392 
 	`kä“
 (
 p
@@ -20702,13 +20696,13 @@ p
 k¡ack
 );
 
-395 
+393 
 p
 ->
 k¡ack
  = 0;
 
-396 
+394 
 	`ä“vm
 (
 p
@@ -20716,67 +20710,67 @@ p
 pgdœ
 );
 
-397 
+395 
 p
 ->
 pid
  = 0;
 
-398 
+396 
 p
 ->
 ·»Á
  = 0;
 
-399 
+397 
 p
 ->
 Çme
 [0] = 0;
 
-400 
+398 
 p
 ->
 kžËd
  = 0;
 
-403 
+401 
 p
 ->
 tick_u£d
  = 0;
 
-404 
+402 
 p
 ->
 time_quªtum_u£d
 = 0;
 
-405 
+403 
 p
 ->
 Ëv–_of_MLFQ
  = 0;
 
-406 
+404 
 p
 ->
 ýu_sh¬e
  = 0;
 
-407 
+405 
 p
 ->
 ¡ride
  = 0;
 
-408 
+406 
 p
 ->
 ¡ride_couÁ
 = 0;
 
-410 
+408 
 p
 ->
 ¡©e
@@ -20784,7 +20778,7 @@ p
 UNUSED
 ;
 
-411 
+409 
 	`»Ëa£
 (&
 ±abË
@@ -20792,11 +20786,11 @@ UNUSED
 lock
 );
 
-412  
+410  
 pid
 ;
 
-417 if(!
+415 if(!
 havekids
  || 
 ´oc
@@ -20804,7 +20798,7 @@ havekids
 kžËd
 ){
 
-418 
+416 
 	`»Ëa£
 (&
 ±abË
@@ -20812,7 +20806,7 @@ kžËd
 lock
 );
 
-423 
+421 
 	`¦“p
 (
 ´oc
@@ -20822,15 +20816,15 @@ lock
 lock
 );
 
-425 
+423 
 	}
 }
 
-426 
+425 
 	$¡ride_queue_h—pify_up
 (
 ¡ride_idx
-) {
+)
 
 427 
 ´oc
@@ -20846,15 +20840,15 @@ lock
 
 428 
 ¡ride_idx
- != 1) {
+ != 1){
 
-430 ià(
+430 if(
 ±abË
 .
 ¡ride_queue
 [
 ¡ride_idx
-] <…table.stride_queue[stride_idx / 2]) {
+] <…table.stride_queue[stride_idx / 2]){
 
 431 
 ±abË
@@ -20882,13 +20876,13 @@ lock
 	}
 }
 
-444 
+445 
 	$¡ride_queue_h—pify_down
 (
 ¡ride_idx
-) {
+)
 
-445 
+447 
 ´oc
 * 
 p
@@ -20900,15 +20894,15 @@ p
 ¡ride_idx
 ];
 
-447 
+449 
 ¡ride_idx
  <ð
 ±abË
 .
 ¡ride_queue_size
-) {
+){
 
-448 ià(
+450 if(
 ±abË
 .
 ¡ride_queue
@@ -20916,15 +20910,15 @@ p
 ¡ride_idx
  * 2]
 
-449 && 
+451 && 
 ±abË
 .
 ¡ride_queue
 [
 ¡ride_idx
- * 2 + 1]) {
+ * 2 + 1]){
 
-453 
+455 
 ¡ride_idx
  = 
 ±abË
@@ -20934,7 +20928,7 @@ p
 ¡ride_couÁ
 
 
-454 < 
+456 < 
 ±abË
 .
 ¡ride_queue
@@ -20944,11 +20938,11 @@ p
 ¡ride_couÁ
 
 
-455 ? 
+457 ? 
 ¡ride_idx
  * 2 : stride_idx * 2 + 1;
 
-458 ià(
+460 if(
 ±abË
 .
 ¡ride_queue
@@ -20958,9 +20952,9 @@ p
 ¡ride_couÁ
  < 
 p
-->stride_count) {
+->stride_count){
 
-459 
+461 
 ±abË
 .
 ¡ride_queue
@@ -20968,23 +20962,23 @@ p
 ¡ride_idx
  / 2] =…table.stride_queue[stride_idx];
 
-461 
+463 
 ¡ride_idx
  /= 2;
 
-466 } ià(
+468 }if(
 ±abË
 .
 ¡ride_queue
 [
 ¡ride_idx
- * 2]) {
+ * 2]){
 
-468 
+470 
 ¡ride_idx
  *= 2;
 
-470 if(
+472 if(
 ±abË
 .
 ¡ride_queue
@@ -20994,9 +20988,9 @@ p
 ¡ride_couÁ
  < 
 p
-->stride_count) {
+->stride_count){
 
-471 
+473 
 ±abË
 .
 ¡ride_queue
@@ -21004,11 +20998,11 @@ p
 ¡ride_idx
  / 2] =…table.stride_queue[stride_idx];
 
-473 
+475 
 ¡ride_idx
  /= 2;
 
-484 
+486 
 ±abË
 .
 ¡ride_queue
@@ -21018,33 +21012,33 @@ p
 p
 ;
 
-486 
+488 
 	}
 }
 
-488 
+491 
 	$fšd_idx_of_¡ride_to_run
-() {
+()
 
-489 
+493 
 ´oc
 * 
 ´oc_to_be_run
 ;
 
-492 
+496 
 ¡ride_fšd_idx
  = 1;
 
-493 
+497 
 ¡ride_fšd_idx
  <ð
 ±abË
 .
 ¡ride_queue_size
-) {
+){
 
-494 ià(
+498 if(
 ±abË
 .
 ¡ride_queue
@@ -21054,9 +21048,9 @@ p
 ¡©e
  =ð
 RUNNABLE
-) {
+){
 
-497 
+501 
 ´oc_to_be_run
  = 
 ±abË
@@ -21066,7 +21060,7 @@ RUNNABLE
 ¡ride_fšd_idx
 ];
 
-498 
+502 
 ´oc_to_be_run
 ->
 ¡ride_couÁ
@@ -21074,25 +21068,25 @@ RUNNABLE
 ¡ride
 ;
 
-499 
+503 
 	`¡ride_queue_h—pify_down
 (
 ¡ride_fšd_idx
 );
 
-506 
+510 
 Ëá_chžd
  = 
 ¡ride_fšd_idx
  * 2;
 
-507 
+511 
 right_chžd
  = 
 ¡ride_fšd_idx
  * 2 + 1;
 
-508 ’um {
+512 ’um {
 NO_CHILD
 , 
 LEFT_ONLY
@@ -21102,47 +21096,47 @@ BOTH
 chžd_¡©us
 ;
 
-510 ià(
+514 if(
 right_chžd
  <ð
 ±abË
 .
 ¡ride_queue_size
-) {
+){
 
-511 
+515 
 chžd_¡©us
  = 
 BOTH
 ;
 
-512 } ià(
+516 }if(
 Ëá_chžd
  > 
 ±abË
 .
 ¡ride_queue_size
-) {
+){
 
-513 
+517 
 chžd_¡©us
  = 
 NO_CHILD
 ;
 
-515 
+519 
 chžd_¡©us
  = 
 LEFT_ONLY
 ;
 
-519 ià(
+523 if(
 chžd_¡©us
  =ð
 BOTH
-) {
+){
 
-521 ià(
+525 if(
 ±abË
 .
 ¡ride_queue
@@ -21152,7 +21146,7 @@ BOTH
 ¡ride_couÁ
 
 
-522 < 
+526 < 
 ±abË
 .
 ¡ride_queue
@@ -21160,33 +21154,33 @@ BOTH
 right_chžd
 ]->
 ¡ride_couÁ
-) {
+){
 
-524 
+528 
 ¡ride_fšd_idx
  = 
 Ëá_chžd
 ;
 
-527 
+531 
 ¡ride_fšd_idx
  = 
 right_chžd
 ;
 
-530 } ià(
+534 }if(
 chžd_¡©us
  =ð
 LEFT_ONLY
-) {
+){
 
-532 
+536 
 ¡ride_fšd_idx
  = 
 Ëá_chžd
 ;
 
-537 
+541 
 ¡ride_fšd_idx
  = 
 ±abË
@@ -21194,71 +21188,71 @@ LEFT_ONLY
 ¡ride_queue_size
  + 1;
 
-542  
+546  
 ¡ride_fšd_idx
 ;
 
-543 
+547 
 	}
 }
 
-545 
+550 
 	$£Ëù_¡ride_Ü_MLFQ
-() {
+()
 
-546 
+552 
 ¿nd¡©e
  = 1;
 
-547 
+553 
 queue_£ËùÜ
 ;
 
-548 
+554 
 ¿nd¡©e
  =„andstate * 1664525 + 1013904223;
 
-549 
+555 
 queue_£ËùÜ
  = 
 ¿nd¡©e
  % 100;
 
-551 ià(
+557 if(
 queue_£ËùÜ
  < 
 ±abË
 .
 sum_ýu_sh¬e
-) {
+){
 
-558 
+564 
 	}
 }
 
-569 
+575 
 	$scheduËr
 ()
 
-571 
+577 
 ´oc
  *
 p
 ;
 
-574 
-¡ride_is_£Ëû‹d
- = 0;
-
-575 
-choo£_®gÜ™hm
+580 
+choosšg_¡ride_Ü_MLFQ
 ;
 
-579 
+581 
+¡ride_is_£Ëùed
+ = 0;
+
+585 
 	`¡i
 ();
 
-582 
+588 
 	`acquœe
 (&
 ±abË
@@ -21266,11 +21260,11 @@ choo£_®gÜ™hm
 lock
 );
 
-585 
-choo£_®gÜ™hm
+591 
+choosšg_¡ride_Ü_MLFQ
  = 1;
 
-588 
+594 
 ±abË
 .
 queue_Ëv–_©_mo¡
@@ -21278,15 +21272,15 @@ queue_Ëv–_©_mo¡
 NMLFQ
  - 1;
 
-589 
+595 
 ±abË
 .
 queue_Ëv–_©_mo¡
  < 
 NMLFQ
-) {
+){
 
-592 
+598 
 ±abË
 .
 mš_of_run_´oc_Ëv–
@@ -21294,7 +21288,7 @@ mš_of_run_´oc_Ëv–
 NMLFQ
  - 1;
 
-594 
+600 
 p
  = 
 ±abË
@@ -21304,51 +21298,43 @@ p
 NPROC
 ];…++){
 
-596 
-´oc
-* 
-p_mlfq
- = 
-p
-;
-
-599 if(
+602 if(
 ±abË
 .
 sum_ýu_sh¬e
  !ð0 && 
-choo£_®gÜ™hm
-) {
+choosšg_¡ride_Ü_MLFQ
+){
 
-602 
-¡ride_is_£Ëû‹d
+605 
+¡ride_is_£Ëùed
  = 
 	`£Ëù_¡ride_Ü_MLFQ
 ();
 
-609 if(
-¡ride_is_£Ëû‹d
-) {
+612 if(
+¡ride_is_£Ëùed
+){
 
-612 
+615 
 ¡ride_idx_to_be_run
 ;
 
-614 
+617 
 ¡ride_idx_to_be_run
  = 
 	`fšd_idx_of_¡ride_to_run
 ();
 
-617 ià(
+620 if(
 ¡ride_idx_to_be_run
  <ð
 ±abË
 .
 ¡ride_queue_size
-) {
+){
 
-619 
+622 
 p
  = 
 ±abË
@@ -21358,15 +21344,15 @@ p
 ¡ride_idx_to_be_run
 ];
 
-622 
-¡ride_is_£Ëû‹d
+625 
+¡ride_is_£Ëùed
  = 0;
 
-623 
-choo£_®gÜ™hm
+626 
+choosšg_¡ride_Ü_MLFQ
  = 0;
 
-632 if(
+635 if(
 p
 ->
 ¡©e
@@ -21374,13 +21360,13 @@ p
 RUNNABLE
 
 
-633 && 
+636 && 
 p
 ->
 ýu_sh¬e
  == 0
 
-634 && 
+637 && 
 p
 ->
 Ëv–_of_MLFQ
@@ -21388,9 +21374,9 @@ p
 ±abË
 .
 queue_Ëv–_©_mo¡
-) {
+){
 
-637 
+640 
 ±abË
 .
 queue_Ëv–_©_mo¡
@@ -21400,7 +21386,7 @@ p
 Ëv–_of_MLFQ
  <…table.queue_level_at_most ?…->level_of_MLFQ :…table.queue_level_at_most;
 
-638 
+641 
 ±abË
 .
 mš_of_run_´oc_Ëv–
@@ -21408,29 +21394,37 @@ mš_of_run_´oc_Ëv–
 queue_Ëv–_©_mo¡
 ;
 
-642 
-choo£_®gÜ™hm
+645 
+choosšg_¡ride_Ü_MLFQ
  = 0;
 
-650 
-befÜe_mlfq_u£d_tick
+653 
+´oc
+* 
+p_mlfq
+ = 
+p
 ;
 
-656 #ifdeà
+656 
+befÜe_MLFQ_u£d_tick
+;
+
+662 #ifdeà
 STRIDE_DEBUGGING
 
 
-658 
+664 
 	`ýrštf
 ("ContChange. ");
 
-659 
+665 
 	`ýrštf
 ("¡ride_is_£Ëùed:%d, ", 
-¡ride_is_£Ëû‹d
+¡ride_is_£Ëùed
 );
 
-660 
+666 
 	`ýrštf
 ("´oc_Çme:%s, ", 
 p
@@ -21438,7 +21432,7 @@ p
 Çme
 );
 
-661 
+667 
 	`ýrštf
 ("´oc_id:%d, ", 
 p
@@ -21446,7 +21440,7 @@ p
 pid
 );
 
-662 
+668 
 	`ýrštf
 ("MLFQ_tick:%d, ", 
 ±abË
@@ -21458,7 +21452,7 @@ p
 Ëv–_of_MLFQ
 );
 
-663 
+669 
 	`ýrštf
 ("Ëv–:%d, ", 
 p
@@ -21466,7 +21460,7 @@ p
 Ëv–_of_MLFQ
 );
 
-664 
+670 
 	`ýrštf
 ("¡ride_tick:%d, ", 
 ±abË
@@ -21474,7 +21468,7 @@ p
 ¡ride_tick_u£d
 );
 
-665 
+671 
 	`ýrštf
 ("ýu_sh¬e:%d, ", 
 p
@@ -21482,7 +21476,7 @@ p
 ýu_sh¬e
 );
 
-666 
+672 
 	`ýrštf
 ("sum_ýu_sh¬e: %d, ", 
 ±abË
@@ -21490,7 +21484,7 @@ p
 sum_ýu_sh¬e
 );
 
-667 
+673 
 	`ýrštf
 ("¡ride:%d, ", 
 p
@@ -21498,7 +21492,7 @@ p
 ¡ride
 );
 
-668 
+674 
 	`ýrštf
 ("¡ride_couÁ:%d\n", 
 p
@@ -21506,19 +21500,19 @@ p
 ¡ride_couÁ
 );
 
-671 
+677 
 ´oc
  = 
 p
 ;
 
-672 
+678 
 	`sw™chuvm
 (
 p
 );
 
-673 
+679 
 p
 ->
 ¡©e
@@ -21526,15 +21520,15 @@ p
 RUNNING
 ;
 
-677 
-befÜe_mlfq_u£d_tick
+683 
+befÜe_MLFQ_u£d_tick
  = 
 ±abË
 .
 MLFQ_tick_u£d
 ;
 
-679 
+685 
 	`swtch
 (&
 ýu
@@ -21546,21 +21540,21 @@ p
 cÚ‹xt
 );
 
-680 
+686 
 	`sw™chkvm
 ();
 
-689 if(
-¡ride_is_£Ëû‹d
+695 if(
+¡ride_is_£Ëùed
  == 0
 
-690 && 
+696 && 
 ±abË
 .
 sum_ýu_sh¬e
  != 0
 
-691 && 
+697 && 
 p
 ->
 ¡©e
@@ -21568,51 +21562,51 @@ p
 RUNNABLE
 
 
-692 && 
+698 && 
 p
 ->
 ýu_sh¬e
  == 0
 
-693 && 
+699 && 
 ±abË
 .
 MLFQ_tick_u£d
  =ð
-befÜe_mlfq_u£d_tick
+befÜe_MLFQ_u£d_tick
 )
 
-700 
-choo£_®gÜ™hm
+706 
+choosšg_¡ride_Ü_MLFQ
  = 0;
 
-704 
+710 
 p
 --;
 
-706 
-choo£_®gÜ™hm
+712 
+choosšg_¡ride_Ü_MLFQ
  = 1;
 
-709 
+715 
 ´oc
  = 0;
 
-711 if(
-¡ride_is_£Ëû‹d
-) {
+717 if(
+¡ride_is_£Ëùed
+){
 
-714 
+720 
 p
  = 
 p_mlfq
 ;
 
-715 
+721 
 p
 --;
 
-719 if(
+725 if(
 ±abË
 .
 mš_of_run_´oc_Ëv–
@@ -21620,13 +21614,13 @@ mš_of_run_´oc_Ëv–
 NMLFQ
  - 1) {
 
-722 
+728 
 ±abË
 .
 queue_Ëv–_©_mo¡
 ++;
 
-727 
+733 
 	`»Ëa£
 (&
 ±abË
@@ -21634,19 +21628,19 @@ queue_Ëv–_©_mo¡
 lock
 );
 
-729 
+735 
 	}
 }
 
-739 
+745 
 	$sched
 ()
 
-741 
+747 
 š‹Ç
 ;
 
-743 if(!
+749 if(!
 	`hÞdšg
 (&
 ±abË
@@ -21654,21 +21648,21 @@ lock
 lock
 ))
 
-744 
+750 
 	`·nic
 ("sched…table.lock");
 
-745 if(
+751 if(
 ýu
 ->
 nþi
  != 1)
 
-746 
+752 
 	`·nic
 ("sched†ocks");
 
-747 if(
+753 if(
 ´oc
 ->
 ¡©e
@@ -21676,27 +21670,27 @@ nþi
 RUNNING
 )
 
-748 
+754 
 	`·nic
 ("sched„unning");
 
-749 if(
+755 if(
 	`»adeæags
 ()&
 FL_IF
 )
 
-750 
+756 
 	`·nic
 ("sched interruptible");
 
-752 
+758 
 š‹Ç
  = 
 ýu
 ->intena;
 
-753 
+759 
 	`swtch
 (&
 ´oc
@@ -21708,31 +21702,31 @@ cÚ‹xt
 scheduËr
 );
 
-757 if(
+763 if(
 ´oc
-) {
+){
 
-758 
+764 
 ´oc
 ->
 time_quªtum_u£d
  = 0;
 
-761 
+767 
 ýu
 ->
 š‹Ç
  = intena;
 
-762 
+768 
 	}
 }
 
-766 
+772 
 	$y›ld
 ()
 
-768 
+774 
 	`acquœe
 (&
 ±abË
@@ -21740,7 +21734,7 @@ time_quªtum_u£d
 lock
 );
 
-769 
+775 
 ´oc
 ->
 ¡©e
@@ -21748,43 +21742,43 @@ lock
 RUNNABLE
 ;
 
-770 
+776 
 	`sched
 ();
 
-771 
+777 
 	`»Ëa£
 (&
 ±abË
 .
 lock
 );
-
-772 
-	}
-}
-
-775 
-	$sys_y›ld
-() {
-
-776 
-	`y›ld
-();
 
 778 
 	}
 }
 
-783 
+781 
+	$sys_y›ld
+(){
+
+782 
+	`y›ld
+();
+
+784 
+	}
+}
+
+789 
 	$fÜk»t
 ()
 
-785 
+791 
 fœ¡
  = 1;
 
-787 
+793 
 	`»Ëa£
 (&
 ±abË
@@ -21792,31 +21786,31 @@ fœ¡
 lock
 );
 
-789 ià(
+795 if(
 fœ¡
-) {
+){
 
-793 
+799 
 fœ¡
  = 0;
 
-794 
+800 
 	`iš™
 (
 ROOTDEV
 );
 
-795 
+801 
 	`š™log
 (
 ROOTDEV
 );
 
-799 
+805 
 	}
 }
 
-804 
+810 
 	$¦“p
 (*
 chª
@@ -21826,23 +21820,23 @@ chª
 lk
 )
 
-806 if(
+812 if(
 ´oc
  == 0)
 
-807 
+813 
 	`·nic
 ("sleep");
 
-809 if(
+815 if(
 lk
  == 0)
 
-810 
+816 
 	`·nic
 ("sleep without†k");
 
-818 if(
+824 if(
 lk
  !ð&
 ±abË
@@ -21850,7 +21844,7 @@ lk
 lock
 ){
 
-819 
+825 
 	`acquœe
 (&
 ±abË
@@ -21858,19 +21852,19 @@ lock
 lock
 );
 
-820 
+826 
 	`»Ëa£
 (
 lk
 );
 
-824 
+830 
 ´oc
 ->
 chª
  = chan;
 
-825 
+831 
 ´oc
 ->
 ¡©e
@@ -21878,17 +21872,17 @@ chª
 SLEEPING
 ;
 
-826 
+832 
 	`sched
 ();
 
-829 
+835 
 ´oc
 ->
 chª
  = 0;
 
-832 if(
+838 if(
 lk
  !ð&
 ±abË
@@ -21896,7 +21890,7 @@ lk
 lock
 ){
 
-833 
+839 
 	`»Ëa£
 (&
 ±abË
@@ -21904,29 +21898,29 @@ lock
 lock
 );
 
-834 
+840 
 	`acquœe
 (
 lk
 );
 
-836 
+842 
 	}
 }
 
-842 
+848 
 	$wakeup1
 (*
 chª
 )
 
-844 
+850 
 ´oc
  *
 p
 ;
 
-846 
+852 
 p
  = 
 ±abË
@@ -21936,7 +21930,7 @@ p
 NPROC
 ];…++)
 
-847 if(
+853 if(
 p
 ->
 ¡©e
@@ -21946,7 +21940,7 @@ SLEEPING
 chª
  == chan)
 
-848 
+854 
 p
 ->
 ¡©e
@@ -21954,17 +21948,17 @@ p
 RUNNABLE
 ;
 
-849 
+855 
 	}
 }
 
-853 
+859 
 	$wakeup
 (*
 chª
 )
 
-855 
+861 
 	`acquœe
 (&
 ±abË
@@ -21972,13 +21966,13 @@ chª
 lock
 );
 
-856 
+862 
 	`wakeup1
 (
 chª
 );
 
-857 
+863 
 	`»Ëa£
 (&
 ±abË
@@ -21986,23 +21980,23 @@ chª
 lock
 );
 
-858 
+864 
 	}
 }
 
-864 
+870 
 	$kžl
 (
 pid
 )
 
-866 
+872 
 ´oc
  *
 p
 ;
 
-868 
+874 
 	`acquœe
 (&
 ±abË
@@ -22010,7 +22004,7 @@ p
 lock
 );
 
-869 
+875 
 p
  = 
 ±abË
@@ -22020,19 +22014,19 @@ p
 NPROC
 ];…++){
 
-870 if(
+876 if(
 p
 ->
 pid
  ==…id){
 
-871 
+877 
 p
 ->
 kžËd
  = 1;
 
-873 if(
+879 if(
 p
 ->
 ¡©e
@@ -22040,7 +22034,7 @@ p
 SLEEPING
 )
 
-874 
+880 
 p
 ->
 ¡©e
@@ -22048,79 +22042,79 @@ p
 RUNNABLE
 ;
 
-875 
-	`»Ëa£
-(&
-±abË
-.
-lock
-);
-
-879 
-	`»Ëa£
-(&
-±abË
-.
-lock
-);
-
 881 
+	`»Ëa£
+(&
+±abË
+.
+lock
+);
+
+885 
+	`»Ëa£
+(&
+±abË
+.
+lock
+);
+
+887 
 	}
 }
 
-888 
+894 
 	$´ocdump
 ()
 
-890 *
+896 *
 ¡©es
 [] = {
 
-891 [
+897 [
 UNUSED
 ] "unused",
 
-892 [
+898 [
 EMBRYO
 ] "embryo",
 
-893 [
+899 [
 SLEEPING
 ] "sleep ",
 
-894 [
+900 [
 RUNNABLE
 ] "runble",
 
-895 [
+901 [
 RUNNING
 ] "run ",
 
-896 [
+902 [
 ZOMBIE
 ] "zombie"
 
-898 
+904 
 i
 ;
 
-899 
+905 
 ´oc
  *
 p
 ;
 
-900 *
+906 *
 ¡©e
 ;
 
-901 
+907 
 ušt
  
 pc
 [10];
 
-903 
+909 
 p
  = 
 ±abË
@@ -22130,7 +22124,7 @@ p
 NPROC
 ];…++){
 
-904 if(
+910 if(
 p
 ->
 ¡©e
@@ -22138,7 +22132,7 @@ p
 UNUSED
 )
 
-906 if(
+912 if(
 p
 ->
 ¡©e
@@ -22148,7 +22142,7 @@ p
 ¡©es
 ) && states[p->state])
 
-907 
+913 
 ¡©e
  = 
 ¡©es
@@ -22156,11 +22150,11 @@ p
 p
 ->state];
 
-909 
+915 
 ¡©e
  = "???";
 
-910 
+916 
 	`ýrštf
 ("%d % %s", 
 p
@@ -22172,7 +22166,7 @@ pid
 Çme
 );
 
-911 if(
+917 if(
 p
 ->
 ¡©e
@@ -22180,7 +22174,7 @@ p
 SLEEPING
 ){
 
-912 
+918 
 	`g‘ÿÎ”pcs
 ((
 ušt
@@ -22194,13 +22188,13 @@ ebp
 pc
 );
 
-913 
+919 
 i
 =0; i<10 && 
 pc
 [i] != 0; i++)
 
-914 
+920 
 	`ýrštf
 (" %p", 
 pc
@@ -22208,29 +22202,29 @@ pc
 i
 ]);
 
-916 
+922 
 	`ýrštf
 ("\n");
 
-918 
+924 
 	}
 }
 
-922 
+928 
 	$´iÜ™y_boo¡
-() {
+(){
 
-923 
+929 
 ´oc
  *
 p
 ;
 
-925 
+931 
 	`ýrštf
 ("[do boosting!]\n");
 
-927 
+933 
 p
  = 
 ±abË
@@ -22238,67 +22232,67 @@ p
 ´oc
 ;… < &±abË.´oc[
 NPROC
-];…++) {
+];…++){
 
-928 
+934 
 p
 ->
 Ëv–_of_MLFQ
  = 0;
 
-929 
+935 
 p
 ->
 tick_u£d
  = 0;
 
-932 
+938 
 p
 ->
 time_quªtum_u£d
  = 0;
 
-935 
+941 
 ±abË
 .
 MLFQ_tick_u£d
  = 0;
 
-937 
+943 
 	}
 }
 
-941 
+947 
 	$£t_ýu_sh¬e
 (
 »quœed
 )
 
-943 
+949 
 ýu_sh¬e_®»ady_£t
 ;
 
-944 
+950 
 desœed_sum_ýu_sh¬e
 ;
 
-945 cÚ¡ 
+951 cÚ¡ 
 MIN_CPU_SHARE
  = 1;
 
-946 cÚ¡ 
+952 cÚ¡ 
 MAX_CPU_SHARE
  = 80;
 
-947 
+953 
 is_Ãw
 ;
 
-948 
+954 
 idx
 ;
 
-951 iàÐ! (
+957 ifÐ! (
 MIN_CPU_SHARE
  <ð
 »quœed
@@ -22306,11 +22300,11 @@ MIN_CPU_SHARE
 MAX_CPU_SHARE
 ) )
 
-952 
+958 
 exû±iÚ
 ;
 
-954 
+961 
 ýu_sh¬e_®»ady_£t
  = 
 ´oc
@@ -22318,19 +22312,19 @@ exû±iÚ
 ýu_sh¬e
 ;
 
-956 ià(
+962 if(
 ýu_sh¬e_®»ady_£t
- == 0) {
+ == 0){
 
-957 
+963 
 is_Ãw
  = 1;
 
-959 
+965 
 is_Ãw
  = 0;
 
-962 
+968 
 desœed_sum_ýu_sh¬e
  = 
 ±abË
@@ -22342,17 +22336,17 @@ sum_ýu_sh¬e
 »quœed
 ;
 
-965 ià(
+970 if(
 desœed_sum_ýu_sh¬e
  > 
 MAX_CPU_SHARE
  )
 
-966 
+971 
 exû±iÚ
 ;
 
-969 
+974 
 ±abË
 .
 sum_ýu_sh¬e
@@ -22360,7 +22354,7 @@ sum_ýu_sh¬e
 desœed_sum_ýu_sh¬e
 ;
 
-970 
+975 
 ´oc
 ->
 ýu_sh¬e
@@ -22368,7 +22362,7 @@ desœed_sum_ýu_sh¬e
 »quœed
 ;
 
-971 
+976 
 ´oc
 ->
 ¡ride
@@ -22378,17 +22372,17 @@ NSTRIDE
 »quœed
 ;
 
-973 if(
-is_Ãw
-) {
-
 978 if(
+is_Ãw
+){
+
+983 if(
 ±abË
 .
 ¡ride_queue
-[1]) {
+[1]){
 
-979 
+984 
 ´oc
 ->
 ¡ride_couÁ
@@ -22398,7 +22392,7 @@ is_Ãw
 ¡ride_queue
 [1]->stride_count;
 
-983 
+988 
 idx
  = ++
 ±abË
@@ -22406,11 +22400,11 @@ idx
 ¡ride_queue_size
 ;
 
-984 
+989 
 idx
- != 1) {
+ != 1){
 
-985 
+990 
 ±abË
 .
 ¡ride_queue
@@ -22418,11 +22412,11 @@ idx
 idx
 ] =…table.stride_queue[idx/2];
 
-986 
+991 
 idx
  /= 2;
 
-988 
+993 
 ±abË
 .
 ¡ride_queue
@@ -22432,69 +22426,35 @@ idx
 ´oc
 ;
 
-995 #ifdeà
-MJ_DEBUGGING
-
-
-996 
-	`ýrštf
-("£t_ýu_sh¬e(%d): cpu_sh¬ha b“À£t\n", 
-»quœed
-);
-
-997 
-	`ýrštf
-("set_cpu_share(%d):…roc->cpu_share: %d,…roc->stride: %d,…table->sum_cpu_share: %d\n"
-
-998 , 
-»quœed
-,„equœed, 
-´oc
-->
-¡ride
-, 
-desœed_sum_ýu_sh¬e
-);
-
-1003 
+1000 
 exû±iÚ
 :
 
-1004 #ifdeà
-MJ_DEBUGGING
-
-
-1005 
-	`ýrštf
-("£t_ýu_sh¬e(%d):ƒxû±iÚ ha occu¼ed\n", 
-»quœed
-);
-
-1009 
+1002 
 	}
 }
 
-1012 
+1005 
 	$sys_£t_ýu_sh¬e
 ()
 
-1014 
+1007 
 »quœed
 ;
 
-1017 ià(
+1010 if(
 	`¬gšt
 (0, &
 »quœed
-) < 0) {
+) < 0){
 
-1021  
+1014  
 	`£t_ýu_sh¬e
 (
 »quœed
 );
 
-1022 
+1015 
 	}
 }
 
@@ -30114,9 +30074,9 @@ DPL_USER
 	`ex™
 ();
 
-135 ià(
+135 if(
 	`g‘_MLFQ_tick_u£d
-() >= 100) {
+() >= 100){
 
 136 #ifdeà
 MJ_DEBUGGING
@@ -30144,7 +30104,7 @@ tf
 T_IRQ0
 +
 IRQ_TIMER
-) {
+){
 
 145 
 ´oc
@@ -30162,7 +30122,7 @@ time_quªtum_u£d
 ´oc
 ->
 ýu_sh¬e
- == 0) {
+ == 0){
 
 149 
 	`šü—£_MLFQ_tick_u£d
@@ -30209,7 +30169,7 @@ time_quªtum_u£d
 time_quªtum_u£d
  >ð
 	`g‘_time_quªtum
-()) {
+()){
 
 168 #ifdeà
 MJ_DEBUGGING
@@ -30231,13 +30191,13 @@ MJ_DEBUGGING
 	`ýrštf
 ("**********************************\n");
 
-177 ià(
+177 if(
 ´oc
 ->
 Ëv–_of_MLFQ
  < 
 NMLFQ
- - 1) {
+ - 1){
 
 178 
 ´oc
