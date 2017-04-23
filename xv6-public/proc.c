@@ -128,6 +128,18 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  
+  // Design Document 1-1-2-2.
+  // initializing values used in MLFQ.
+  p->tick_used = 0;
+  p->level_of_MLFQ = 0;
+  p->time_quantum_used = 0;
+
+  // Design Document 1-2-2-2.
+  // Initializing cpu_share
+  p->cpu_share = 0;
+  p->stride = 0;
+  p->stride_count = 0;
 
   release(&ptable.lock);
 
@@ -252,23 +264,9 @@ fork(void)
 
   acquire(&ptable.lock);
 
-  // Design Document 1-1-2-2.
-  // initializing values used in MLFQ.
-  np->tick_used = 0;
-  np->level_of_MLFQ = 0;
-  np->time_quantum_used = 0;
-
-  // Design Document 1-2-2-2.
-  // Initializing cpu_share
-  np->cpu_share = 0;
-  np->stride = 0;
-  np->stride_count = 0;
-
   np->state = RUNNABLE;
 
   //Design Document 1-1-2-5. A new process is generated.
-  /** ptable.min_of_run_proc_level = 0; */
-  /** ptable.queue_level_at_most = 0; */
 
   release(&ptable.lock);
 
@@ -446,7 +444,8 @@ stride_queue_heapify_down(int stride_idx)
 {
   struct proc* p = ptable.stride_queue[stride_idx];
 
-  while(stride_idx <= ptable.stride_queue_size){
+  while(stride_idx * 2 < NPROC // If stride_idx indicates that it is leaf node, break the loop
+      && stride_idx <= ptable.stride_queue_size){
     if(ptable.stride_queue[stride_idx * 2] 
         && ptable.stride_queue[stride_idx * 2 + 1]){
       // two childen
@@ -491,6 +490,7 @@ int
 find_idx_of_stride_to_run(void) 
 {
   struct proc* proc_to_be_run;
+  int i;
   
   // From the start to the end of stride queue
   int stride_find_idx = 1;
@@ -520,29 +520,50 @@ find_idx_of_stride_to_run(void)
       }
 
       // Check children's existence.
-      if(child_status == BOTH){
-        // Left and right children is exist.
-        if(ptable.stride_queue[left_child]->stride_count
-            < ptable.stride_queue[right_child]->stride_count){
-          // left is smaller
+      switch(child_status){
+        case BOTH:
+          // Left and right children is exist.
+          if(ptable.stride_queue[left_child]->stride_count
+              < ptable.stride_queue[right_child]->stride_count){
+            // left is smaller
+            stride_find_idx = left_child;
+          }else{
+            // right is smaller
+            stride_find_idx = right_child;
+          }
+          break;
+
+        case LEFT_ONLY:
+          // Only left child is exist
           stride_find_idx = left_child;
-        }else{
-          // right is smaller
-          stride_find_idx = right_child;
-        }
+          break;
 
-      }else if(child_status == LEFT_ONLY){
-        // Only left child is exist
-        stride_find_idx = left_child;
-
-      }else{
-        // NO_CHILD
-        // End the loop. Make index bigger than stride_queue_size
-        stride_find_idx = ptable.stride_queue_size + 1;
+        case NO_CHILD:
+          // NO_CHILD
+          // End the loop. Make index bigger than stride_queue_size
+          stride_find_idx = ptable.stride_queue_size + 1;
+          break;
+        default:
+          panic("error in find_idx_of_stride_to_run().");
+          break;
       }
     }
   }
 
+  // A process is not found. Find any runnable process in stride queue.
+  if(stride_find_idx >= ptable.stride_queue_size + 1){
+    for(i = 1; i <= ptable.stride_queue_size; ++i){
+      if(ptable.stride_queue[i]->state == RUNNABLE){
+        stride_find_idx = i;
+        break;
+      }
+    }
+  }else{
+    // do nothing. process is found.
+  }
+
+  // return value is larger than size when no process is runnable in stride.
+  // exception handling code is in scheduler()
   return stride_find_idx;
 }
 
@@ -599,7 +620,11 @@ scheduler(void)
 
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         // Design Document 1-2-2-5. Choosing the stride queue or MLFQ
-        if(ptable.sum_cpu_share != 0 && choosing_stride_or_MLFQ){
+        if(ptable.sum_cpu_share == 0){
+          // No process is in stride. Run only processes in MLFQ.
+          stride_is_selected = 0;
+          choosing_stride_or_MLFQ = 0;
+        }else if(choosing_stride_or_MLFQ){
           // If the stride queue is selceted, the value of 'stride_is_selected' will be 1.
           // If not, zero.
           stride_is_selected = select_stride_or_MLFQ();
