@@ -1094,7 +1094,6 @@ sys_set_cpu_share(void)
 {
   int required;
   //Decode argument using argint
-
   if(argint(0, &required) < 0){
     return -1;
   }
@@ -1105,6 +1104,66 @@ sys_set_cpu_share(void)
 int
 thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 {
+  // fork() and exec()
+  int i;
+  struct proc *np;
+  int* stack_ref_pointer;
+
+  // Allocate process.
+  if((np = allocproc()) == 0){
+    return -1;
+  }
+  // add thread information
+  np->pid = proc->pid; // Thread has same pid with its parent
+  np->tid = next_thread_id++;
+
+  // Shallow copy pgdir
+  np->pgdir = proc->pgdir;
+  np->sz = proc->sz;
+  np->parent = proc;
+  *np->tf = *proc->tf;
+
+  // increase pgdir_ref counter
+  np->pgdir_ref_idx = proc->pgdir_ref_idx;
+  acquire(&thread_lock);
+  pgdir_ref[np->pgdir_ref_idx]++;
+  release(&thread_lock);
+
+  // Clear %eax so that fork returns 0 in the child.
+  np->tf->eax = 0;
+
+  for(i = 0; i < NOFILE; i++)
+    if(proc->ofile[i])
+      np->ofile[i] = filedup(proc->ofile[i]);
+  np->cwd = idup(proc->cwd);
+
+  safestrcpy(np->name, proc->name, sizeof(proc->name));
+
+  // allocate new stack.
+  np->sz = PGROUNDUP(np->sz);
+  if((np->sz = allocuvm(np->pgdir, np->sz, np->sz + 2*PGSIZE)) == 0) {
+    return -1;
+  }
+  clearpteu(np->pgdir, (char*)(np->sz - 2*PGSIZE));
+  np->tf->esp = np->sz;
+
+  // add return address and argument to new stack
+  np->tf->eip = (uint)start_routine;
+  np->tf->esp -= 8;
+
+  stack_ref_pointer = (int*)np->tf->esp;
+  *(stack_ref_pointer) = 0xFFFFFFFF; // fake return address
+  *(stack_ref_pointer + 4) = (int)arg;
+  
+
+  acquire(&ptable.lock);
+
+  np->state = RUNNABLE;
+
+  //Design Document 1-1-2-5. A new process is generated.
+
+  release(&ptable.lock);
+
   return 0;
 }
 
@@ -1127,8 +1186,6 @@ sys_thread_create(void)
 
   return thread_create(thread, start_routine, arg);
 }
-
-
 
 void
 thread_exit(void *retval)
