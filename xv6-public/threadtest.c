@@ -247,6 +247,7 @@ stresstest(void)
     for (i = 0; i < NUM_THREAD; i++){
       if (thread_create(&threads[i], stressthreadmain, (void*)i) != 0){
         printf(1, "panic at thread_create\n");
+        printf(1, "n: %d\n", n);
         return -1;
       }
     }

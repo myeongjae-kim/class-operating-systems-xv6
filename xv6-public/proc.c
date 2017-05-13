@@ -163,6 +163,12 @@ allocproc(void)
       goto found;
 
   release(&ptable.lock);
+
+#ifdef THREAD_DEBUGGING
+  cprintf("(allocproc) error: Proc queue is full!\n");
+#endif
+
+  
   return 0;
 
 found:
@@ -192,6 +198,10 @@ found:
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
     p->state = UNUSED;
+
+#ifdef THREAD_DEBUGGING
+    cprintf("(allocproc) error: kalloc() is failed.\n");
+#endif
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
@@ -469,6 +479,8 @@ wait(void)
     // Scan through table looking for exited children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      // We can find a hint of kernel memory leakage when we add a condition like below
+      /** if(p->parent != proc || p->tid != 0) */
       if(p->parent != proc)
         continue;
       havekids = 1;
@@ -1130,9 +1142,11 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   // Allocate process.
   // thread. new stack is needed
   if((np = allocproc()) == 0){
+#ifdef THREAD_DEBUGGING
+    cprintf("(thread_create) error: allocproc()\n");
+#endif
     return -1;
   }
-
 
   // add thread information
   np->pid = proc->pid;
@@ -1161,10 +1175,12 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
-
   // allocate a new stack
   np->sz = PGROUNDUP(np->sz);
   if((np->sz = allocuvm(np->pgdir, np->sz, np->sz + 2*PGSIZE)) == 0) {
+#ifdef THREAD_DEBUGGING
+    cprintf("(thread_create) error: allocuvm()\n");
+#endif
     return -1;
   }
   clearpteu(np->pgdir, (char*)(np->sz - 2*PGSIZE));

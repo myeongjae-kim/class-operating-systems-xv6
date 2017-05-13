@@ -91,6 +91,13 @@ kalloc(void)
     kmem.freelist = r->next;
   if(kmem.use_lock)
     release(&kmem.lock);
+
+#ifdef THREAD_DEBUGGING
+  if(r == 0) {
+    cprintf("(kalloc) error: kernel memory is full.\n");
+  }
+#endif
+
   return (char*)r;
 }
 

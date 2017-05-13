@@ -35,6 +35,7 @@
 ./ioapic.c
 ./rm.c
 ./bootmain.c
+./proc_temp.c
 ./prac_getlev.c
 ./uart.c
 ./test_master.c
