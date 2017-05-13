@@ -42,6 +42,13 @@ sys_getpid(void)
   return proc->pid;
 }
 
+// Design Document 2-1-2-2
+int
+sys_gettid(void)
+{
+  return proc->tid;
+}
+
 int
 sys_sbrk(void)
 {

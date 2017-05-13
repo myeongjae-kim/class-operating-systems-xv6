@@ -26,13 +26,19 @@ struct {
   int stride_time_quantum;
   int stride_tick_used;
 
+
 } ptable;
+
+// Design Document 2-1-2-3
+
+struct spinlock thread_lock;
+char pgdir_count[NPROC];
+int pgdir_count_idx;
+
 
 static struct proc *initproc;
 
 int nextpid = 1;
-int next_thread_id = 1;
-
 extern void forkret(void);
 extern void trapret(void);
 
@@ -41,6 +47,7 @@ static void wakeup1(void *chan);
 static void stride_queue_heapify_up(int stride_idx);
 static void stride_queue_heapify_down(int stride_idx);
 
+int next_thread_id = 1;
 
 // getters and setters
 int
@@ -86,6 +93,7 @@ pinit(void)
   int queue_level;
   int default_ticks = 5;
   initlock(&ptable.lock, "ptable");
+  initlock(&thread_lock, "thread");
 
   // Initializing ptable variables.
   // Design Document 1-2-2-3.
@@ -104,6 +112,9 @@ pinit(void)
   ptable.stride_queue_size = 0;
   ptable.stride_time_quantum = 1; // It could be changed by designer.
   ptable.stride_tick_used = 0;
+
+  pgdir_count_idx = -1;
+  memset(pgdir_count, 0, sizeof(pgdir_count));
 
 }
 
@@ -143,9 +154,11 @@ found:
   p->stride = 0;
   p->stride_count = 0;
 
-  // Design Document 2-1-2-2
-  // Related with threads.
+  // Design Document 2-1-2-3
   p->tid = 0;
+  p->thread_count = 0;
+  p->pgdir_count_idx = -1;
+  /** p->thread_return = 0; */
 
   release(&ptable.lock);
 
@@ -256,6 +269,21 @@ fork(void)
   np->parent = proc;
   *np->tf = *proc->tf;
 
+  // new pgdir. allocate pgdir_ref_count idx
+  for (i = 0; i < NPROC; ++i) {
+    pgdir_count_idx++;
+    pgdir_count_idx %= NPROC;
+
+    if (pgdir_count[pgdir_count_idx] == 0) {
+      np->pgdir_count_idx = pgdir_count_idx;
+
+      acquire(&thread_lock);
+      pgdir_count[np->pgdir_count_idx]++;
+      release(&thread_lock);
+      break;
+    }
+  }
+
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
 
@@ -363,8 +391,9 @@ exit(void)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->parent == proc){
       p->parent = initproc;
-      if(p->state == ZOMBIE)
+      if(p->state == ZOMBIE) {
         wakeup1(initproc);
+      }
     }
   }
 
@@ -395,7 +424,11 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+        
+        if (p->thread_count == 0) {
+          freevm(p->pgdir);
+        }
+
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
@@ -409,8 +442,15 @@ wait(void)
         p->stride = 0;
         p->stride_count= 0;
 
-        // Design Document 2-1-2-2
+        if (p->pgdir_count_idx != -1 && pgdir_count[p->pgdir_count_idx] != 0) {
+          acquire(&thread_lock);
+          pgdir_count[p->pgdir_count_idx]--;
+          release(&thread_lock);
+        }
+
         p->tid = 0;
+        p->thread_count = 0;
+        p->pgdir_count_idx = -1;
 
         p->state = UNUSED;
         release(&ptable.lock);
@@ -699,6 +739,7 @@ scheduler(void)
         cprintf("stride_is_selected:%d, ", stride_is_selected);
         cprintf("proc_name:%s, ", p->name);
         cprintf("proc_id:%d, ", p->pid);
+        cprintf("thread_id:%d, ", p->tid);
         cprintf("MLFQ_tick:%d, ", ptable.MLFQ_tick_used,p->level_of_MLFQ);
         cprintf("level:%d, ", p->level_of_MLFQ);
         cprintf("stride_tick:%d, ", ptable.stride_tick_used);
@@ -746,6 +787,36 @@ scheduler(void)
           choosing_stride_or_MLFQ = 1;
         }
 
+        // clear LWP datum
+        if (proc->tid && proc->state == ZOMBIE) {
+          kfree(proc->kstack);
+          proc->kstack = 0;
+
+          proc->pid = 0;
+          proc->parent = 0;
+          proc->name[0] = 0;
+          proc->killed = 0;
+
+          // Design document 1-1-2-2 and 1-2-2-2.
+          proc->tick_used = 0;
+          proc->time_quantum_used= 0;
+          proc->level_of_MLFQ = 0;
+          proc->cpu_share = 0;
+          proc->stride = 0;
+          proc->stride_count= 0;
+
+          if (proc->pgdir_count_idx != -1 && pgdir_count[proc->pgdir_count_idx] != 0) {
+            acquire(&thread_lock);
+            pgdir_count[proc->pgdir_count_idx]--;
+            release(&thread_lock);
+          }
+
+          proc->tid = 0;
+          proc->thread_count = 0;
+          proc->pgdir_count_idx = -1;
+
+          proc->state = UNUSED;
+        }
         proc = 0;
 
         if(stride_is_selected){
@@ -1051,6 +1122,100 @@ sys_set_cpu_share(void)
 int
 thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 {
+  int i, pid;
+  struct proc *np;
+  void** arg_ptr;
+  int sz;
+
+  pid = 0;
+  pid++;
+
+
+  // Allocate process.
+  // thread. new stack is needed
+  if((np = allocproc()) == 0){
+    return -1;
+  }
+
+  // Copy process state from p.
+  np->pgdir = proc->pgdir; // same address space
+  np->pgdir_count_idx = proc->pgdir_count_idx;
+  acquire(&thread_lock);
+  pgdir_count[np->pgdir_count_idx]++;
+  release(&thread_lock);
+
+
+  np->sz = proc->sz;
+  np->parent = proc;
+  *np->tf = *proc->tf;
+  np->tf->eip = (uint)start_routine; // run a rountine.
+  /** np->context->eip = (uint)start_routine; // run a rountine. */
+
+#ifdef THREAD_DEBUGGING
+  cprintf("kstack adr: %x\n", np->kstack);
+#endif
+  //TODO 시발 어떻게 해야하는거지??
+  //stack이 바뀌어도 ebp는 그대로다.
+  //stack이 새로 생기긴 했는데, 어떻게 활용해야해?
+  //allocuvm으로 page 늘린다음에 해야 하나
+  
+  sz = np->sz;
+  sz = PGROUNDUP(sz);
+  if((sz = allocuvm(np->pgdir, sz, sz + 2*PGSIZE)) == 0) {
+    return -1;
+  }
+  clearpteu(np->pgdir, (char*)(sz - 2*PGSIZE));
+  /** sp = sz; */
+
+  np->sz = sz;
+  acquire(&thread_lock);
+  proc->sz = sz;
+  release(&thread_lock);
+  
+  
+
+  /** np->tf->ebp -= LWPSTACK * (1 + proc->thread_count); */
+  /** np->tf->ebp -= sz; */
+  /** np->tf->esp = np->tf->ebp - 8; */
+  np->tf->esp = sz - 8;
+
+  arg_ptr = (void**)(np->tf->esp);
+  *arg_ptr = (void*)0xFFFFFFFF; // fake return address
+
+  arg_ptr = (void**)(np->tf->esp + 4);
+  *arg_ptr = arg; // argument
+
+
+  // Clear %eax so that pthread_create returns 0 in the child.
+  np->tf->eax = 0;
+
+  for(i = 0; i < NOFILE; i++)
+    if(proc->ofile[i])
+      np->ofile[i] = filedup(proc->ofile[i]);
+  np->cwd = idup(proc->cwd);
+
+  safestrcpy(np->name, proc->name, sizeof(proc->name));
+
+  np->pid = proc->pid;
+  pid = np->pid;
+
+  np->tid = next_thread_id++;
+  *thread = np->tid;
+
+  acquire(&ptable.lock);
+
+  proc->thread_count++;
+  np->state = RUNNABLE;
+
+  //Design Document 1-1-2-5. A new process is generated.
+
+  release(&ptable.lock);
+
+#ifdef THREAD_DEBUGGING
+  cprintf("pgdir_count_idx: %d, pgdir_count[]: %d, thread_count:%d\n", np->pgdir_count_idx, pgdir_count[np->pgdir_count_idx], proc->thread_count);
+#endif
+
+
   return 0;
 }
 
@@ -1079,7 +1244,88 @@ sys_thread_create(void)
 void
 thread_exit(void *retval)
 {
-  return;
+  /** struct proc *p; */
+  int stride_idx;
+
+  if(proc == initproc)
+    panic("init thread_exiting");
+
+  proc->cwd = 0;
+
+  acquire(&ptable.lock);
+
+  // delete a process in stride queue
+  if(proc->cpu_share != 0){
+    int heapify_up;
+
+#ifdef MJ_DEBUGGING
+    cprintf("stirde_queue process thread_exit()\n");
+#endif
+
+    // subtract cpu_share from sum_cpu_share
+    ptable.sum_cpu_share -= proc->cpu_share;
+
+    // find where it is in the stride queue
+    for(stride_idx = 1; stride_idx < NSTRIDE_QUEUE; ++stride_idx){
+      if(ptable.stride_queue[stride_idx] == proc){
+        break;
+      }
+    }
+
+    if(stride_idx == NSTRIDE_QUEUE){
+      panic("thread_exit(): a process is not in the stride scheduler");
+    }
+
+    // delete a process from the heap
+    ptable.stride_queue[stride_idx] = ptable.stride_queue[ptable.stride_queue_size];
+    ptable.stride_queue[ptable.stride_queue_size--] = 0;
+
+    // do heapify
+    if(stride_idx == 1){
+      //heapify_down
+      heapify_up = 0;
+    }else{
+      //select heapify_up or down
+      heapify_up = ptable.stride_queue[stride_idx]->stride_count 
+                   < ptable.stride_queue[stride_idx / 2]->stride_count 
+                   ? 1 : 0;
+    }
+
+    if(ptable.stride_queue_size == 0 || ptable.stride_queue_size == 1){
+      //do nothing
+    }else{
+      // increase key
+      if(heapify_up){
+        stride_queue_heapify_down(stride_idx);
+      }else{
+        stride_queue_heapify_up(stride_idx);
+      }
+    }
+  }
+
+  // Parent might be sleeping in wait().
+  wakeup1(proc->parent);
+  
+  // Pass abandoned children to init.
+  /** for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    *   if(p->parent == proc){
+    *     p->parent = initproc;
+    *     if(p->state == ZOMBIE) {
+    *       wakeup1(initproc);
+    *     }
+    *   }
+    * } */
+
+  // Jump into the scheduler, never to return.
+  proc->state = ZOMBIE;
+  /** proc->tid = 0; */
+
+
+  // send return value to join
+  proc->thread_return = (int)retval;
+
+  sched();
+  panic("zombie exit");
 }
 
 int
@@ -1097,7 +1343,37 @@ sys_thread_exit(void)
 int
 thread_join(thread_t thread, void **retval)
 {
-  return 0;
+  int one_is_error = 1;
+  struct proc *p;
+  struct proc *proc_found;
+  proc_found = 0;
+
+#ifdef THREAD_DEBUGGING
+    cprintf("(thread_join)tid:%d\n", thread);
+#endif
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if (p->tid == thread) {
+      proc_found = p;
+      one_is_error = 0;
+      p = ptable.proc;
+      p--;
+      continue;
+    }
+  }
+
+  if (one_is_error == 0) {
+#ifdef THREAD_DEBUGGING
+    cprintf("pid:%d, tid:%d, thread_address:%p, thread_return:%d\n",proc_found->pid, proc_found->tid, proc_found, proc_found->thread_return);
+#endif
+
+    *retval = (void*)proc_found->thread_return;
+    proc_found->thread_return = 0;
+  } else {
+    *retval = (void*)-1;
+  }
+
+  return one_is_error;
 }
 
 int

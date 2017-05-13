@@ -73,6 +73,9 @@ struct proc {
   int cpu_share;               // If it is zero, MLFQ. If it is not zero, stride queue.
   int stride;                  // It means a stride a process can pass
   int stride_count;            // Sum of passed strides.
+
+  // Design Document 2-1-2-3
+  int tid;                     // thread id
 };
 
 // Process memory is laid out contiguously, low addresses first:
