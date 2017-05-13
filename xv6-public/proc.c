@@ -185,6 +185,7 @@ found:
   // Related with threads.
   p->tid = 0;
   p->pgdir_ref_idx = -1;
+  p->thread_return = 0;
 
   release(&ptable.lock);
 
@@ -321,6 +322,57 @@ fork(void)
   return pid;
 }
 
+void stride_queue_delete() {
+  int stride_idx;
+  int heapify_up;
+
+#ifdef MJ_DEBUGGING
+  cprintf("stirde_queue process exit()\n");
+#endif
+
+  // subtract cpu_share from sum_cpu_share
+  ptable.sum_cpu_share -= proc->cpu_share;
+
+  // find where it is in the stride queue
+  for(stride_idx = 1; stride_idx < NSTRIDE_QUEUE; ++stride_idx){
+    if(ptable.stride_queue[stride_idx] == proc){
+      break;
+    }
+  }
+
+  if(stride_idx == NSTRIDE_QUEUE){
+    panic("exit(): a process is not in the stride scheduler");
+  }
+
+  // delete a process from the heap
+  ptable.stride_queue[stride_idx] = ptable.stride_queue[ptable.stride_queue_size];
+  ptable.stride_queue[ptable.stride_queue_size--] = 0;
+
+  // do heapify
+  if(stride_idx == 1){
+    //heapify_down
+    heapify_up = 0;
+  }else{
+    //select heapify_up or down
+    heapify_up = ptable.stride_queue[stride_idx]->stride_count 
+                 < ptable.stride_queue[stride_idx / 2]->stride_count 
+                 ? 1 : 0;
+  }
+
+  if(ptable.stride_queue_size == 0 || ptable.stride_queue_size == 1){
+    //do nothing
+  }else{
+    // increase key
+    if(heapify_up){
+      stride_queue_heapify_down(stride_idx);
+    }else{
+      stride_queue_heapify_up(stride_idx);
+    }
+  }
+
+}
+
+
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait() to find out it exited.
@@ -329,7 +381,6 @@ exit(void)
 {
   struct proc *p;
   int fd;
-  int stride_idx;
 
   if(proc == initproc)
     panic("init exiting");
@@ -351,51 +402,7 @@ exit(void)
 
   // delete a process in stride queue
   if(proc->cpu_share != 0){
-    int heapify_up;
-
-#ifdef MJ_DEBUGGING
-    cprintf("stirde_queue process exit()\n");
-#endif
-
-    // subtract cpu_share from sum_cpu_share
-    ptable.sum_cpu_share -= proc->cpu_share;
-
-    // find where it is in the stride queue
-    for(stride_idx = 1; stride_idx < NSTRIDE_QUEUE; ++stride_idx){
-      if(ptable.stride_queue[stride_idx] == proc){
-        break;
-      }
-    }
-
-    if(stride_idx == NSTRIDE_QUEUE){
-      panic("exit(): a process is not in the stride scheduler");
-    }
-
-    // delete a process from the heap
-    ptable.stride_queue[stride_idx] = ptable.stride_queue[ptable.stride_queue_size];
-    ptable.stride_queue[ptable.stride_queue_size--] = 0;
-
-    // do heapify
-    if(stride_idx == 1){
-      //heapify_down
-      heapify_up = 0;
-    }else{
-      //select heapify_up or down
-      heapify_up = ptable.stride_queue[stride_idx]->stride_count 
-                   < ptable.stride_queue[stride_idx / 2]->stride_count 
-                   ? 1 : 0;
-    }
-
-    if(ptable.stride_queue_size == 0 || ptable.stride_queue_size == 1){
-      //do nothing
-    }else{
-      // increase key
-      if(heapify_up){
-        stride_queue_heapify_down(stride_idx);
-      }else{
-        stride_queue_heapify_up(stride_idx);
-      }
-    }
+    stride_queue_delete();
   }
 
   // Parent might be sleeping in wait().
@@ -457,6 +464,7 @@ wait(void)
         // Design Document 2-1-2-2
         p->tid = 0;
         p->pgdir_ref_idx = -1;
+        p->thread_return = 0;
 
         p->state = UNUSED;
         release(&ptable.lock);
@@ -1103,97 +1111,6 @@ sys_set_cpu_share(void)
 
   return set_cpu_share(required);
 }
-
-/** int */
-/** thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg) */
-/** { */
-/**   // fork() and exec() */
-/**   int i; */
-/**   struct proc *np; */
-/**   void** stack_ref_pointer; */
-/**   int sz; */
-/**  */
-/**   // Allocate process. */
-/**   if((np = allocproc()) == 0){ */
-/**     return -1; */
-/**   } */
-/**   // add thread information */
-/**   np->pid = proc->pid; // Thread has same pid with its parent */
-/**   np->tid = next_thread_id++; */
-/**   *thread = np->tid; */
-/**  */
-/**   // Shallow copy pgdir */
-/**   np->pgdir = proc->pgdir; */
-/**   np->sz = proc->sz; */
-/**   np->parent = proc; */
-/**   *np->tf = *proc->tf; */
-/**  */
-/**   // increase pgdir_ref counter */
-/**   np->pgdir_ref_idx = proc->pgdir_ref_idx; */
-/**   acquire(&thread_lock); */
-/**   pgdir_ref[np->pgdir_ref_idx]++; */
-/**   release(&thread_lock); */
-/**  */
-/**   // Clear %eax so that fork returns 0 in the child. */
-/**   np->tf->eax = 0; */
-/**  */
-/**   for(i = 0; i < NOFILE; i++) */
-/**     if(proc->ofile[i]) */
-/**       np->ofile[i] = filedup(proc->ofile[i]); */
-/**   np->cwd = idup(proc->cwd); */
-/**  */
-/**   safestrcpy(np->name, proc->name, sizeof(proc->name)); */
-/**  */
-/**   // allocate new stack. */
-/**   np->sz = PGROUNDUP(np->sz);
-  *   if((np->sz = allocuvm(np->pgdir, np->sz, np->sz + 2*PGSIZE)) == 0) {
-  *     return -1;
-  *   }
-  *   clearpteu(np->pgdir, (char*)(np->sz - 2*PGSIZE));
-  *   np->tf->esp = np->sz;
-  *
-  *   // update sz to parent
-  *   acquire(&thread_lock);
-  *   proc->sz = np->sz;
-  *   release(&thread_lock); */
-/**  */
-/**  */
-/**   sz = np->sz; */
-/**   sz = PGROUNDUP(sz); */
-/**   if((sz = allocuvm(np->pgdir, sz, sz + 2*PGSIZE)) == 0) { */
-/**     return -1; */
-/**   } */
-/**   clearpteu(np->pgdir, (char*)(sz - 2*PGSIZE)); */
-/**   [> sp = sz; <] */
-/**  */
-/**   np->sz = sz; */
-/**   acquire(&thread_lock); */
-/**   proc->sz = sz; */
-/**   release(&thread_lock); */
-/**  */
-/**  */
-/**  */
-/**   // add return address and argument to new stack */
-/**   np->tf->eip = (uint)start_routine; */
-/**   np->tf->esp -= np->sz - 8; */
-/**  */
-/**   stack_ref_pointer = (void**)np->tf->esp; */
-/**   *(stack_ref_pointer) = (void*)0xABCDABCD; // fake return address */
-/**  */
-/**   stack_ref_pointer = (void**)(np->tf->esp + 4); */
-/**   *(stack_ref_pointer) = (void*)arg; */
-/**  */
-/**  */
-/**   acquire(&ptable.lock); */
-/**  */
-/**   np->state = RUNNABLE; */
-/**  */
-/**   //Design Document 1-1-2-5. A new process is generated. */
-/**  */
-/**   release(&ptable.lock); */
-/**  */
-/**   return 0; */
-/** } */
 
 int
 thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
