@@ -135,9 +135,9 @@ static int (*syscalls[])(void) = {// the array of function pointer
 [SYS_yield]   sys_yield,
 [SYS_getlev]  sys_getlev,
 [SYS_set_cpu_share]  sys_set_cpu_share,
-[SYS_thread_create]  sys_set_cpu_share,
-[SYS_thread_exit]  sys_set_cpu_share,
-[SYS_thread_join]  sys_set_cpu_share,
+[SYS_thread_create]  sys_thread_create,
+[SYS_thread_exit]  sys_thread_exit,
+[SYS_thread_join]  sys_thread_join,
 [SYS_gettid]  sys_gettid,
 };
 

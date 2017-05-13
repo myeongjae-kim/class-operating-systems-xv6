@@ -36,5 +36,12 @@ main(int argc, char *argv[])
 
   printf(1, "(main)a:%d\n", a);
 
+  {
+    int i;
+    for (i = 0; i < 210000000; ++i) {
+      
+    }
+  }
+
   exit();
 }

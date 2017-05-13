@@ -63,6 +63,10 @@ check_pgdir_counter_and_call_freevm(struct proc* p) {
   } else {
     // There is a thread using a same addres space.
     // Do not free it.
+    // Referencing counter should be decreased.
+    acquire(&thread_lock);
+    pgdir_ref[p->pgdir_ref_idx]--;
+    release(&thread_lock);
   }
 }
 
@@ -434,7 +438,6 @@ wait(void)
         kfree(p->kstack);
         p->kstack = 0;
 
-
         /** freevm(p->pgdir); */
         check_pgdir_counter_and_call_freevm(p);
 
@@ -756,7 +759,7 @@ scheduler(void)
           *   int i;
           *   cprintf("** pgdir_ref status **\n");
           *   for (i = 0; i < NPROC; ++i) {
-          *     if (pgdir_ref[i] != 0) {
+          *     if (pgdir_ref[i] >= 2) {
           *       cprintf("pgdir_ref[%d]: %d, pgdir_ref_next_idx:%d\n", i, pgdir_ref[i], pgdir_ref_next_idx);
           *     }
           *   }
@@ -1101,35 +1104,130 @@ sys_set_cpu_share(void)
   return set_cpu_share(required);
 }
 
+/** int */
+/** thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg) */
+/** { */
+/**   // fork() and exec() */
+/**   int i; */
+/**   struct proc *np; */
+/**   void** stack_ref_pointer; */
+/**   int sz; */
+/**  */
+/**   // Allocate process. */
+/**   if((np = allocproc()) == 0){ */
+/**     return -1; */
+/**   } */
+/**   // add thread information */
+/**   np->pid = proc->pid; // Thread has same pid with its parent */
+/**   np->tid = next_thread_id++; */
+/**   *thread = np->tid; */
+/**  */
+/**   // Shallow copy pgdir */
+/**   np->pgdir = proc->pgdir; */
+/**   np->sz = proc->sz; */
+/**   np->parent = proc; */
+/**   *np->tf = *proc->tf; */
+/**  */
+/**   // increase pgdir_ref counter */
+/**   np->pgdir_ref_idx = proc->pgdir_ref_idx; */
+/**   acquire(&thread_lock); */
+/**   pgdir_ref[np->pgdir_ref_idx]++; */
+/**   release(&thread_lock); */
+/**  */
+/**   // Clear %eax so that fork returns 0 in the child. */
+/**   np->tf->eax = 0; */
+/**  */
+/**   for(i = 0; i < NOFILE; i++) */
+/**     if(proc->ofile[i]) */
+/**       np->ofile[i] = filedup(proc->ofile[i]); */
+/**   np->cwd = idup(proc->cwd); */
+/**  */
+/**   safestrcpy(np->name, proc->name, sizeof(proc->name)); */
+/**  */
+/**   // allocate new stack. */
+/**   np->sz = PGROUNDUP(np->sz);
+  *   if((np->sz = allocuvm(np->pgdir, np->sz, np->sz + 2*PGSIZE)) == 0) {
+  *     return -1;
+  *   }
+  *   clearpteu(np->pgdir, (char*)(np->sz - 2*PGSIZE));
+  *   np->tf->esp = np->sz;
+  *
+  *   // update sz to parent
+  *   acquire(&thread_lock);
+  *   proc->sz = np->sz;
+  *   release(&thread_lock); */
+/**  */
+/**  */
+/**   sz = np->sz; */
+/**   sz = PGROUNDUP(sz); */
+/**   if((sz = allocuvm(np->pgdir, sz, sz + 2*PGSIZE)) == 0) { */
+/**     return -1; */
+/**   } */
+/**   clearpteu(np->pgdir, (char*)(sz - 2*PGSIZE)); */
+/**   [> sp = sz; <] */
+/**  */
+/**   np->sz = sz; */
+/**   acquire(&thread_lock); */
+/**   proc->sz = sz; */
+/**   release(&thread_lock); */
+/**  */
+/**  */
+/**  */
+/**   // add return address and argument to new stack */
+/**   np->tf->eip = (uint)start_routine; */
+/**   np->tf->esp -= np->sz - 8; */
+/**  */
+/**   stack_ref_pointer = (void**)np->tf->esp; */
+/**   *(stack_ref_pointer) = (void*)0xABCDABCD; // fake return address */
+/**  */
+/**   stack_ref_pointer = (void**)(np->tf->esp + 4); */
+/**   *(stack_ref_pointer) = (void*)arg; */
+/**  */
+/**  */
+/**   acquire(&ptable.lock); */
+/**  */
+/**   np->state = RUNNABLE; */
+/**  */
+/**   //Design Document 1-1-2-5. A new process is generated. */
+/**  */
+/**   release(&ptable.lock); */
+/**  */
+/**   return 0; */
+/** } */
+
 int
 thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 {
-  // fork() and exec()
+  // fork() and exec() is combined.
   int i;
   struct proc *np;
-  int* stack_ref_pointer;
+  void** arg_ptr;
 
   // Allocate process.
+  // thread. new stack is needed
   if((np = allocproc()) == 0){
     return -1;
   }
+
+
   // add thread information
-  np->pid = proc->pid; // Thread has same pid with its parent
+  np->pid = proc->pid;
   np->tid = next_thread_id++;
+  *thread = np->tid;
 
   // Shallow copy pgdir
-  np->pgdir = proc->pgdir;
+  np->pgdir = proc->pgdir; // same address space
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
 
   // increase pgdir_ref counter
-  np->pgdir_ref_idx = proc->pgdir_ref_idx;
+  np->pgdir_ref_idx= proc->pgdir_ref_idx;
   acquire(&thread_lock);
   pgdir_ref[np->pgdir_ref_idx]++;
   release(&thread_lock);
 
-  // Clear %eax so that fork returns 0 in the child.
+  // Clear %eax so that pthread_create returns 0 in the child.
   np->tf->eax = 0;
 
   for(i = 0; i < NOFILE; i++)
@@ -1139,22 +1237,27 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
-  // allocate new stack.
+
+  // allocate a new stack
   np->sz = PGROUNDUP(np->sz);
   if((np->sz = allocuvm(np->pgdir, np->sz, np->sz + 2*PGSIZE)) == 0) {
     return -1;
   }
   clearpteu(np->pgdir, (char*)(np->sz - 2*PGSIZE));
-  np->tf->esp = np->sz;
 
-  // add return address and argument to new stack
-  np->tf->eip = (uint)start_routine;
-  np->tf->esp -= 8;
+  acquire(&thread_lock);
+  proc->sz = np->sz;
+  release(&thread_lock);
 
-  stack_ref_pointer = (int*)np->tf->esp;
-  *(stack_ref_pointer) = 0xFFFFFFFF; // fake return address
-  *(stack_ref_pointer + 4) = (int)arg;
-  
+  // edit return address to run desiganted function
+  np->tf->eip = (uint)start_routine; // run a rountine.
+  np->tf->esp = np->sz - 8;
+
+  arg_ptr = (void**)(np->tf->esp);
+  *arg_ptr = (void*)0xDEADDEAD; // fake return address
+
+  arg_ptr = (void**)(np->tf->esp + 4);
+  *arg_ptr = arg; // argument
 
   acquire(&ptable.lock);
 
@@ -1166,6 +1269,7 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 
   return 0;
 }
+
 
 int
 sys_thread_create(void)

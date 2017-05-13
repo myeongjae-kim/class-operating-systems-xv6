@@ -75,7 +75,7 @@ struct proc {
   int stride_count;            // Sum of passed strides.
 
   // Design Document 2-1-2-3
-  int tid;                     // thread id
+  thread_t tid;                     // thread id
   int pgdir_ref_idx;           // page table reference counter idx
 };
 
