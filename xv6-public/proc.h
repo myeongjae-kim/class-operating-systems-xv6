@@ -77,7 +77,7 @@ struct proc {
   // Design Document 2-1-2-3
   thread_t tid;                // thread id
   int pgdir_ref_idx;           // page table reference counter idx
-  int thread_return;           // a variable used to return in thread
+  void* thread_return;           // a variable used to return in thread
 };
 
 // Process memory is laid out contiguously, low addresses first:

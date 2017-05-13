@@ -423,6 +423,39 @@ exit(void)
   panic("zombie exit");
 }
 
+int
+clear_proc(struct proc *p) {
+  int pid;
+  // Found one.
+  pid = p->pid;
+  kfree(p->kstack);
+  p->kstack = 0;
+
+  /** freevm(p->pgdir); */
+  check_pgdir_counter_and_call_freevm(p);
+
+  p->pid = 0;
+  p->parent = 0;
+  p->name[0] = 0;
+  p->killed = 0;
+
+  // Design document 1-1-2-2 and 1-2-2-2.
+  p->tick_used = 0;
+  p->time_quantum_used= 0;
+  p->level_of_MLFQ = 0;
+  p->cpu_share = 0;
+  p->stride = 0;
+  p->stride_count= 0;
+
+  // Design Document 2-1-2-2
+  p->tid = 0;
+  p->pgdir_ref_idx = -1;
+  p->thread_return = 0;
+
+  p->state = UNUSED;
+  return pid;
+}
+
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
@@ -440,33 +473,7 @@ wait(void)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
-        // Found one.
-        pid = p->pid;
-        kfree(p->kstack);
-        p->kstack = 0;
-
-        /** freevm(p->pgdir); */
-        check_pgdir_counter_and_call_freevm(p);
-
-        p->pid = 0;
-        p->parent = 0;
-        p->name[0] = 0;
-        p->killed = 0;
-
-        // Design document 1-1-2-2 and 1-2-2-2.
-        p->tick_used = 0;
-        p->time_quantum_used= 0;
-        p->level_of_MLFQ = 0;
-        p->cpu_share = 0;
-        p->stride = 0;
-        p->stride_count= 0;
-
-        // Design Document 2-1-2-2
-        p->tid = 0;
-        p->pgdir_ref_idx = -1;
-        p->thread_return = 0;
-
-        p->state = UNUSED;
+        pid = clear_proc(p);
         release(&ptable.lock);
         return pid;
       }
@@ -1211,6 +1218,51 @@ sys_thread_create(void)
 void
 thread_exit(void *retval)
 {
+  struct proc *p;
+  int fd;
+
+  if(proc == initproc)
+    panic("init exiting");
+
+  // Close all open files.
+  for(fd = 0; fd < NOFILE; fd++){
+    if(proc->ofile[fd]){
+      fileclose(proc->ofile[fd]);
+      proc->ofile[fd] = 0;
+    }
+  }
+
+  begin_op();
+  iput(proc->cwd);
+  end_op();
+  proc->cwd = 0;
+
+  acquire(&ptable.lock);
+  // save a return value in proc
+  proc->thread_return = retval;
+
+  // delete a process in stride queue
+  if(proc->cpu_share != 0){
+    stride_queue_delete();
+  }
+
+  // Parent might be sleeping in wait().
+  wakeup1(proc->parent);
+
+  // Pass abandoned children to init.
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->parent == proc){
+      p->parent = initproc;
+      if(p->state == ZOMBIE)
+        wakeup1(initproc);
+    }
+  }
+
+  // Jump into the scheduler, never to return.
+  proc->state = ZOMBIE;
+  sched();
+  panic("zombie exit");
+
   return;
 }
 
@@ -1229,6 +1281,36 @@ sys_thread_exit(void)
 int
 thread_join(thread_t thread, void **retval)
 {
+  // TODO
+  struct proc *p;
+  int havekids;
+
+  acquire(&ptable.lock);
+  for(;;){
+    // Scan through table looking for exited children.
+    havekids = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->parent != proc || p->tid != thread)
+        continue;
+      havekids = 1;
+      if(p->state == ZOMBIE){
+        *retval = p->thread_return;
+        clear_proc(p);
+        release(&ptable.lock);
+        return 0;
+      }
+    }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || proc->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(proc, &ptable.lock);  //DOC: wait-sleep
+  }
+
   return 0;
 }
 
