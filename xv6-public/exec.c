@@ -7,6 +7,13 @@
 #include "x86.h"
 #include "elf.h"
 
+extern void allocate_new_pgdir_idx(struct proc*);
+
+extern struct spinlock thread_lock;
+extern char pgdir_ref[NPROC];
+extern int pgdir_ref_next_idx;
+
+
 int
 exec(char *path, char **argv)
 {
@@ -98,7 +105,24 @@ exec(char *path, char **argv)
   proc->tf->eip = elf.entry;  // main
   proc->tf->esp = sp;
   switchuvm(proc);
-  freevm(oldpgdir);
+
+  if (proc->pgdir_ref_idx == -1) {
+    // This is a case in booting
+    freevm(oldpgdir);
+  } else if (pgdir_ref[proc->pgdir_ref_idx] <= 1) {
+    // Just only one process was using pgdir.
+    // Free it.
+    acquire(&thread_lock);
+    pgdir_ref[proc->pgdir_ref_idx] = 0;
+    release(&thread_lock);
+    freevm(oldpgdir);
+  } else {
+    // There is a thread using a same addres space.
+    // Do not free it.
+  }
+
+  allocate_new_pgdir_idx(proc);
+
   return 0;
 
  bad:

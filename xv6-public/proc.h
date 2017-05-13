@@ -76,6 +76,7 @@ struct proc {
 
   // Design Document 2-1-2-3
   int tid;                     // thread id
+  int pgdir_ref_idx;           // page table reference counter idx
 };
 
 // Process memory is laid out contiguously, low addresses first:

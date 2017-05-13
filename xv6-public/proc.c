@@ -31,7 +31,6 @@ struct {
 static struct proc *initproc;
 
 int nextpid = 1;
-int next_thread_id = 1;
 
 extern void forkret(void);
 extern void trapret(void);
@@ -40,6 +39,41 @@ static void wakeup1(void *chan);
 
 static void stride_queue_heapify_up(int stride_idx);
 static void stride_queue_heapify_down(int stride_idx);
+
+// Design Document 2-1-2-3
+int next_thread_id = 1;
+struct spinlock thread_lock;
+char pgdir_ref[NPROC];
+int pgdir_ref_next_idx = 0;
+
+
+// Design Dcoument 2-1-2-4
+void
+check_pgdir_counter_and_call_freevm(struct proc* p) {
+  if (p->pgdir_ref_idx == -1) {
+    // This is a case in booting
+    freevm(p->pgdir);
+  } else if (pgdir_ref[p->pgdir_ref_idx] <= 1) {
+    // Just only one process was using pgdir.
+    // Free it.
+    acquire(&thread_lock);
+    pgdir_ref[p->pgdir_ref_idx] = 0;
+    release(&thread_lock);
+    freevm(p->pgdir);
+  } else {
+    // There is a thread using a same addres space.
+    // Do not free it.
+  }
+}
+
+void
+allocate_new_pgdir_idx(struct proc* p) {
+  acquire(&thread_lock);
+  p->pgdir_ref_idx = pgdir_ref_next_idx++;
+  pgdir_ref_next_idx %= NPROC;
+  pgdir_ref[p->pgdir_ref_idx] = 1;
+  release(&thread_lock);
+}
 
 
 // getters and setters
@@ -146,6 +180,7 @@ found:
   // Design Document 2-1-2-2
   // Related with threads.
   p->tid = 0;
+  p->pgdir_ref_idx = -1;
 
   release(&ptable.lock);
 
@@ -255,6 +290,9 @@ fork(void)
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
+
+  // new pgdir is generated. allocate a counter to np
+  allocate_new_pgdir_idx(np);
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -395,7 +433,11 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+
+
+        /** freevm(p->pgdir); */
+        check_pgdir_counter_and_call_freevm(p);
+
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
@@ -411,6 +453,7 @@ wait(void)
 
         // Design Document 2-1-2-2
         p->tid = 0;
+        p->pgdir_ref_idx = -1;
 
         p->state = UNUSED;
         release(&ptable.lock);
@@ -707,6 +750,17 @@ scheduler(void)
         cprintf("stride:%d, ", p->stride);
         cprintf("stride_count:%d\n", p->stride_count);
         /** cprintf("ContChange. stride_is_selected:%d, proc_name:%s, proc_id:%d, MLFQ_tick:%d, level:%d, stride_tick:%d, cpu_share:%d, sum_cpu_share: %d, stride:%d, stride_count:%d\n", stride_is_selected, p->name, p->pid, ptable.MLFQ_tick_used,p->level_of_MLFQ , ptable.stride_tick_used, p->cpu_share, ptable.sum_cpu_share, p->stride, p->stride_count); */
+#endif
+#ifdef THREAD_DEBUGGING
+        /** {
+          *   int i;
+          *   cprintf("** pgdir_ref status **\n");
+          *   for (i = 0; i < NPROC; ++i) {
+          *     if (pgdir_ref[i] != 0) {
+          *       cprintf("pgdir_ref[%d]: %d, pgdir_ref_next_idx:%d\n", i, pgdir_ref[i], pgdir_ref_next_idx);
+          *     }
+          *   }
+          * } */
 #endif
         proc = p;
         switchuvm(p);
