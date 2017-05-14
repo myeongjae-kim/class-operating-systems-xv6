@@ -480,9 +480,20 @@ wait(void)
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       // We can find a hint of kernel memory leakage when we add a condition like below
-      /** if(p->parent != proc || p->tid != 0) */
-      if(p->parent != proc)
+      if(p->parent != proc || p->tid != 0)
+      /** if(p->parent != proc) */
         continue;
+
+#ifdef THREAD_DEBUGGING
+      if (p->tid != 0) {
+        cprintf("Thread is cleared in wait(), not in thread_join()\n");
+        cprintf("** print debugging information **\n");
+        cprintf("pname:%s, pid:%d, tid:%d, pgidr_ref_idx:%d\n", p->name, p->pid, p->tid, p->pgdir_ref_idx);
+      }
+#endif
+
+
+
       havekids = 1;
       if(p->state == ZOMBIE){
         pid = clear_proc(p);
@@ -1046,7 +1057,7 @@ void
 priority_boost(void){
   struct proc *p;
   
-  cprintf("[do boosting!]\n");
+  /** cprintf("[do boosting!]\n"); */
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     p->level_of_MLFQ = 0;
@@ -1180,6 +1191,9 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   if((np->sz = allocuvm(np->pgdir, np->sz, np->sz + 2*PGSIZE)) == 0) {
 #ifdef THREAD_DEBUGGING
     cprintf("(thread_create) error: allocuvm()\n");
+    cprintf("** debugging information **\n");
+    cprintf("  proc->sz:%d\n", proc->sz);
+    // how to decrease parent process's sz?
 #endif
     return -1;
   }
@@ -1187,6 +1201,7 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 
   acquire(&thread_lock);
   proc->sz = np->sz;
+  // how to decrease parent process's sz?
   release(&thread_lock);
 
   // edit return address to run desiganted function
@@ -1311,7 +1326,24 @@ thread_join(thread_t thread, void **retval)
       havekids = 1;
       if(p->state == ZOMBIE){
         *retval = p->thread_return;
+
+        // when pgdir is not freed, we should call deallocuvm to remove thread stack.
+        if (pgdir_ref[p->pgdir_ref_idx] > 1) {
+          int newsz;
+#ifdef THREAD_DEBUGGING
+          /** cprintf("** deallocuvm to free thread stack. **\n"); */
+#endif
+          // if deallocated sz is smaller than parent's sz, update it.
+          // But here is still a problem.
+          // For example, there are two thread.
+          // First thread is deallocated, and two thread are added.
+          // Then the fourth thread will use a same stack with second one.
+          // How can I solve this?
+          newsz = deallocuvm(p->pgdir, p->sz, p->sz - 2*PGSIZE);
+          p->parent->sz = newsz < p->parent->sz ? newsz : p->parent->sz;
+        }
         clear_proc(p);
+
         release(&ptable.lock);
         return 0;
       }

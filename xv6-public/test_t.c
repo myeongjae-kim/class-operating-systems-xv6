@@ -16,9 +16,20 @@ mythread(void *arg)
   printf(1, "%s: done\n", (char *) arg);
 
   thread_exit(0);
+}
 
-  // thread_exit(0) 안 하고 return했을 때 처리를 어떻게 해야하나?
-  return 0;
+void * 
+disturbing(void *arg)
+{
+  int j, k, l;
+  int temp;
+  l = k = j = -210000000;
+  temp = l + k + j;
+  temp++;
+  for (j = 0; j < 1e7; ++j) {
+    k = k + 1;
+  }
+  thread_exit(0);
 }
 
 int
@@ -26,12 +37,22 @@ main(int argc, char *argv[])
 {
   thread_t p1;
   thread_t p2;
+  thread_t p3;
+  thread_t p4;
+  thread_t p5;
+  
   printf(1, "main: begin (counter = %d)\n", counter);
   thread_create(&p1, mythread, "A");
+  thread_create(&p3, disturbing, 0);
   thread_create(&p2, mythread, "B");
+  thread_create(&p4, disturbing, 0);
+  thread_create(&p5, disturbing, 0);
 
   thread_join(p1, 0);
+  thread_join(p3, 0);
   thread_join(p2, 0);
+  thread_join(p4, 0);
+  thread_join(p5, 0);
   printf(1, "main: done with both (counter = %d)\n", counter);
   exit();
 }

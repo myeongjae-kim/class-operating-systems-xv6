@@ -96,7 +96,6 @@ racingthreadmain(void *arg)
     gcnt = tmp;
   }
   thread_exit((void *)(tid+1));
-  return 0;
 }
 
 int
@@ -108,7 +107,6 @@ racingtest(void)
   gcnt = 0;
   
   for (i = 0; i < NUM_THREAD; i++){
-    printf(1, "(racingtest): thread_create nunber: %d\n", i);
     if (thread_create(&threads[i], racingthreadmain, (void*)i) != 0){
       printf(1, "panic at thread_create\n");
       return -1;
@@ -117,7 +115,6 @@ racingtest(void)
   for (i = 0; i < NUM_THREAD; i++){
     if (thread_join(threads[i], &retval) != 0 || (int)retval != i+1){
       printf(1, "panic at thread_join\n");
-      printf(1, "desired retval: %d, real retval: %d\n", i+1, (int)retval);
       return -1;
     }
   }
@@ -137,7 +134,6 @@ basicthreadmain(void *arg)
     }
   }
   thread_exit((void *)(tid+1));
-  return 0;
 }
 
 int
@@ -172,7 +168,6 @@ jointhreadmain(void *arg)
   sleep(200);
   printf(1, "thread_exit...\n");
   thread_exit((void *)(val*2));
-  return 0;
 }
 
 int
@@ -230,7 +225,6 @@ void*
 stressthreadmain(void *arg)
 {
   thread_exit(0);
-  return 0;
 }
 
 int
@@ -247,7 +241,6 @@ stresstest(void)
     for (i = 0; i < NUM_THREAD; i++){
       if (thread_create(&threads[i], stressthreadmain, (void*)i) != 0){
         printf(1, "panic at thread_create\n");
-        printf(1, "n: %d\n", n);
         return -1;
       }
     }
