@@ -72,10 +72,27 @@ check_pgdir_counter_and_call_freevm(struct proc* p) {
 
 void
 allocate_new_pgdir_idx(struct proc* p) {
+  int i;
   acquire(&thread_lock);
-  p->pgdir_ref_idx = pgdir_ref_next_idx++;
-  pgdir_ref_next_idx %= NPROC;
-  pgdir_ref[p->pgdir_ref_idx] = 1;
+
+  // find a counter to use
+  for (i = 0; i < NPROC; ++i) {
+    if (pgdir_ref[pgdir_ref_next_idx] == 0) {
+      p->pgdir_ref_idx = pgdir_ref_next_idx++;
+      pgdir_ref_next_idx %= NPROC;
+      pgdir_ref[p->pgdir_ref_idx] = 1;
+      break;
+    } else {
+      pgdir_ref_next_idx++;
+      pgdir_ref_next_idx %= NPROC;
+    }
+  }
+
+  //TODO: Do not panic. Just sleep until a counter is available
+  if (i == NPROC) {
+    panic("(allocate_new_pgdir_idx): pgdir referencing counter allocation is failed.\n");
+  }
+
   release(&thread_lock);
 }
 
