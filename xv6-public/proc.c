@@ -1196,6 +1196,7 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   // Clear %eax so that pthread_create returns 0 in the child.
   np->tf->eax = 0;
 
+  // TODO: 'stressfs' is failed because of handling a opened file.
   for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])
       np->ofile[i] = filedup(proc->ofile[i]);
