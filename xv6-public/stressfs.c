@@ -28,6 +28,7 @@ main(int argc, char *argv[])
       break;
 
   printf(1, "write %d\n", i);
+  exit();
 
   path[8] += i;
   fd = open(path, O_CREATE | O_RDWR);
