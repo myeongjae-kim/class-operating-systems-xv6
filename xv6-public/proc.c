@@ -210,6 +210,10 @@ found:
   p->tid = 0;
   p->pgdir_ref_idx = -1;
   p->thread_return = 0;
+  
+  // Design Document 2-2-2-2
+  // Related with threads.
+  p->num_of_threads = 0;
 
   release(&ptable.lock);
 
@@ -401,18 +405,12 @@ void stride_queue_delete() {
 
 }
 
-
-// Exit the current process.  Does not return.
-// An exited process remains in the zombie state
-// until its parent calls wait() to find out it exited.
+// Design Document 
 void
-exit(void)
+common_exit(struct proc* proc)
 {
   struct proc *p;
   int fd;
-
-  if(proc == initproc)
-    panic("init exiting");
 
   // Close all open files.
   for(fd = 0; fd < NOFILE; fd++){
@@ -445,9 +443,86 @@ exit(void)
         wakeup1(initproc);
     }
   }
+  proc->state = ZOMBIE;
+}
+
+
+int thread_join(thread_t , void **);
+
+// Exit the current process.  Does not return.
+// An exited process remains in the zombie state
+// until its parent calls wait() to find out it exited.
+void
+exit(void)
+{
+  if(proc == initproc)
+    panic("init exiting");
+
+  // a process without threads calls exit()
+  if (proc->tid == 0 && proc->num_of_threads == 0) {
+#ifdef THREAD_DEBUGGING
+    cprintf(" ** A process without threads calls exit() **\n");
+    cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
+#endif
+    common_exit(proc);
+
+    // Jump into the scheduler, never to return.
+    sched();
+    panic("zombie exit");
+
+  // a process(master thread) with threads calls exit()
+  } else if (proc->tid == 0 && proc->num_of_threads != 0) {
+    struct proc *p;
+#ifdef THREAD_DEBUGGING
+    cprintf(" ** A process with threads calls exit() **\n");
+    cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
+#endif
+    // remove threads first, and remove the master thread next.
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      int tid;
+      if (p->pid == proc->pid && p->tid != 0) {
+        tid = p->tid;
+        cprintf(" ** pid: %d, tid:%d **\n", p->pid, p->tid);
+        common_exit(p);
+        release(&ptable.lock);
+
+        // clear resources
+        thread_join(tid, (void**)0);
+      }
+    }
+    // remove master threads;
+    common_exit(proc);
+
+    // Jump into the scheduler, never to return.
+    sched();
+    panic("zombie exit");
+
+
+    
+  // a thread(not mastser thread) calls exit()
+  } else if (proc->tid != 0 && proc->num_of_threads == 0) {
+#ifdef THREAD_DEBUGGING
+    cprintf(" ** A thread(not master thread) calls exit() **\n");
+    cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
+#endif
+
+    //TODO
+
+    
+  // prohibited case. panic!
+  } else {
+    panic("panic in exit(). tid != 0 && num_of_threads != 0. Wrong case.");
+  }
+
+
+
+#ifdef THREAD_DEBUGGING
+    cprintf(" ** The exit() case is not handled. Do default exit() **\n");
+    cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
+#endif
+  common_exit(proc);
 
   // Jump into the scheduler, never to return.
-  proc->state = ZOMBIE;
   sched();
   panic("zombie exit");
 }
@@ -481,6 +556,7 @@ clear_proc(struct proc *p) {
   p->tid = 0;
   p->pgdir_ref_idx = -1;
   p->thread_return = 0;
+  p->num_of_threads = 0;
 
   p->state = UNUSED;
   return pid;
@@ -822,6 +898,21 @@ scheduler(void)
           *     }
           *   }
           * } */
+#endif
+#ifdef THREAD_DEBUGGING
+        {
+          int i;
+          int print_head = 1;
+          for (i = 0; i < NPROC; ++i) {
+            if (ptable.proc[i].num_of_threads >= 1) {
+              if (print_head) {
+                cprintf("** num_of_threads status **\n");
+                print_head = 0;
+              }
+              cprintf("ptable.proc[%d], num_of_threads :%d\n", i, ptable.proc[i].num_of_threads);
+            }
+          }
+        }
 #endif
         proc = p;
         switchuvm(p);
@@ -1221,7 +1312,9 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
 
   acquire(&thread_lock);
   proc->sz = np->sz;
-  // how to decrease parent process's sz?
+
+  // increase the counter of master threads
+  proc->num_of_threads++;
   release(&thread_lock);
 
   // edit return address to run desiganted function
@@ -1362,7 +1455,12 @@ thread_join(thread_t thread, void **retval)
           newsz = deallocuvm(p->pgdir, p->sz, p->sz - 2*PGSIZE);
           p->parent->sz = newsz < p->parent->sz ? newsz : p->parent->sz;
         }
+        acquire(&thread_lock);
+        // the master thread should wait until all of its threads die.
+        p->parent->num_of_threads--;
+        release(&thread_lock);
         clear_proc(p);
+
 
         release(&ptable.lock);
         return 0;

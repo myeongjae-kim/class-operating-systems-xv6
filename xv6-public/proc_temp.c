@@ -1151,9 +1151,6 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   np->tf->eip = (uint)start_routine; // run a rountine.
   /** np->context->eip = (uint)start_routine; // run a rountine. */
 
-#ifdef THREAD_DEBUGGING
-  cprintf("kstack adr: %x\n", np->kstack);
-#endif
   //TODO 시발 어떻게 해야하는거지??
   //stack이 바뀌어도 ebp는 그대로다.
   //stack이 새로 생기긴 했는데, 어떻게 활용해야해?
@@ -1212,7 +1209,7 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   release(&ptable.lock);
 
 #ifdef THREAD_DEBUGGING
-  cprintf("pgdir_count_idx: %d, pgdir_count[]: %d, thread_count:%d\n", np->pgdir_count_idx, pgdir_count[np->pgdir_count_idx], proc->thread_count);
+  /** cprintf("pgdir_count_idx: %d, pgdir_count[]: %d, thread_count:%d\n", np->pgdir_count_idx, pgdir_count[np->pgdir_count_idx], proc->thread_count); */
 #endif
 
 
@@ -1349,7 +1346,7 @@ thread_join(thread_t thread, void **retval)
   proc_found = 0;
 
 #ifdef THREAD_DEBUGGING
-    cprintf("(thread_join)tid:%d\n", thread);
+    /** cprintf("(thread_join)tid:%d\n", thread); */
 #endif
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -1364,7 +1361,7 @@ thread_join(thread_t thread, void **retval)
 
   if (one_is_error == 0) {
 #ifdef THREAD_DEBUGGING
-    cprintf("pid:%d, tid:%d, thread_address:%p, thread_return:%d\n",proc_found->pid, proc_found->tid, proc_found, proc_found->thread_return);
+    /** cprintf("pid:%d, tid:%d, thread_address:%p, thread_return:%d\n",proc_found->pid, proc_found->tid, proc_found, proc_found->thread_return); */
 #endif
 
     *retval = (void*)proc_found->thread_return;

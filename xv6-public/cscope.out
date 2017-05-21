@@ -1,4 +1,4 @@
-cscope 15 $HOME/xv6/xv6-public -q 0000001529 0000223145
+cscope 15 $HOME/xv6/xv6-public -q 0000002046 0000253027
 	@asm.h
 
 5 
@@ -20104,7 +20104,13 @@ p
 thªad_ªtu∫
  = 0;
 
-214 
+216 
+p
+->
+num_of_thªads
+ = 0;
+
+218 
 	`ªÀa£
 (&
 ±abÀ
@@ -20112,7 +20118,7 @@ thªad_ªtu∫
 lock
 );
 
-217 if((
+221 if((
 p
 ->
 k°ack
@@ -20120,7 +20126,7 @@ k°ack
 	`kÆloc
 ()) == 0){
 
-218 
+222 
 p
 ->
 °©e
@@ -20128,15 +20134,15 @@ p
 UNUSED
 ;
 
-220 #ifde‡
+224 #ifde‡
 THREAD_DEBUGGING
 
 
-221 
+225 
 	`˝rötf
 ("(allocproc)Érror: kalloc() is failed.\n");
 
-225 
+229 
 •
  = 
 p
@@ -20146,7 +20152,7 @@ k°ack
 KSTACKSIZE
 ;
 
-228 
+232 
 •
  - *
 p
@@ -20154,7 +20160,7 @@ p
 tf
 ;
 
-229 
+233 
 p
 ->
 tf
@@ -20164,11 +20170,11 @@ tf
 •
 ;
 
-233 
+237 
 •
  -= 4;
 
-234 *(
+238 *(
 uöt
 *)
 •
@@ -20176,7 +20182,7 @@ uöt
 å≠ªt
 ;
 
-236 
+240 
 •
  - *
 p
@@ -20184,7 +20190,7 @@ p
 c⁄ãxt
 ;
 
-237 
+241 
 p
 ->
 c⁄ãxt
@@ -20192,7 +20198,7 @@ c⁄ãxt
 •
 ;
 
-238 
+242 
 	`mem£t
 (
 p
@@ -20200,7 +20206,7 @@ p
 c⁄ãxt
 , 0,  *p->context);
 
-239 
+243 
 p
 ->
 c⁄ãxt
@@ -20212,43 +20218,43 @@ uöt
 f‹kªt
 ;
 
-241  
+245  
 p
 ;
 
-242 
+246 
 	}
 }
 
-247 
+251 
 	$u£röô
 ()
 
-249 
+253 
 ¥oc
  *
 p
 ;
 
-250 
+254 
 _bö¨y_öôcode_°¨t
 [], 
 _bö¨y_öôcode_size
 [];
 
-252 
+256 
 p
  = 
 	`Ælo˝roc
 ();
 
-254 
+258 
 öô¥oc
  = 
 p
 ;
 
-255 if((
+259 if((
 p
 ->
 pgdú
@@ -20256,11 +20262,11 @@ pgdú
 	`£tupkvm
 ()) == 0)
 
-256 
+260 
 	`∑nic
 ("userinit: out of memory?");
 
-257 
+261 
 	`öôuvm
 (
 p
@@ -20272,7 +20278,7 @@ _bö¨y_öôcode_°¨t
 _bö¨y_öôcode_size
 );
 
-258 
+262 
 p
 ->
 sz
@@ -20280,7 +20286,7 @@ sz
 PGSIZE
 ;
 
-259 
+263 
 	`mem£t
 (
 p
@@ -20288,7 +20294,7 @@ p
 tf
 , 0, (*p->tf));
 
-260 
+264 
 p
 ->
 tf
@@ -20300,7 +20306,7 @@ SEG_UCODE
 DPL_USER
 ;
 
-261 
+265 
 p
 ->
 tf
@@ -20312,7 +20318,7 @@ SEG_UDATA
 DPL_USER
 ;
 
-262 
+266 
 p
 ->
 tf
@@ -20322,7 +20328,7 @@ es
 ds
 ;
 
-263 
+267 
 p
 ->
 tf
@@ -20332,7 +20338,7 @@ ss
 ds
 ;
 
-264 
+268 
 p
 ->
 tf
@@ -20342,7 +20348,7 @@ eÊags
 FL_IF
 ;
 
-265 
+269 
 p
 ->
 tf
@@ -20352,7 +20358,7 @@ e•
 PGSIZE
 ;
 
-266 
+270 
 p
 ->
 tf
@@ -20360,7 +20366,7 @@ tf
 eù
  = 0;
 
-268 
+272 
 	`ß„°r˝y
 (
 p
@@ -20368,7 +20374,7 @@ p
 «me
 , "initcode", (p->name));
 
-269 
+273 
 p
 ->
 cwd
@@ -20376,7 +20382,7 @@ cwd
 	`«mei
 ("/");
 
-275 
+279 
 	`acquúe
 (&
 ±abÀ
@@ -20384,7 +20390,7 @@ cwd
 lock
 );
 
-277 
+281 
 p
 ->
 °©e
@@ -20392,7 +20398,7 @@ p
 RUNNABLE
 ;
 
-279 
+283 
 	`ªÀa£
 (&
 ±abÀ
@@ -20400,33 +20406,33 @@ RUNNABLE
 lock
 );
 
-280 
+284 
 	}
 }
 
-285 
+289 
 	$grow¥oc
 (
 n
 )
 
-287 
+291 
 uöt
  
 sz
 ;
 
-289 
+293 
 sz
  = 
 ¥oc
 ->sz;
 
-290 if(
+294 if(
 n
  > 0){
 
-291 if((
+295 if((
 sz
  = 
 	`Ælocuvm
@@ -20438,11 +20444,11 @@ pgdú
 n
 )) == 0)
 
-293 }if(
+297 }if(
 n
  < 0){
 
-294 if((
+298 if((
 sz
  = 
 	`dóŒocuvm
@@ -20454,45 +20460,45 @@ pgdú
 n
 )) == 0)
 
-297 
+301 
 ¥oc
 ->
 sz
  = sz;
 
-298 
+302 
 	`swôchuvm
 (
 ¥oc
 );
 
-300 
+304 
 	}
 }
 
-306 
+310 
 	$f‹k
 ()
 
-309 
+313 
 i
 , 
 pid
 ;
 
-310 
+314 
 ¥oc
  *
 ≈
 ;
 
-313 if((
+317 if((
 ≈
  = 
 	`Ælo˝roc
 ()) == 0){
 
-318 if((
+322 if((
 ≈
 ->
 pgdú
@@ -20504,7 +20510,7 @@ pgdú
 sz
 )) == 0){
 
-319 
+323 
 	`k‰ì
 (
 ≈
@@ -20512,13 +20518,13 @@ sz
 k°ack
 );
 
-320 
+324 
 ≈
 ->
 k°ack
  = 0;
 
-321 
+325 
 ≈
 ->
 °©e
@@ -20526,7 +20532,7 @@ k°ack
 UNUSED
 ;
 
-324 
+328 
 ≈
 ->
 sz
@@ -20534,7 +20540,7 @@ sz
 ¥oc
 ->sz;
 
-325 
+329 
 ≈
 ->
 ∑ª¡
@@ -20542,7 +20548,7 @@ sz
 ¥oc
 ;
 
-326 *
+330 *
 ≈
 ->
 tf
@@ -20550,13 +20556,13 @@ tf
 ¥oc
 ->tf;
 
-329 
+333 
 	`Æloˇã_√w_pgdú_idx
 (
 ≈
 );
 
-332 
+336 
 ≈
 ->
 tf
@@ -20564,13 +20570,13 @@ tf
 óx
  = 0;
 
-334 
+338 
 i
  = 0; i < 
 NOFILE
 ; i++)
 
-335 if(
+339 if(
 ¥oc
 ->
 ofûe
@@ -20578,7 +20584,7 @@ ofûe
 i
 ])
 
-336 
+340 
 ≈
 ->
 ofûe
@@ -20590,7 +20596,7 @@ i
 ¥oc
 ->ofile[i]);
 
-337 
+341 
 ≈
 ->
 cwd
@@ -20600,7 +20606,7 @@ cwd
 ¥oc
 ->cwd);
 
-339 
+343 
 	`ß„°r˝y
 (
 ≈
@@ -20610,13 +20616,13 @@ cwd
 ¥oc
 ->name, (proc->name));
 
-341 
+345 
 pid
  = 
 ≈
 ->pid;
 
-343 
+347 
 	`acquúe
 (&
 ±abÀ
@@ -20624,7 +20630,7 @@ pid
 lock
 );
 
-345 
+349 
 ≈
 ->
 °©e
@@ -20632,7 +20638,7 @@ lock
 RUNNABLE
 ;
 
-349 
+353 
 	`ªÀa£
 (&
 ±abÀ
@@ -20640,35 +20646,35 @@ RUNNABLE
 lock
 );
 
-351  
+355  
 pid
 ;
 
-352 
+356 
 	}
 }
 
-354 
+358 
 	$°ride_queue_dñëe
 () {
 
-355 
+359 
 °ride_idx
 ;
 
-356 
+360 
 hópify_up
 ;
 
-358 #ifde‡
+362 #ifde‡
 MJ_DEBUGGING
 
 
-359 
+363 
 	`˝rötf
 ("stirde_queueÖrocessÉxit()\n");
 
-363 
+367 
 ±abÀ
 .
 sum_˝u_sh¨e
@@ -20678,13 +20684,13 @@ sum_˝u_sh¨e
 ˝u_sh¨e
 ;
 
-366 
+370 
 °ride_idx
  = 1; såide_idx < 
 NSTRIDE_QUEUE
 ; ++stride_idx){
 
-367 if(
+371 if(
 ±abÀ
 .
 °ride_queue
@@ -20694,17 +20700,17 @@ NSTRIDE_QUEUE
 ¥oc
 ){
 
-372 if(
+376 if(
 °ride_idx
  =
 NSTRIDE_QUEUE
 ){
 
-373 
+377 
 	`∑nic
 ("exit():áÖrocess isÇot inÅhe stride scheduler");
 
-377 
+381 
 ±abÀ
 .
 °ride_queue
@@ -20714,7 +20720,7 @@ NSTRIDE_QUEUE
 °ride_queue_size
 ];
 
-378 
+382 
 ±abÀ
 .
 °ride_queue
@@ -20722,15 +20728,15 @@ NSTRIDE_QUEUE
 °ride_queue_size
 --] = 0;
 
-381 if(
+385 if(
 °ride_idx
  == 1){
 
-383 
+387 
 hópify_up
  = 0;
 
-386 
+390 
 hópify_up
  = 
 ±abÀ
@@ -20742,7 +20748,7 @@ hópify_up
 °ride_cou¡
 
 
-387 < 
+391 < 
 ±abÀ
 .
 °ride_queue
@@ -20752,63 +20758,63 @@ hópify_up
 °ride_cou¡
 
 
-391 if(
+395 if(
 ±abÀ
 .
 °ride_queue_size
  == 0 ||Ötable.stride_queue_size == 1){
 
-395 if(
+399 if(
 hópify_up
 ){
 
-396 
+400 
 	`°ride_queue_hópify_down
 (
 °ride_idx
 );
 
-398 
+402 
 	`°ride_queue_hópify_up
 (
 °ride_idx
 );
 
-402 
+406 
 	}
 }
 
-409 
+413 
 	$exô
 ()
 
-411 
+415 
 ¥oc
  *
 p
 ;
 
-412 
+416 
 fd
 ;
 
-414 if(
+418 if(
 ¥oc
  =
 öô¥oc
 )
 
-415 
+419 
 	`∑nic
 ("initÉxiting");
 
-418 
+422 
 fd
  = 0; fd < 
 NOFILE
 ; fd++){
 
-419 if(
+423 if(
 ¥oc
 ->
 ofûe
@@ -20816,7 +20822,7 @@ ofûe
 fd
 ]){
 
-420 
+424 
 	`fûe˛o£
 (
 ¥oc
@@ -20826,7 +20832,7 @@ ofûe
 fd
 ]);
 
-421 
+425 
 ¥oc
 ->
 ofûe
@@ -20834,11 +20840,11 @@ ofûe
 fd
 ] = 0;
 
-425 
+429 
 	`begö_›
 ();
 
-426 
+430 
 	`ùut
 (
 ¥oc
@@ -20846,17 +20852,17 @@ fd
 cwd
 );
 
-427 
+431 
 	`íd_›
 ();
 
-428 
+432 
 ¥oc
 ->
 cwd
  = 0;
 
-430 
+434 
 	`acquúe
 (&
 ±abÀ
@@ -20864,17 +20870,17 @@ cwd
 lock
 );
 
-433 if(
+437 if(
 ¥oc
 ->
 ˝u_sh¨e
  != 0){
 
-434 
+438 
 	`°ride_queue_dñëe
 ();
 
-438 
+442 
 	`wakeup1
 (
 ¥oc
@@ -20882,7 +20888,7 @@ lock
 ∑ª¡
 );
 
-441 
+445 
 p
  = 
 ±abÀ
@@ -20892,7 +20898,7 @@ p
 NPROC
 ];Ö++){
 
-442 if(
+446 if(
 p
 ->
 ∑ª¡
@@ -20900,7 +20906,7 @@ p
 ¥oc
 ){
 
-443 
+447 
 p
 ->
 ∑ª¡
@@ -20908,7 +20914,7 @@ p
 öô¥oc
 ;
 
-444 if(
+448 if(
 p
 ->
 °©e
@@ -20916,13 +20922,13 @@ p
 ZOMBIE
 )
 
-445 
+449 
 	`wakeup1
 (
 öô¥oc
 );
 
-450 
+454 
 ¥oc
 ->
 °©e
@@ -20930,19 +20936,19 @@ ZOMBIE
 ZOMBIE
 ;
 
-451 
+455 
 	`sched
 ();
 
-452 
+456 
 	`∑nic
 ("zombieÉxit");
 
-453 
+457 
 	}
 }
 
-457 
+461 
 	$˛ór_¥oc
 (
 ¥oc
@@ -20950,17 +20956,17 @@ ZOMBIE
 p
 ) {
 
-458 
+462 
 pid
 ;
 
-460 
+464 
 pid
  = 
 p
 ->pid;
 
-461 
+465 
 	`k‰ì
 (
 p
@@ -20968,97 +20974,103 @@ p
 k°ack
 );
 
-462 
+466 
 p
 ->
 k°ack
  = 0;
 
-465 
+469 
 	`check_pgdú_cou¡î_™d_ˇŒ_‰ìvm
 (
 p
 );
 
-467 
+471 
 p
 ->
 pid
  = 0;
 
-468 
+472 
 p
 ->
 ∑ª¡
  = 0;
 
-469 
+473 
 p
 ->
 «me
 [0] = 0;
 
-470 
+474 
 p
 ->
 kûÀd
  = 0;
 
-473 
+477 
 p
 ->
 tick_u£d
  = 0;
 
-474 
+478 
 p
 ->
 time_qu™tum_u£d
 = 0;
 
-475 
+479 
 p
 ->
 Àvñ_of_MLFQ
  = 0;
 
-476 
+480 
 p
 ->
 ˝u_sh¨e
  = 0;
 
-477 
+481 
 p
 ->
 °ride
  = 0;
 
-478 
+482 
 p
 ->
 °ride_cou¡
 = 0;
 
-481 
+485 
 p
 ->
 tid
  = 0;
 
-482 
+486 
 p
 ->
 pgdú_ªf_idx
  = -1;
 
-483 
+487 
 p
 ->
 thªad_ªtu∫
  = 0;
 
-485 
+488 
+p
+->
+num_of_thªads
+ = 0;
+
+490 
 p
 ->
 °©e
@@ -21066,31 +21078,31 @@ p
 UNUSED
 ;
 
-486  
+491  
 pid
 ;
 
-487 
+492 
 	}
 }
 
-492 
+497 
 	$waô
 ()
 
-494 
+499 
 ¥oc
  *
 p
 ;
 
-495 
+500 
 havekids
 , 
 pid
 ;
 
-497 
+502 
 	`acquúe
 (&
 ±abÀ
@@ -21098,11 +21110,11 @@ pid
 lock
 );
 
-500 
+505 
 havekids
  = 0;
 
-501 
+506 
 p
  = 
 ±abÀ
@@ -21112,7 +21124,7 @@ p
 NPROC
 ];Ö++){
 
-503 if(
+508 if(
 p
 ->
 ∑ª¡
@@ -21122,25 +21134,25 @@ p
 tid
  != 0)
 
-507 #ifde‡
+512 #ifde‡
 THREAD_DEBUGGING
 
 
-508 i‡(
+513 i‡(
 p
 ->
 tid
  != 0) {
 
-509 
+514 
 	`˝rötf
 ("Thread is cleared in wait(),Çot inÅhread_join()\n");
 
-510 
+515 
 	`˝rötf
 ("**Örint debugging information **\n");
 
-511 
+516 
 	`˝rötf
 ("≤ame:%s,Öid:%d,Åid:%d,Ögidr_ªf_idx:%d\n", 
 p
@@ -21154,11 +21166,11 @@ tid
 pgdú_ªf_idx
 );
 
-517 
+522 
 havekids
  = 1;
 
-518 if(
+523 if(
 p
 ->
 °©e
@@ -21166,7 +21178,7 @@ p
 ZOMBIE
 ){
 
-519 
+524 
 pid
  = 
 	`˛ór_¥oc
@@ -21174,7 +21186,7 @@ pid
 p
 );
 
-520 
+525 
 	`ªÀa£
 (&
 ±abÀ
@@ -21182,11 +21194,11 @@ p
 lock
 );
 
-521  
+526  
 pid
 ;
 
-526 if(!
+531 if(!
 havekids
  || 
 ¥oc
@@ -21194,7 +21206,7 @@ havekids
 kûÀd
 ){
 
-527 
+532 
 	`ªÀa£
 (&
 ±abÀ
@@ -21202,7 +21214,7 @@ kûÀd
 lock
 );
 
-532 
+537 
 	`¶ìp
 (
 ¥oc
@@ -21212,17 +21224,17 @@ lock
 lock
 );
 
-534 
+539 
 	}
 }
 
-536 
+541 
 	$°ride_queue_hópify_up
 (
 °ride_idx
 )
 
-538 
+543 
 ¥oc
 * 
 èrgë_¥oc
@@ -21234,11 +21246,11 @@ lock
 °ride_idx
 ];
 
-539 
+544 
 °ride_idx
  != 1){
 
-541 if(
+546 if(
 ±abÀ
 .
 °ride_queue
@@ -21246,7 +21258,7 @@ lock
 °ride_idx
 ] <Ötable.stride_queue[stride_idx / 2]){
 
-542 
+547 
 ±abÀ
 .
 °ride_queue
@@ -21254,11 +21266,11 @@ lock
 °ride_idx
 ] =Ötable.stride_queue[stride_idx / 2];
 
-543 
+548 
 °ride_idx
  /= 2;
 
-551 
+556 
 ±abÀ
 .
 °ride_queue
@@ -21268,17 +21280,17 @@ lock
 èrgë_¥oc
 ;
 
-553 
+558 
 	}
 }
 
-556 
+561 
 	$°ride_queue_hópify_down
 (
 °ride_idx
 )
 
-558 
+563 
 ¥oc
 * 
 p
@@ -21290,13 +21302,13 @@ p
 °ride_idx
 ];
 
-560 
+565 
 °ride_idx
  * 2 < 
 NPROC
 
 
-561 && 
+566 && 
 °ride_idx
  <
 ±abÀ
@@ -21304,7 +21316,7 @@ NPROC
 °ride_queue_size
 ){
 
-562 if(
+567 if(
 ±abÀ
 .
 °ride_queue
@@ -21312,7 +21324,7 @@ NPROC
 °ride_idx
  * 2]
 
-563 && 
+568 && 
 ±abÀ
 .
 °ride_queue
@@ -21320,7 +21332,7 @@ NPROC
 °ride_idx
  * 2 + 1]){
 
-567 
+572 
 °ride_idx
  = 
 ±abÀ
@@ -21330,7 +21342,7 @@ NPROC
 °ride_cou¡
 
 
-568 < 
+573 < 
 ±abÀ
 .
 °ride_queue
@@ -21340,11 +21352,11 @@ NPROC
 °ride_cou¡
 
 
-569 ? 
+574 ? 
 °ride_idx
  * 2 : stride_idx * 2 + 1;
 
-572 if(
+577 if(
 ±abÀ
 .
 °ride_queue
@@ -21356,7 +21368,7 @@ NPROC
 p
 ->stride_count){
 
-573 
+578 
 ±abÀ
 .
 °ride_queue
@@ -21364,11 +21376,11 @@ p
 °ride_idx
  / 2] =Ötable.stride_queue[stride_idx];
 
-575 
+580 
 °ride_idx
  /= 2;
 
-580 }if(
+585 }if(
 ±abÀ
 .
 °ride_queue
@@ -21376,11 +21388,11 @@ p
 °ride_idx
  * 2]){
 
-582 
+587 
 °ride_idx
  *= 2;
 
-584 if(
+589 if(
 ±abÀ
 .
 °ride_queue
@@ -21392,7 +21404,7 @@ p
 p
 ->stride_count){
 
-585 
+590 
 ±abÀ
 .
 °ride_queue
@@ -21400,11 +21412,11 @@ p
 °ride_idx
  / 2] =Ötable.stride_queue[stride_idx];
 
-587 
+592 
 °ride_idx
  /= 2;
 
-598 
+603 
 ±abÀ
 .
 °ride_queue
@@ -21414,29 +21426,29 @@ p
 p
 ;
 
-600 
+605 
 	}
 }
 
-603 
+608 
 	$föd_idx_of_°ride_to_run
 ()
 
-605 
+610 
 ¥oc
 * 
 ¥oc_to_be_run
 ;
 
-606 
+611 
 i
 ;
 
-609 
+614 
 °ride_föd_idx
  = 1;
 
-610 
+615 
 °ride_föd_idx
  <
 ±abÀ
@@ -21444,7 +21456,7 @@ i
 °ride_queue_size
 ){
 
-611 if(
+616 if(
 ±abÀ
 .
 °ride_queue
@@ -21456,7 +21468,7 @@ i
 RUNNABLE
 ){
 
-614 
+619 
 ¥oc_to_be_run
  = 
 ±abÀ
@@ -21466,7 +21478,7 @@ RUNNABLE
 °ride_föd_idx
 ];
 
-615 
+620 
 ¥oc_to_be_run
 ->
 °ride_cou¡
@@ -21474,25 +21486,25 @@ RUNNABLE
 °ride
 ;
 
-616 
+621 
 	`°ride_queue_hópify_down
 (
 °ride_föd_idx
 );
 
-623 
+628 
 À·_chûd
  = 
 °ride_föd_idx
  * 2;
 
-624 
+629 
 right_chûd
  = 
 °ride_föd_idx
  * 2 + 1;
 
-625 íum {
+630 íum {
 NO_CHILD
 , 
 LEFT_ONLY
@@ -21502,7 +21514,7 @@ BOTH
 chûd_°©us
 ;
 
-627 if(
+632 if(
 right_chûd
  <
 ±abÀ
@@ -21510,13 +21522,13 @@ right_chûd
 °ride_queue_size
 ){
 
-628 
+633 
 chûd_°©us
  = 
 BOTH
 ;
 
-629 }if(
+634 }if(
 À·_chûd
  > 
 ±abÀ
@@ -21524,27 +21536,27 @@ BOTH
 °ride_queue_size
 ){
 
-630 
+635 
 chûd_°©us
  = 
 NO_CHILD
 ;
 
-632 
+637 
 chûd_°©us
  = 
 LEFT_ONLY
 ;
 
-636 
+641 
 chûd_°©us
 ){
 
-637 
+642 
 BOTH
 :
 
-639 if(
+644 if(
 ±abÀ
 .
 °ride_queue
@@ -21554,7 +21566,7 @@ BOTH
 °ride_cou¡
 
 
-640 < 
+645 < 
 ±abÀ
 .
 °ride_queue
@@ -21564,33 +21576,33 @@ right_chûd
 °ride_cou¡
 ){
 
-642 
+647 
 °ride_föd_idx
  = 
 À·_chûd
 ;
 
-645 
+650 
 °ride_föd_idx
  = 
 right_chûd
 ;
 
-649 
+654 
 LEFT_ONLY
 :
 
-651 
+656 
 °ride_föd_idx
  = 
 À·_chûd
 ;
 
-654 
+659 
 NO_CHILD
 :
 
-657 
+662 
 °ride_föd_idx
  = 
 ±abÀ
@@ -21598,11 +21610,11 @@ NO_CHILD
 °ride_queue_size
  + 1;
 
-660 
+665 
 	`∑nic
 ("error in find_idx_of_stride_to_run().");
 
-667 if(
+672 if(
 °ride_föd_idx
  >
 ±abÀ
@@ -21610,7 +21622,7 @@ NO_CHILD
 °ride_queue_size
  + 1){
 
-668 
+673 
 i
  = 1; i <
 ±abÀ
@@ -21618,7 +21630,7 @@ i
 °ride_queue_size
 ; ++i){
 
-669 if(
+674 if(
 ±abÀ
 .
 °ride_queue
@@ -21630,43 +21642,43 @@ i
 RUNNABLE
 ){
 
-670 
+675 
 °ride_föd_idx
  = 
 i
 ;
 
-680  
+685  
 °ride_föd_idx
 ;
 
-681 
+686 
 	}
 }
 
-684 
+689 
 	$£À˘_°ride_‹_MLFQ
 ()
 
-686 
+691 
 ønd°©e
  = 1;
 
-687 
+692 
 queue_£À˘‹
 ;
 
-688 
+693 
 ønd°©e
  =Ñandstate * 1664525 + 1013904223;
 
-689 
+694 
 queue_£À˘‹
  = 
 ønd°©e
  % 100;
 
-691 if(
+696 if(
 queue_£À˘‹
  < 
 ±abÀ
@@ -21674,33 +21686,33 @@ queue_£À˘‹
 sum_˝u_sh¨e
 ){
 
-698 
+703 
 	}
 }
 
-709 
+714 
 	$scheduÀr
 ()
 
-711 
+716 
 ¥oc
  *
 p
 ;
 
-714 
+719 
 choosög_°ride_‹_MLFQ
 ;
 
-715 
+720 
 °ride_is_£À˘ed
  = 0;
 
-719 
+724 
 	`°i
 ();
 
-722 
+727 
 	`acquúe
 (&
 ±abÀ
@@ -21708,11 +21720,11 @@ choosög_°ride_‹_MLFQ
 lock
 );
 
-725 
+730 
 choosög_°ride_‹_MLFQ
  = 1;
 
-728 
+733 
 ±abÀ
 .
 queue_Àvñ_©_mo°
@@ -21720,7 +21732,7 @@ queue_Àvñ_©_mo°
 NMLFQ
  - 1;
 
-729 
+734 
 ±abÀ
 .
 queue_Àvñ_©_mo°
@@ -21728,7 +21740,7 @@ queue_Àvñ_©_mo°
 NMLFQ
 ){
 
-732 
+737 
 ±abÀ
 .
 mö_of_run_¥oc_Àvñ
@@ -21736,7 +21748,7 @@ mö_of_run_¥oc_Àvñ
 NMLFQ
  - 1;
 
-734 
+739 
 p
  = 
 ±abÀ
@@ -21746,45 +21758,45 @@ p
 NPROC
 ];Ö++){
 
-736 if(
+741 if(
 ±abÀ
 .
 sum_˝u_sh¨e
  == 0){
 
-738 
+743 
 °ride_is_£À˘ed
  = 0;
 
-739 
+744 
 choosög_°ride_‹_MLFQ
  = 0;
 
-740 }if(
+745 }if(
 choosög_°ride_‹_MLFQ
 ){
 
-743 
+748 
 °ride_is_£À˘ed
  = 
 	`£À˘_°ride_‹_MLFQ
 ();
 
-750 if(
+755 if(
 °ride_is_£À˘ed
 ){
 
-753 
+758 
 °ride_idx_to_be_run
 ;
 
-755 
+760 
 °ride_idx_to_be_run
  = 
 	`föd_idx_of_°ride_to_run
 ();
 
-758 if(
+763 if(
 °ride_idx_to_be_run
  <
 ±abÀ
@@ -21792,7 +21804,7 @@ choosög_°ride_‹_MLFQ
 °ride_queue_size
 ){
 
-760 
+765 
 p
  = 
 ±abÀ
@@ -21802,15 +21814,15 @@ p
 °ride_idx_to_be_run
 ];
 
-763 
+768 
 °ride_is_£À˘ed
  = 0;
 
-764 
+769 
 choosög_°ride_‹_MLFQ
  = 0;
 
-773 if(
+778 if(
 p
 ->
 °©e
@@ -21818,13 +21830,13 @@ p
 RUNNABLE
 
 
-774 && 
+779 && 
 p
 ->
 ˝u_sh¨e
  == 0
 
-775 && 
+780 && 
 p
 ->
 Àvñ_of_MLFQ
@@ -21834,7 +21846,7 @@ p
 queue_Àvñ_©_mo°
 ){
 
-778 
+783 
 ±abÀ
 .
 queue_Àvñ_©_mo°
@@ -21844,7 +21856,7 @@ p
 Àvñ_of_MLFQ
  <Ötable.queue_level_at_most ?Ö->level_of_MLFQ :Ötable.queue_level_at_most;
 
-779 
+784 
 ±abÀ
 .
 mö_of_run_¥oc_Àvñ
@@ -21852,11 +21864,11 @@ mö_of_run_¥oc_Àvñ
 queue_Àvñ_©_mo°
 ;
 
-783 
+788 
 choosög_°ride_‹_MLFQ
  = 0;
 
-791 
+796 
 ¥oc
 * 
 p_mlfq
@@ -21864,25 +21876,25 @@ p_mlfq
 p
 ;
 
-794 
+799 
 bef‹e_MLFQ_u£d_tick
 ;
 
-800 #ifde‡
+805 #ifde‡
 STRIDE_DEBUGGING
 
 
-802 
+807 
 	`˝rötf
 ("ContChange. ");
 
-803 
+808 
 	`˝rötf
 ("°ride_is_£À˘ed:%d, ", 
 °ride_is_£À˘ed
 );
 
-804 
+809 
 	`˝rötf
 ("¥oc_«me:%s, ", 
 p
@@ -21890,7 +21902,7 @@ p
 «me
 );
 
-805 
+810 
 	`˝rötf
 ("¥oc_id:%d, ", 
 p
@@ -21898,7 +21910,7 @@ p
 pid
 );
 
-806 
+811 
 	`˝rötf
 ("MLFQ_tick:%d, ", 
 ±abÀ
@@ -21910,7 +21922,7 @@ p
 Àvñ_of_MLFQ
 );
 
-807 
+812 
 	`˝rötf
 ("Àvñ:%d, ", 
 p
@@ -21918,7 +21930,7 @@ p
 Àvñ_of_MLFQ
 );
 
-808 
+813 
 	`˝rötf
 ("°ride_tick:%d, ", 
 ±abÀ
@@ -21926,7 +21938,7 @@ p
 °ride_tick_u£d
 );
 
-809 
+814 
 	`˝rötf
 ("˝u_sh¨e:%d, ", 
 p
@@ -21934,7 +21946,7 @@ p
 ˝u_sh¨e
 );
 
-810 
+815 
 	`˝rötf
 ("sum_˝u_sh¨e: %d, ", 
 ±abÀ
@@ -21942,7 +21954,7 @@ p
 sum_˝u_sh¨e
 );
 
-811 
+816 
 	`˝rötf
 ("°ride:%d, ", 
 p
@@ -21950,7 +21962,7 @@ p
 °ride
 );
 
-812 
+817 
 	`˝rötf
 ("°ride_cou¡:%d\n", 
 p
@@ -21958,23 +21970,23 @@ p
 °ride_cou¡
 );
 
-815 #ifde‡
+820 #ifde‡
 THREAD_DEBUGGING
 
 
-826 
+831 
 ¥oc
  = 
 p
 ;
 
-827 
+832 
 	`swôchuvm
 (
 p
 );
 
-828 
+833 
 p
 ->
 °©e
@@ -21982,7 +21994,7 @@ p
 RUNNING
 ;
 
-832 
+837 
 bef‹e_MLFQ_u£d_tick
  = 
 ±abÀ
@@ -21990,7 +22002,7 @@ bef‹e_MLFQ_u£d_tick
 MLFQ_tick_u£d
 ;
 
-834 
+839 
 	`swtch
 (&
 ˝u
@@ -22002,21 +22014,21 @@ p
 c⁄ãxt
 );
 
-835 
+840 
 	`swôchkvm
 ();
 
-844 if(
+849 if(
 °ride_is_£À˘ed
  == 0
 
-845 && 
+850 && 
 ±abÀ
 .
 sum_˝u_sh¨e
  != 0
 
-846 && 
+851 && 
 p
 ->
 °©e
@@ -22024,13 +22036,13 @@ p
 RUNNABLE
 
 
-847 && 
+852 && 
 p
 ->
 ˝u_sh¨e
  == 0
 
-848 && 
+853 && 
 ±abÀ
 .
 MLFQ_tick_u£d
@@ -22038,37 +22050,37 @@ MLFQ_tick_u£d
 bef‹e_MLFQ_u£d_tick
 )
 
-855 
+860 
 choosög_°ride_‹_MLFQ
  = 0;
 
-859 
+864 
 p
 --;
 
-861 
+866 
 choosög_°ride_‹_MLFQ
  = 1;
 
-864 
+869 
 ¥oc
  = 0;
 
-866 if(
+871 if(
 °ride_is_£À˘ed
 ){
 
-869 
+874 
 p
  = 
 p_mlfq
 ;
 
-870 
+875 
 p
 --;
 
-874 if(
+879 if(
 ±abÀ
 .
 mö_of_run_¥oc_Àvñ
@@ -22076,13 +22088,13 @@ mö_of_run_¥oc_Àvñ
 NMLFQ
  - 1) {
 
-877 
+882 
 ±abÀ
 .
 queue_Àvñ_©_mo°
 ++;
 
-882 
+887 
 	`ªÀa£
 (&
 ±abÀ
@@ -22090,19 +22102,19 @@ queue_Àvñ_©_mo°
 lock
 );
 
-884 
+889 
 	}
 }
 
-894 
+899 
 	$sched
 ()
 
-896 
+901 
 öã«
 ;
 
-898 if(!
+903 if(!
 	`hﬁdög
 (&
 ±abÀ
@@ -22110,21 +22122,21 @@ lock
 lock
 ))
 
-899 
+904 
 	`∑nic
 ("schedÖtable.lock");
 
-900 if(
+905 if(
 ˝u
 ->
 n˛i
  != 1)
 
-901 
+906 
 	`∑nic
 ("schedÜocks");
 
-902 if(
+907 if(
 ¥oc
 ->
 °©e
@@ -22132,27 +22144,27 @@ n˛i
 RUNNING
 )
 
-903 
+908 
 	`∑nic
 ("schedÑunning");
 
-904 if(
+909 if(
 	`ªadeÊags
 ()&
 FL_IF
 )
 
-905 
+910 
 	`∑nic
 ("sched interruptible");
 
-907 
+912 
 öã«
  = 
 ˝u
 ->intena;
 
-908 
+913 
 	`swtch
 (&
 ¥oc
@@ -22164,31 +22176,31 @@ c⁄ãxt
 scheduÀr
 );
 
-912 if(
+917 if(
 ¥oc
 ){
 
-913 
+918 
 ¥oc
 ->
 time_qu™tum_u£d
  = 0;
 
-916 
+921 
 ˝u
 ->
 öã«
  = intena;
 
-917 
+922 
 	}
 }
 
-921 
+926 
 	$yõld
 ()
 
-923 
+928 
 	`acquúe
 (&
 ±abÀ
@@ -22196,7 +22208,7 @@ time_qu™tum_u£d
 lock
 );
 
-924 
+929 
 ¥oc
 ->
 °©e
@@ -22204,11 +22216,11 @@ lock
 RUNNABLE
 ;
 
-925 
+930 
 	`sched
 ();
 
-926 
+931 
 	`ªÀa£
 (&
 ±abÀ
@@ -22216,31 +22228,31 @@ RUNNABLE
 lock
 );
 
-927 
+932 
 	}
 }
 
-930 
+935 
 	$sys_yõld
 (){
 
-931 
+936 
 	`yõld
 ();
 
-933 
+938 
 	}
 }
 
-938 
+943 
 	$f‹kªt
 ()
 
-940 
+945 
 fú°
  = 1;
 
-942 
+947 
 	`ªÀa£
 (&
 ±abÀ
@@ -22248,31 +22260,31 @@ fú°
 lock
 );
 
-944 if(
+949 if(
 fú°
 ){
 
-948 
+953 
 fú°
  = 0;
 
-949 
+954 
 	`iöô
 (
 ROOTDEV
 );
 
-950 
+955 
 	`öôlog
 (
 ROOTDEV
 );
 
-954 
+959 
 	}
 }
 
-959 
+964 
 	$¶ìp
 (*
 ch™
@@ -22282,23 +22294,23 @@ ch™
 lk
 )
 
-961 if(
+966 if(
 ¥oc
  == 0)
 
-962 
+967 
 	`∑nic
 ("sleep");
 
-964 if(
+969 if(
 lk
  == 0)
 
-965 
+970 
 	`∑nic
 ("sleep withoutÜk");
 
-973 if(
+978 if(
 lk
  !&
 ±abÀ
@@ -22306,7 +22318,7 @@ lk
 lock
 ){
 
-974 
+979 
 	`acquúe
 (&
 ±abÀ
@@ -22314,19 +22326,19 @@ lock
 lock
 );
 
-975 
+980 
 	`ªÀa£
 (
 lk
 );
 
-979 
+984 
 ¥oc
 ->
 ch™
  = chan;
 
-980 
+985 
 ¥oc
 ->
 °©e
@@ -22334,17 +22346,17 @@ ch™
 SLEEPING
 ;
 
-981 
+986 
 	`sched
 ();
 
-984 
+989 
 ¥oc
 ->
 ch™
  = 0;
 
-987 if(
+992 if(
 lk
  !&
 ±abÀ
@@ -22352,7 +22364,7 @@ lk
 lock
 ){
 
-988 
+993 
 	`ªÀa£
 (&
 ±abÀ
@@ -22360,29 +22372,29 @@ lock
 lock
 );
 
-989 
+994 
 	`acquúe
 (
 lk
 );
 
-991 
+996 
 	}
 }
 
-997 
+1002 
 	$wakeup1
 (*
 ch™
 )
 
-999 
+1004 
 ¥oc
  *
 p
 ;
 
-1001 
+1006 
 p
  = 
 ±abÀ
@@ -22392,7 +22404,7 @@ p
 NPROC
 ];Ö++)
 
-1002 if(
+1007 if(
 p
 ->
 °©e
@@ -22402,7 +22414,7 @@ SLEEPING
 ch™
  == chan)
 
-1003 
+1008 
 p
 ->
 °©e
@@ -22410,17 +22422,17 @@ p
 RUNNABLE
 ;
 
-1004 
+1009 
 	}
 }
 
-1008 
+1013 
 	$wakeup
 (*
 ch™
 )
 
-1010 
+1015 
 	`acquúe
 (&
 ±abÀ
@@ -22428,13 +22440,13 @@ ch™
 lock
 );
 
-1011 
+1016 
 	`wakeup1
 (
 ch™
 );
 
-1012 
+1017 
 	`ªÀa£
 (&
 ±abÀ
@@ -22442,23 +22454,23 @@ ch™
 lock
 );
 
-1013 
+1018 
 	}
 }
 
-1019 
+1024 
 	$kûl
 (
 pid
 )
 
-1021 
+1026 
 ¥oc
  *
 p
 ;
 
-1023 
+1028 
 	`acquúe
 (&
 ±abÀ
@@ -22466,7 +22478,7 @@ p
 lock
 );
 
-1024 
+1029 
 p
  = 
 ±abÀ
@@ -22476,19 +22488,19 @@ p
 NPROC
 ];Ö++){
 
-1025 if(
+1030 if(
 p
 ->
 pid
  ==Öid){
 
-1026 
+1031 
 p
 ->
 kûÀd
  = 1;
 
-1028 if(
+1033 if(
 p
 ->
 °©e
@@ -22496,7 +22508,7 @@ p
 SLEEPING
 )
 
-1029 
+1034 
 p
 ->
 °©e
@@ -22504,7 +22516,7 @@ p
 RUNNABLE
 ;
 
-1030 
+1035 
 	`ªÀa£
 (&
 ±abÀ
@@ -22512,7 +22524,7 @@ RUNNABLE
 lock
 );
 
-1034 
+1039 
 	`ªÀa£
 (&
 ±abÀ
@@ -22520,63 +22532,63 @@ lock
 lock
 );
 
-1036 
+1041 
 	}
 }
 
-1043 
+1048 
 	$¥ocdump
 ()
 
-1045 *
+1050 *
 °©es
 [] = {
 
-1046 [
+1051 [
 UNUSED
 ] "unused",
 
-1047 [
+1052 [
 EMBRYO
 ] "embryo",
 
-1048 [
+1053 [
 SLEEPING
 ] "sleep ",
 
-1049 [
+1054 [
 RUNNABLE
 ] "runble",
 
-1050 [
+1055 [
 RUNNING
 ] "run ",
 
-1051 [
+1056 [
 ZOMBIE
 ] "zombie"
 
-1053 
+1058 
 i
 ;
 
-1054 
+1059 
 ¥oc
  *
 p
 ;
 
-1055 *
+1060 *
 °©e
 ;
 
-1056 
+1061 
 uöt
  
 pc
 [10];
 
-1058 
+1063 
 p
  = 
 ±abÀ
@@ -22586,7 +22598,7 @@ p
 NPROC
 ];Ö++){
 
-1059 if(
+1064 if(
 p
 ->
 °©e
@@ -22594,7 +22606,7 @@ p
 UNUSED
 )
 
-1061 if(
+1066 if(
 p
 ->
 °©e
@@ -22604,7 +22616,7 @@ p
 °©es
 ) && states[p->state])
 
-1062 
+1067 
 °©e
  = 
 °©es
@@ -22612,11 +22624,11 @@ p
 p
 ->state];
 
-1064 
+1069 
 °©e
  = "???";
 
-1065 
+1070 
 	`˝rötf
 ("%d %†%s", 
 p
@@ -22628,7 +22640,7 @@ pid
 «me
 );
 
-1066 if(
+1071 if(
 p
 ->
 °©e
@@ -22636,7 +22648,7 @@ p
 SLEEPING
 ){
 
-1067 
+1072 
 	`gëˇŒîpcs
 ((
 uöt
@@ -22650,13 +22662,13 @@ ebp
 pc
 );
 
-1068 
+1073 
 i
 =0; i<10 && 
 pc
 [i] != 0; i++)
 
-1069 
+1074 
 	`˝rötf
 (" %p", 
 pc
@@ -22664,25 +22676,25 @@ pc
 i
 ]);
 
-1071 
+1076 
 	`˝rötf
 ("\n");
 
-1073 
+1078 
 	}
 }
 
-1077 
+1082 
 	$¥i‹ôy_boo°
 (){
 
-1078 
+1083 
 ¥oc
  *
 p
 ;
 
-1082 
+1087 
 p
  = 
 ±abÀ
@@ -22692,65 +22704,65 @@ p
 NPROC
 ];Ö++){
 
-1083 
+1088 
 p
 ->
 Àvñ_of_MLFQ
  = 0;
 
-1084 
+1089 
 p
 ->
 tick_u£d
  = 0;
 
-1087 
+1092 
 p
 ->
 time_qu™tum_u£d
  = 0;
 
-1090 
+1095 
 ±abÀ
 .
 MLFQ_tick_u£d
  = 0;
 
-1092 
+1097 
 	}
 }
 
-1096 
+1101 
 	$£t_˝u_sh¨e
 (
 ªquúed
 )
 
-1098 
+1103 
 ˝u_sh¨e_Æªady_£t
 ;
 
-1099 
+1104 
 desúed_sum_˝u_sh¨e
 ;
 
-1100 c⁄° 
+1105 c⁄° 
 MIN_CPU_SHARE
  = 1;
 
-1101 c⁄° 
+1106 c⁄° 
 MAX_CPU_SHARE
  = 80;
 
-1102 
+1107 
 is_√w
 ;
 
-1103 
+1108 
 idx
 ;
 
-1106 if–! (
+1111 if–! (
 MIN_CPU_SHARE
  <
 ªquúed
@@ -22758,11 +22770,11 @@ MIN_CPU_SHARE
 MAX_CPU_SHARE
 ) )
 
-1107 
+1112 
 ex˚±i⁄
 ;
 
-1110 
+1115 
 ˝u_sh¨e_Æªady_£t
  = 
 ¥oc
@@ -22770,19 +22782,19 @@ ex˚±i⁄
 ˝u_sh¨e
 ;
 
-1111 if(
+1116 if(
 ˝u_sh¨e_Æªady_£t
  == 0){
 
-1112 
+1117 
 is_√w
  = 1;
 
-1114 
+1119 
 is_√w
  = 0;
 
-1117 
+1122 
 desúed_sum_˝u_sh¨e
  = 
 ±abÀ
@@ -22794,17 +22806,17 @@ sum_˝u_sh¨e
 ªquúed
 ;
 
-1119 if(
+1124 if(
 desúed_sum_˝u_sh¨e
  > 
 MAX_CPU_SHARE
  )
 
-1120 
+1125 
 ex˚±i⁄
 ;
 
-1123 
+1128 
 ±abÀ
 .
 sum_˝u_sh¨e
@@ -22812,7 +22824,7 @@ sum_˝u_sh¨e
 desúed_sum_˝u_sh¨e
 ;
 
-1124 
+1129 
 ¥oc
 ->
 ˝u_sh¨e
@@ -22820,7 +22832,7 @@ desúed_sum_˝u_sh¨e
 ªquúed
 ;
 
-1125 
+1130 
 ¥oc
 ->
 °ride
@@ -22830,17 +22842,17 @@ NSTRIDE
 ªquúed
 ;
 
-1127 if(
+1132 if(
 is_√w
 ){
 
-1132 if(
+1137 if(
 ±abÀ
 .
 °ride_queue
 [1]){
 
-1133 
+1138 
 ¥oc
 ->
 °ride_cou¡
@@ -22850,7 +22862,7 @@ is_√w
 °ride_queue
 [1]->stride_count;
 
-1137 
+1142 
 idx
  = ++
 ±abÀ
@@ -22858,11 +22870,11 @@ idx
 °ride_queue_size
 ;
 
-1138 
+1143 
 idx
  != 1){
 
-1139 
+1144 
 ±abÀ
 .
 °ride_queue
@@ -22870,11 +22882,11 @@ idx
 idx
 ] =Ötable.stride_queue[idx/2];
 
-1140 
+1145 
 idx
  /= 2;
 
-1142 
+1147 
 ±abÀ
 .
 °ride_queue
@@ -22884,39 +22896,39 @@ idx
 ¥oc
 ;
 
-1149 
+1154 
 ex˚±i⁄
 :
 
-1151 
+1156 
 	}
 }
 
-1154 
+1159 
 	$sys_£t_˝u_sh¨e
 ()
 
-1156 
+1161 
 ªquúed
 ;
 
-1158 if(
+1163 if(
 	`¨göt
 (0, &
 ªquúed
 ) < 0){
 
-1162  
+1167  
 	`£t_˝u_sh¨e
 (
 ªquúed
 );
 
-1163 
+1168 
 	}
 }
 
-1166 
+1171 
 thªad_¸óã
 (
 thªad_t
@@ -22928,35 +22940,35 @@ thªad
 ¨g
 )
 
-1169 
+1174 
 	gi
 ;
 
-1170 
+1175 
 ¥oc
  *
 	g≈
 ;
 
-1171 ** 
+1176 ** 
 	g¨g_±r
 ;
 
-1175 if((
+1180 if((
 	g≈
  = 
 Ælo˝roc
 ()) == 0){
 
-1176 #ifde‡
+1181 #ifde‡
 THREAD_DEBUGGING
 
 
-1177 
+1182 
 ˝rötf
 ("(thread_create)Érror:állocproc()\n");
 
-1183 
+1188 
 	g≈
 ->
 	gpid
@@ -22966,7 +22978,7 @@ THREAD_DEBUGGING
 pid
 ;
 
-1184 
+1189 
 	g≈
 ->
 	gtid
@@ -22974,7 +22986,7 @@ pid
 √xt_thªad_id
 ++;
 
-1185 *
+1190 *
 	gthªad
  = 
 ≈
@@ -22982,7 +22994,7 @@ pid
 tid
 ;
 
-1188 
+1193 
 	g≈
 ->
 	gpgdú
@@ -22992,7 +23004,7 @@ tid
 pgdú
 ;
 
-1189 
+1194 
 	g≈
 ->
 	gsz
@@ -23002,7 +23014,7 @@ pgdú
 sz
 ;
 
-1190 
+1195 
 	g≈
 ->
 	g∑ª¡
@@ -23010,7 +23022,7 @@ sz
 ¥oc
 ;
 
-1191 *
+1196 *
 	g≈
 ->
 	gtf
@@ -23020,7 +23032,7 @@ sz
 tf
 ;
 
-1194 
+1199 
 	g≈
 ->
 	gpgdú_ªf_idx
@@ -23030,13 +23042,13 @@ tf
 pgdú_ªf_idx
 ;
 
-1195 
+1200 
 acquúe
 (&
 thªad_lock
 );
 
-1196 
+1201 
 	gpgdú_ªf
 [
 ≈
@@ -23044,13 +23056,13 @@ thªad_lock
 pgdú_ªf_idx
 ]++;
 
-1197 
+1202 
 ªÀa£
 (&
 thªad_lock
 );
 
-1200 
+1205 
 	g≈
 ->
 	gtf
@@ -23058,13 +23070,13 @@ thªad_lock
 	góx
  = 0;
 
-1202 
+1207 
 	gi
  = 0; i < 
 	gNOFILE
 ; i++)
 
-1203 if(
+1208 if(
 	g¥oc
 ->
 	gofûe
@@ -23072,7 +23084,7 @@ thªad_lock
 i
 ])
 
-1204 
+1209 
 	g≈
 ->
 	gofûe
@@ -23086,7 +23098,7 @@ fûedup
 ofûe
 [i]);
 
-1205 
+1210 
 	g≈
 ->
 	gcwd
@@ -23098,7 +23110,7 @@ idup
 cwd
 );
 
-1207 
+1212 
 ß„°r˝y
 (
 ≈
@@ -23108,7 +23120,7 @@ cwd
 ¥oc
 ->name, (proc->name));
 
-1210 
+1215 
 	g≈
 ->
 	gsz
@@ -23120,7 +23132,7 @@ PGROUNDUP
 sz
 );
 
-1211 if((
+1216 if((
 	g≈
 ->
 	gsz
@@ -23136,19 +23148,19 @@ sz
 PGSIZE
 )) == 0) {
 
-1212 #ifde‡
+1217 #ifde‡
 THREAD_DEBUGGING
 
 
-1213 
+1218 
 ˝rötf
 ("(thread_create)Érror:állocuvm()\n");
 
-1214 
+1219 
 ˝rötf
 ("** debugging information **\n");
 
-1215 
+1220 
 ˝rötf
 ("Öroc->sz:%d\n", 
 ¥oc
@@ -23156,7 +23168,7 @@ THREAD_DEBUGGING
 sz
 );
 
-1220 
+1225 
 ˛óΩãu
 (
 ≈
@@ -23168,13 +23180,13 @@ sz
 PGSIZE
 ));
 
-1222 
+1227 
 acquúe
 (&
 thªad_lock
 );
 
-1223 
+1228 
 	g¥oc
 ->
 	gsz
@@ -23184,13 +23196,19 @@ thªad_lock
 sz
 ;
 
-1225 
+1231 
+	g¥oc
+->
+	gnum_of_thªads
+++;
+
+1232 
 ªÀa£
 (&
 thªad_lock
 );
 
-1228 
+1235 
 	g≈
 ->
 	gtf
@@ -23202,7 +23220,7 @@ uöt
 °¨t_routöe
 ;
 
-1229 
+1236 
 	g≈
 ->
 	gtf
@@ -23214,7 +23232,7 @@ uöt
 sz
  - 8;
 
-1231 
+1238 
 	g¨g_±r
  = (**)(
 ≈
@@ -23224,11 +23242,11 @@ tf
 e•
 );
 
-1232 *
+1239 *
 	g¨g_±r
  = (*)0xDEADDEAD;
 
-1234 
+1241 
 	g¨g_±r
  = (**)(
 ≈
@@ -23238,13 +23256,13 @@ tf
 e•
  + 4);
 
-1235 *
+1242 *
 	g¨g_±r
  = 
 ¨g
 ;
 
-1237 
+1244 
 acquúe
 (&
 ±abÀ
@@ -23252,7 +23270,7 @@ acquúe
 lock
 );
 
-1239 
+1246 
 	g≈
 ->
 	g°©e
@@ -23260,7 +23278,7 @@ lock
 RUNNABLE
 ;
 
-1243 
+1250 
 ªÀa£
 (&
 ±abÀ
@@ -23268,43 +23286,43 @@ RUNNABLE
 lock
 );
 
-1250 
+1257 
 	$sys_thªad_¸óã
 ()
 
-1252 
+1259 
 thªad_t
  * 
 thªad
 ;
 
-1253 * (*
+1260 * (*
 °¨t_routöe
 )(*);
 
-1254 * 
+1261 * 
 ¨g
 ;
 
-1256 if(
+1263 if(
 	`¨g±r
 (0, (**)&
 thªad
 , (thread)) < 0){
 
-1259 if(
+1266 if(
 	`¨g±r
 (1, (**)&
 °¨t_routöe
 , (start_routine)) < 0){
 
-1262 if(
+1269 if(
 	`¨g±r
 (2, (**)&
 ¨g
 , (arg)) < 0){
 
-1266  
+1273  
 	`thªad_¸óã
 (
 thªad
@@ -23314,43 +23332,43 @@ thªad
 ¨g
 );
 
-1267 
+1274 
 	}
 }
 
-1270 
+1277 
 	$thªad_exô
 (*
 ªtvÆ
 )
 
-1272 
+1279 
 ¥oc
  *
 p
 ;
 
-1273 
+1280 
 fd
 ;
 
-1275 if(
+1282 if(
 ¥oc
  =
 öô¥oc
 )
 
-1276 
+1283 
 	`∑nic
 ("initÉxiting");
 
-1279 
+1286 
 fd
  = 0; fd < 
 NOFILE
 ; fd++){
 
-1280 if(
+1287 if(
 ¥oc
 ->
 ofûe
@@ -23358,7 +23376,7 @@ ofûe
 fd
 ]){
 
-1281 
+1288 
 	`fûe˛o£
 (
 ¥oc
@@ -23368,7 +23386,7 @@ ofûe
 fd
 ]);
 
-1282 
+1289 
 ¥oc
 ->
 ofûe
@@ -23376,11 +23394,11 @@ ofûe
 fd
 ] = 0;
 
-1286 
+1293 
 	`begö_›
 ();
 
-1287 
+1294 
 	`ùut
 (
 ¥oc
@@ -23388,17 +23406,17 @@ fd
 cwd
 );
 
-1288 
+1295 
 	`íd_›
 ();
 
-1289 
+1296 
 ¥oc
 ->
 cwd
  = 0;
 
-1291 
+1298 
 	`acquúe
 (&
 ±abÀ
@@ -23406,7 +23424,7 @@ cwd
 lock
 );
 
-1293 
+1300 
 ¥oc
 ->
 thªad_ªtu∫
@@ -23414,17 +23432,17 @@ thªad_ªtu∫
 ªtvÆ
 ;
 
-1296 if(
+1303 if(
 ¥oc
 ->
 ˝u_sh¨e
  != 0){
 
-1297 
+1304 
 	`°ride_queue_dñëe
 ();
 
-1301 
+1308 
 	`wakeup1
 (
 ¥oc
@@ -23432,7 +23450,7 @@ thªad_ªtu∫
 ∑ª¡
 );
 
-1304 
+1311 
 p
  = 
 ±abÀ
@@ -23442,7 +23460,7 @@ p
 NPROC
 ];Ö++){
 
-1305 if(
+1312 if(
 p
 ->
 ∑ª¡
@@ -23450,7 +23468,7 @@ p
 ¥oc
 ){
 
-1306 
+1313 
 p
 ->
 ∑ª¡
@@ -23458,7 +23476,7 @@ p
 öô¥oc
 ;
 
-1307 if(
+1314 if(
 p
 ->
 °©e
@@ -23466,13 +23484,13 @@ p
 ZOMBIE
 )
 
-1308 
+1315 
 	`wakeup1
 (
 öô¥oc
 );
 
-1313 
+1320 
 ¥oc
 ->
 °©e
@@ -23480,43 +23498,43 @@ ZOMBIE
 ZOMBIE
 ;
 
-1314 
+1321 
 	`sched
 ();
 
-1315 
+1322 
 	`∑nic
 ("zombieÉxit");
 
-1318 
+1325 
 	}
 }
 
-1321 
+1328 
 	$sys_thªad_exô
 ()
 
-1323 *
+1330 *
 ªtvÆ
 ;
 
-1324 if(
+1331 if(
 	`¨g±r
 (0, (**)&
 ªtvÆ
 , (retval)) < 0){
 
-1328 
+1335 
 	`thªad_exô
 (
 ªtvÆ
 );
 
-1330 
+1337 
 	}
 }
 
-1333 
+1340 
 	$thªad_joö
 (
 thªad_t
@@ -23526,17 +23544,17 @@ thªad
 ªtvÆ
 )
 
-1336 
+1343 
 ¥oc
  *
 p
 ;
 
-1337 
+1344 
 havekids
 ;
 
-1339 
+1346 
 	`acquúe
 (&
 ±abÀ
@@ -23544,11 +23562,11 @@ havekids
 lock
 );
 
-1342 
+1349 
 havekids
  = 0;
 
-1343 
+1350 
 p
  = 
 ±abÀ
@@ -23558,7 +23576,7 @@ p
 NPROC
 ];Ö++){
 
-1344 if(
+1351 if(
 p
 ->
 ∑ª¡
@@ -23570,11 +23588,11 @@ tid
 thªad
 )
 
-1346 
+1353 
 havekids
  = 1;
 
-1347 if(
+1354 if(
 p
 ->
 °©e
@@ -23582,7 +23600,7 @@ p
 ZOMBIE
 ){
 
-1348 *
+1355 *
 ªtvÆ
  = 
 p
@@ -23590,7 +23608,7 @@ p
 thªad_ªtu∫
 ;
 
-1351 i‡(
+1358 i‡(
 pgdú_ªf
 [
 p
@@ -23598,15 +23616,15 @@ p
 pgdú_ªf_idx
 ] > 1) {
 
-1352 
+1359 
 √wsz
 ;
 
-1353 #ifde‡
+1360 #ifde‡
 THREAD_DEBUGGING
 
 
-1362 
+1369 
 √wsz
  = 
 	`dóŒocuvm
@@ -23620,7 +23638,7 @@ sz
 PGSIZE
 );
 
-1363 
+1370 
 p
 ->
 ∑ª¡
@@ -23630,13 +23648,33 @@ sz
 √wsz
  <Ö->parent->sz ?Çewsz :Ö->parent->sz;
 
-1365 
+1372 
+	`acquúe
+(&
+thªad_lock
+);
+
+1374 
+p
+->
+∑ª¡
+->
+num_of_thªads
+--;
+
+1375 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+1376 
 	`˛ór_¥oc
 (
 p
 );
 
-1367 
+1379 
 	`ªÀa£
 (&
 ±abÀ
@@ -23644,7 +23682,7 @@ p
 lock
 );
 
-1373 if(!
+1385 if(!
 havekids
  || 
 ¥oc
@@ -23652,7 +23690,7 @@ havekids
 kûÀd
 ){
 
-1374 
+1386 
 	`ªÀa£
 (&
 ±abÀ
@@ -23660,7 +23698,7 @@ kûÀd
 lock
 );
 
-1379 
+1391 
 	`¶ìp
 (
 ¥oc
@@ -23670,37 +23708,37 @@ lock
 lock
 );
 
-1383 
+1395 
 	}
 }
 
-1386 
+1398 
 	$sys_thªad_joö
 ()
 
-1388 
+1400 
 thªad_t
  
 thªad
 ;
 
-1389 **
+1401 **
 ªtvÆ
 ;
 
-1391 if(
+1403 if(
 	`¨göt
 (0, (*)&
 thªad
 ) < 0){
 
-1394 if(
+1406 if(
 	`¨g±r
 (1, (**)&
 ªtvÆ
 , (retval)) < 0){
 
-1398  
+1410  
 	`thªad_joö
 (
 thªad
@@ -23708,7 +23746,7 @@ thªad
 ªtvÆ
 );
 
-1399 
+1411 
 	}
 }
 
@@ -23954,6 +23992,10 @@ thªad_t
 
 80 * 
 	mthªad_ªtu∫
+;
+
+83 
+	mnum_of_thªads
 ;
 
 	@proc_temp.c
@@ -34274,7 +34316,53 @@ xticks
 	~"u£r.h
 "
 
-14 
+21 
+	#N_THREAD
+ 10
+
+	)
+
+22 * 
+	$öföôe_thªad
+(*
+¨g
+) {
+
+23 
+	`¥ötf
+(1, " ** Iámá %dth inföôêthªad. ** \n", ()
+¨g
+);
+
+25 
+	`thªad_exô
+(0);
+
+26 
+	}
+}
+
+28 * 
+	$föôe_thªad
+(*
+¨g
+) {
+
+29 
+	`¥ötf
+(1, " ** Iámá %dth föôêthªad. ** \n", ()
+¨g
+);
+
+30 
+	`thªad_exô
+(0);
+
+31 
+	}
+}
+
+34 
 	$maö
 (
 ¨gc
@@ -34282,15 +34370,53 @@ xticks
 ¨gv
 [])
 
-16 
-	`__asm__
-("int $128");
+36 
+thªad_t
+ 
+tids
+[
+N_THREAD
+];
 
-17 
+37 
+i
+;
+
+38 
+i
+ = 0; i < 
+N_THREAD
+; ++i) {
+
+39 
+	`thªad_¸óã
+(&
+tids
+[
+i
+], 
+föôe_thªad
+, (*)i);
+
+42 
+i
+ = 0; i < 
+N_THREAD
+; ++i) {
+
+43 
+	`thªad_joö
+(
+tids
+[
+i
+], (**)0);
+
+47 
 	`exô
 ();
 
-18 
+48 
 	}
 }
 
@@ -44719,6 +44845,8194 @@ gëÀv
 £t_˝u_sh¨e
 )
 
+	@vectors.S
+
+1 #gíî©ed 
+by
+ 
+ve˘‹s
+.
+∂
+ - dÿ
+nŸ
+ 
+edô
+
+
+3 .
+globl
+ 
+	gÆ…øps
+
+
+4 .
+globl
+ 
+ve˘‹0
+
+
+5 
+	gve˘‹0
+:
+
+6 
+pushl
+ 
+$0
+
+
+7 
+pushl
+ 
+$0
+
+
+8 
+jmp
+ 
+Æ…øps
+
+
+9 .
+globl
+ 
+ve˘‹1
+
+
+10 
+ve˘‹1
+:
+
+11 
+pushl
+ 
+$0
+
+
+12 
+pushl
+ 
+$1
+
+
+13 
+jmp
+ 
+Æ…øps
+
+
+14 .
+globl
+ 
+ve˘‹2
+
+
+15 
+ve˘‹2
+:
+
+16 
+pushl
+ 
+$0
+
+
+17 
+pushl
+ 
+$2
+
+
+18 
+jmp
+ 
+Æ…øps
+
+
+19 .
+globl
+ 
+ve˘‹3
+
+
+20 
+ve˘‹3
+:
+
+21 
+pushl
+ 
+$0
+
+
+22 
+pushl
+ 
+$3
+
+
+23 
+jmp
+ 
+Æ…øps
+
+
+24 .
+globl
+ 
+ve˘‹4
+
+
+25 
+ve˘‹4
+:
+
+26 
+pushl
+ 
+$0
+
+
+27 
+pushl
+ 
+$4
+
+
+28 
+jmp
+ 
+Æ…øps
+
+
+29 .
+globl
+ 
+ve˘‹5
+
+
+30 
+ve˘‹5
+:
+
+31 
+pushl
+ 
+$0
+
+
+32 
+pushl
+ 
+$5
+
+
+33 
+jmp
+ 
+Æ…øps
+
+
+34 .
+globl
+ 
+ve˘‹6
+
+
+35 
+ve˘‹6
+:
+
+36 
+pushl
+ 
+$0
+
+
+37 
+pushl
+ 
+$6
+
+
+38 
+jmp
+ 
+Æ…øps
+
+
+39 .
+globl
+ 
+ve˘‹7
+
+
+40 
+ve˘‹7
+:
+
+41 
+pushl
+ 
+$0
+
+
+42 
+pushl
+ 
+$7
+
+
+43 
+jmp
+ 
+Æ…øps
+
+
+44 .
+globl
+ 
+ve˘‹8
+
+
+45 
+ve˘‹8
+:
+
+46 
+pushl
+ 
+$8
+
+
+47 
+jmp
+ 
+Æ…øps
+
+
+48 .
+globl
+ 
+ve˘‹9
+
+
+49 
+ve˘‹9
+:
+
+50 
+pushl
+ 
+$0
+
+
+51 
+pushl
+ 
+$9
+
+
+52 
+jmp
+ 
+Æ…øps
+
+
+53 .
+globl
+ 
+ve˘‹10
+
+
+54 
+ve˘‹10
+:
+
+55 
+pushl
+ 
+$10
+
+
+56 
+jmp
+ 
+Æ…øps
+
+
+57 .
+globl
+ 
+ve˘‹11
+
+
+58 
+ve˘‹11
+:
+
+59 
+pushl
+ 
+$11
+
+
+60 
+jmp
+ 
+Æ…øps
+
+
+61 .
+globl
+ 
+ve˘‹12
+
+
+62 
+ve˘‹12
+:
+
+63 
+pushl
+ 
+$12
+
+
+64 
+jmp
+ 
+Æ…øps
+
+
+65 .
+globl
+ 
+ve˘‹13
+
+
+66 
+ve˘‹13
+:
+
+67 
+pushl
+ 
+$13
+
+
+68 
+jmp
+ 
+Æ…øps
+
+
+69 .
+globl
+ 
+ve˘‹14
+
+
+70 
+ve˘‹14
+:
+
+71 
+pushl
+ 
+$14
+
+
+72 
+jmp
+ 
+Æ…øps
+
+
+73 .
+globl
+ 
+ve˘‹15
+
+
+74 
+ve˘‹15
+:
+
+75 
+pushl
+ 
+$0
+
+
+76 
+pushl
+ 
+$15
+
+
+77 
+jmp
+ 
+Æ…øps
+
+
+78 .
+globl
+ 
+ve˘‹16
+
+
+79 
+ve˘‹16
+:
+
+80 
+pushl
+ 
+$0
+
+
+81 
+pushl
+ 
+$16
+
+
+82 
+jmp
+ 
+Æ…øps
+
+
+83 .
+globl
+ 
+ve˘‹17
+
+
+84 
+ve˘‹17
+:
+
+85 
+pushl
+ 
+$17
+
+
+86 
+jmp
+ 
+Æ…øps
+
+
+87 .
+globl
+ 
+ve˘‹18
+
+
+88 
+ve˘‹18
+:
+
+89 
+pushl
+ 
+$0
+
+
+90 
+pushl
+ 
+$18
+
+
+91 
+jmp
+ 
+Æ…øps
+
+
+92 .
+globl
+ 
+ve˘‹19
+
+
+93 
+ve˘‹19
+:
+
+94 
+pushl
+ 
+$0
+
+
+95 
+pushl
+ 
+$19
+
+
+96 
+jmp
+ 
+Æ…øps
+
+
+97 .
+globl
+ 
+ve˘‹20
+
+
+98 
+ve˘‹20
+:
+
+99 
+pushl
+ 
+$0
+
+
+100 
+pushl
+ 
+$20
+
+
+101 
+jmp
+ 
+Æ…øps
+
+
+102 .
+globl
+ 
+ve˘‹21
+
+
+103 
+ve˘‹21
+:
+
+104 
+pushl
+ 
+$0
+
+
+105 
+pushl
+ 
+$21
+
+
+106 
+jmp
+ 
+Æ…øps
+
+
+107 .
+globl
+ 
+ve˘‹22
+
+
+108 
+ve˘‹22
+:
+
+109 
+pushl
+ 
+$0
+
+
+110 
+pushl
+ 
+$22
+
+
+111 
+jmp
+ 
+Æ…øps
+
+
+112 .
+globl
+ 
+ve˘‹23
+
+
+113 
+ve˘‹23
+:
+
+114 
+pushl
+ 
+$0
+
+
+115 
+pushl
+ 
+$23
+
+
+116 
+jmp
+ 
+Æ…øps
+
+
+117 .
+globl
+ 
+ve˘‹24
+
+
+118 
+ve˘‹24
+:
+
+119 
+pushl
+ 
+$0
+
+
+120 
+pushl
+ 
+$24
+
+
+121 
+jmp
+ 
+Æ…øps
+
+
+122 .
+globl
+ 
+ve˘‹25
+
+
+123 
+ve˘‹25
+:
+
+124 
+pushl
+ 
+$0
+
+
+125 
+pushl
+ 
+$25
+
+
+126 
+jmp
+ 
+Æ…øps
+
+
+127 .
+globl
+ 
+ve˘‹26
+
+
+128 
+ve˘‹26
+:
+
+129 
+pushl
+ 
+$0
+
+
+130 
+pushl
+ 
+$26
+
+
+131 
+jmp
+ 
+Æ…øps
+
+
+132 .
+globl
+ 
+ve˘‹27
+
+
+133 
+ve˘‹27
+:
+
+134 
+pushl
+ 
+$0
+
+
+135 
+pushl
+ 
+$27
+
+
+136 
+jmp
+ 
+Æ…øps
+
+
+137 .
+globl
+ 
+ve˘‹28
+
+
+138 
+ve˘‹28
+:
+
+139 
+pushl
+ 
+$0
+
+
+140 
+pushl
+ 
+$28
+
+
+141 
+jmp
+ 
+Æ…øps
+
+
+142 .
+globl
+ 
+ve˘‹29
+
+
+143 
+ve˘‹29
+:
+
+144 
+pushl
+ 
+$0
+
+
+145 
+pushl
+ 
+$29
+
+
+146 
+jmp
+ 
+Æ…øps
+
+
+147 .
+globl
+ 
+ve˘‹30
+
+
+148 
+ve˘‹30
+:
+
+149 
+pushl
+ 
+$0
+
+
+150 
+pushl
+ 
+$30
+
+
+151 
+jmp
+ 
+Æ…øps
+
+
+152 .
+globl
+ 
+ve˘‹31
+
+
+153 
+ve˘‹31
+:
+
+154 
+pushl
+ 
+$0
+
+
+155 
+pushl
+ 
+$31
+
+
+156 
+jmp
+ 
+Æ…øps
+
+
+157 .
+globl
+ 
+ve˘‹32
+
+
+158 
+ve˘‹32
+:
+
+159 
+pushl
+ 
+$0
+
+
+160 
+pushl
+ 
+$32
+
+
+161 
+jmp
+ 
+Æ…øps
+
+
+162 .
+globl
+ 
+ve˘‹33
+
+
+163 
+ve˘‹33
+:
+
+164 
+pushl
+ 
+$0
+
+
+165 
+pushl
+ 
+$33
+
+
+166 
+jmp
+ 
+Æ…øps
+
+
+167 .
+globl
+ 
+ve˘‹34
+
+
+168 
+ve˘‹34
+:
+
+169 
+pushl
+ 
+$0
+
+
+170 
+pushl
+ 
+$34
+
+
+171 
+jmp
+ 
+Æ…øps
+
+
+172 .
+globl
+ 
+ve˘‹35
+
+
+173 
+ve˘‹35
+:
+
+174 
+pushl
+ 
+$0
+
+
+175 
+pushl
+ 
+$35
+
+
+176 
+jmp
+ 
+Æ…øps
+
+
+177 .
+globl
+ 
+ve˘‹36
+
+
+178 
+ve˘‹36
+:
+
+179 
+pushl
+ 
+$0
+
+
+180 
+pushl
+ 
+$36
+
+
+181 
+jmp
+ 
+Æ…øps
+
+
+182 .
+globl
+ 
+ve˘‹37
+
+
+183 
+ve˘‹37
+:
+
+184 
+pushl
+ 
+$0
+
+
+185 
+pushl
+ 
+$37
+
+
+186 
+jmp
+ 
+Æ…øps
+
+
+187 .
+globl
+ 
+ve˘‹38
+
+
+188 
+ve˘‹38
+:
+
+189 
+pushl
+ 
+$0
+
+
+190 
+pushl
+ 
+$38
+
+
+191 
+jmp
+ 
+Æ…øps
+
+
+192 .
+globl
+ 
+ve˘‹39
+
+
+193 
+ve˘‹39
+:
+
+194 
+pushl
+ 
+$0
+
+
+195 
+pushl
+ 
+$39
+
+
+196 
+jmp
+ 
+Æ…øps
+
+
+197 .
+globl
+ 
+ve˘‹40
+
+
+198 
+ve˘‹40
+:
+
+199 
+pushl
+ 
+$0
+
+
+200 
+pushl
+ 
+$40
+
+
+201 
+jmp
+ 
+Æ…øps
+
+
+202 .
+globl
+ 
+ve˘‹41
+
+
+203 
+ve˘‹41
+:
+
+204 
+pushl
+ 
+$0
+
+
+205 
+pushl
+ 
+$41
+
+
+206 
+jmp
+ 
+Æ…øps
+
+
+207 .
+globl
+ 
+ve˘‹42
+
+
+208 
+ve˘‹42
+:
+
+209 
+pushl
+ 
+$0
+
+
+210 
+pushl
+ 
+$42
+
+
+211 
+jmp
+ 
+Æ…øps
+
+
+212 .
+globl
+ 
+ve˘‹43
+
+
+213 
+ve˘‹43
+:
+
+214 
+pushl
+ 
+$0
+
+
+215 
+pushl
+ 
+$43
+
+
+216 
+jmp
+ 
+Æ…øps
+
+
+217 .
+globl
+ 
+ve˘‹44
+
+
+218 
+ve˘‹44
+:
+
+219 
+pushl
+ 
+$0
+
+
+220 
+pushl
+ 
+$44
+
+
+221 
+jmp
+ 
+Æ…øps
+
+
+222 .
+globl
+ 
+ve˘‹45
+
+
+223 
+ve˘‹45
+:
+
+224 
+pushl
+ 
+$0
+
+
+225 
+pushl
+ 
+$45
+
+
+226 
+jmp
+ 
+Æ…øps
+
+
+227 .
+globl
+ 
+ve˘‹46
+
+
+228 
+ve˘‹46
+:
+
+229 
+pushl
+ 
+$0
+
+
+230 
+pushl
+ 
+$46
+
+
+231 
+jmp
+ 
+Æ…øps
+
+
+232 .
+globl
+ 
+ve˘‹47
+
+
+233 
+ve˘‹47
+:
+
+234 
+pushl
+ 
+$0
+
+
+235 
+pushl
+ 
+$47
+
+
+236 
+jmp
+ 
+Æ…øps
+
+
+237 .
+globl
+ 
+ve˘‹48
+
+
+238 
+ve˘‹48
+:
+
+239 
+pushl
+ 
+$0
+
+
+240 
+pushl
+ 
+$48
+
+
+241 
+jmp
+ 
+Æ…øps
+
+
+242 .
+globl
+ 
+ve˘‹49
+
+
+243 
+ve˘‹49
+:
+
+244 
+pushl
+ 
+$0
+
+
+245 
+pushl
+ 
+$49
+
+
+246 
+jmp
+ 
+Æ…øps
+
+
+247 .
+globl
+ 
+ve˘‹50
+
+
+248 
+ve˘‹50
+:
+
+249 
+pushl
+ 
+$0
+
+
+250 
+pushl
+ 
+$50
+
+
+251 
+jmp
+ 
+Æ…øps
+
+
+252 .
+globl
+ 
+ve˘‹51
+
+
+253 
+ve˘‹51
+:
+
+254 
+pushl
+ 
+$0
+
+
+255 
+pushl
+ 
+$51
+
+
+256 
+jmp
+ 
+Æ…øps
+
+
+257 .
+globl
+ 
+ve˘‹52
+
+
+258 
+ve˘‹52
+:
+
+259 
+pushl
+ 
+$0
+
+
+260 
+pushl
+ 
+$52
+
+
+261 
+jmp
+ 
+Æ…øps
+
+
+262 .
+globl
+ 
+ve˘‹53
+
+
+263 
+ve˘‹53
+:
+
+264 
+pushl
+ 
+$0
+
+
+265 
+pushl
+ 
+$53
+
+
+266 
+jmp
+ 
+Æ…øps
+
+
+267 .
+globl
+ 
+ve˘‹54
+
+
+268 
+ve˘‹54
+:
+
+269 
+pushl
+ 
+$0
+
+
+270 
+pushl
+ 
+$54
+
+
+271 
+jmp
+ 
+Æ…øps
+
+
+272 .
+globl
+ 
+ve˘‹55
+
+
+273 
+ve˘‹55
+:
+
+274 
+pushl
+ 
+$0
+
+
+275 
+pushl
+ 
+$55
+
+
+276 
+jmp
+ 
+Æ…øps
+
+
+277 .
+globl
+ 
+ve˘‹56
+
+
+278 
+ve˘‹56
+:
+
+279 
+pushl
+ 
+$0
+
+
+280 
+pushl
+ 
+$56
+
+
+281 
+jmp
+ 
+Æ…øps
+
+
+282 .
+globl
+ 
+ve˘‹57
+
+
+283 
+ve˘‹57
+:
+
+284 
+pushl
+ 
+$0
+
+
+285 
+pushl
+ 
+$57
+
+
+286 
+jmp
+ 
+Æ…øps
+
+
+287 .
+globl
+ 
+ve˘‹58
+
+
+288 
+ve˘‹58
+:
+
+289 
+pushl
+ 
+$0
+
+
+290 
+pushl
+ 
+$58
+
+
+291 
+jmp
+ 
+Æ…øps
+
+
+292 .
+globl
+ 
+ve˘‹59
+
+
+293 
+ve˘‹59
+:
+
+294 
+pushl
+ 
+$0
+
+
+295 
+pushl
+ 
+$59
+
+
+296 
+jmp
+ 
+Æ…øps
+
+
+297 .
+globl
+ 
+ve˘‹60
+
+
+298 
+ve˘‹60
+:
+
+299 
+pushl
+ 
+$0
+
+
+300 
+pushl
+ 
+$60
+
+
+301 
+jmp
+ 
+Æ…øps
+
+
+302 .
+globl
+ 
+ve˘‹61
+
+
+303 
+ve˘‹61
+:
+
+304 
+pushl
+ 
+$0
+
+
+305 
+pushl
+ 
+$61
+
+
+306 
+jmp
+ 
+Æ…øps
+
+
+307 .
+globl
+ 
+ve˘‹62
+
+
+308 
+ve˘‹62
+:
+
+309 
+pushl
+ 
+$0
+
+
+310 
+pushl
+ 
+$62
+
+
+311 
+jmp
+ 
+Æ…øps
+
+
+312 .
+globl
+ 
+ve˘‹63
+
+
+313 
+ve˘‹63
+:
+
+314 
+pushl
+ 
+$0
+
+
+315 
+pushl
+ 
+$63
+
+
+316 
+jmp
+ 
+Æ…øps
+
+
+317 .
+globl
+ 
+ve˘‹64
+
+
+318 
+ve˘‹64
+:
+
+319 
+pushl
+ 
+$0
+
+
+320 
+pushl
+ 
+$64
+
+
+321 
+jmp
+ 
+Æ…øps
+
+
+322 .
+globl
+ 
+ve˘‹65
+
+
+323 
+ve˘‹65
+:
+
+324 
+pushl
+ 
+$0
+
+
+325 
+pushl
+ 
+$65
+
+
+326 
+jmp
+ 
+Æ…øps
+
+
+327 .
+globl
+ 
+ve˘‹66
+
+
+328 
+ve˘‹66
+:
+
+329 
+pushl
+ 
+$0
+
+
+330 
+pushl
+ 
+$66
+
+
+331 
+jmp
+ 
+Æ…øps
+
+
+332 .
+globl
+ 
+ve˘‹67
+
+
+333 
+ve˘‹67
+:
+
+334 
+pushl
+ 
+$0
+
+
+335 
+pushl
+ 
+$67
+
+
+336 
+jmp
+ 
+Æ…øps
+
+
+337 .
+globl
+ 
+ve˘‹68
+
+
+338 
+ve˘‹68
+:
+
+339 
+pushl
+ 
+$0
+
+
+340 
+pushl
+ 
+$68
+
+
+341 
+jmp
+ 
+Æ…øps
+
+
+342 .
+globl
+ 
+ve˘‹69
+
+
+343 
+ve˘‹69
+:
+
+344 
+pushl
+ 
+$0
+
+
+345 
+pushl
+ 
+$69
+
+
+346 
+jmp
+ 
+Æ…øps
+
+
+347 .
+globl
+ 
+ve˘‹70
+
+
+348 
+ve˘‹70
+:
+
+349 
+pushl
+ 
+$0
+
+
+350 
+pushl
+ 
+$70
+
+
+351 
+jmp
+ 
+Æ…øps
+
+
+352 .
+globl
+ 
+ve˘‹71
+
+
+353 
+ve˘‹71
+:
+
+354 
+pushl
+ 
+$0
+
+
+355 
+pushl
+ 
+$71
+
+
+356 
+jmp
+ 
+Æ…øps
+
+
+357 .
+globl
+ 
+ve˘‹72
+
+
+358 
+ve˘‹72
+:
+
+359 
+pushl
+ 
+$0
+
+
+360 
+pushl
+ 
+$72
+
+
+361 
+jmp
+ 
+Æ…øps
+
+
+362 .
+globl
+ 
+ve˘‹73
+
+
+363 
+ve˘‹73
+:
+
+364 
+pushl
+ 
+$0
+
+
+365 
+pushl
+ 
+$73
+
+
+366 
+jmp
+ 
+Æ…øps
+
+
+367 .
+globl
+ 
+ve˘‹74
+
+
+368 
+ve˘‹74
+:
+
+369 
+pushl
+ 
+$0
+
+
+370 
+pushl
+ 
+$74
+
+
+371 
+jmp
+ 
+Æ…øps
+
+
+372 .
+globl
+ 
+ve˘‹75
+
+
+373 
+ve˘‹75
+:
+
+374 
+pushl
+ 
+$0
+
+
+375 
+pushl
+ 
+$75
+
+
+376 
+jmp
+ 
+Æ…øps
+
+
+377 .
+globl
+ 
+ve˘‹76
+
+
+378 
+ve˘‹76
+:
+
+379 
+pushl
+ 
+$0
+
+
+380 
+pushl
+ 
+$76
+
+
+381 
+jmp
+ 
+Æ…øps
+
+
+382 .
+globl
+ 
+ve˘‹77
+
+
+383 
+ve˘‹77
+:
+
+384 
+pushl
+ 
+$0
+
+
+385 
+pushl
+ 
+$77
+
+
+386 
+jmp
+ 
+Æ…øps
+
+
+387 .
+globl
+ 
+ve˘‹78
+
+
+388 
+ve˘‹78
+:
+
+389 
+pushl
+ 
+$0
+
+
+390 
+pushl
+ 
+$78
+
+
+391 
+jmp
+ 
+Æ…øps
+
+
+392 .
+globl
+ 
+ve˘‹79
+
+
+393 
+ve˘‹79
+:
+
+394 
+pushl
+ 
+$0
+
+
+395 
+pushl
+ 
+$79
+
+
+396 
+jmp
+ 
+Æ…øps
+
+
+397 .
+globl
+ 
+ve˘‹80
+
+
+398 
+ve˘‹80
+:
+
+399 
+pushl
+ 
+$0
+
+
+400 
+pushl
+ 
+$80
+
+
+401 
+jmp
+ 
+Æ…øps
+
+
+402 .
+globl
+ 
+ve˘‹81
+
+
+403 
+ve˘‹81
+:
+
+404 
+pushl
+ 
+$0
+
+
+405 
+pushl
+ 
+$81
+
+
+406 
+jmp
+ 
+Æ…øps
+
+
+407 .
+globl
+ 
+ve˘‹82
+
+
+408 
+ve˘‹82
+:
+
+409 
+pushl
+ 
+$0
+
+
+410 
+pushl
+ 
+$82
+
+
+411 
+jmp
+ 
+Æ…øps
+
+
+412 .
+globl
+ 
+ve˘‹83
+
+
+413 
+ve˘‹83
+:
+
+414 
+pushl
+ 
+$0
+
+
+415 
+pushl
+ 
+$83
+
+
+416 
+jmp
+ 
+Æ…øps
+
+
+417 .
+globl
+ 
+ve˘‹84
+
+
+418 
+ve˘‹84
+:
+
+419 
+pushl
+ 
+$0
+
+
+420 
+pushl
+ 
+$84
+
+
+421 
+jmp
+ 
+Æ…øps
+
+
+422 .
+globl
+ 
+ve˘‹85
+
+
+423 
+ve˘‹85
+:
+
+424 
+pushl
+ 
+$0
+
+
+425 
+pushl
+ 
+$85
+
+
+426 
+jmp
+ 
+Æ…øps
+
+
+427 .
+globl
+ 
+ve˘‹86
+
+
+428 
+ve˘‹86
+:
+
+429 
+pushl
+ 
+$0
+
+
+430 
+pushl
+ 
+$86
+
+
+431 
+jmp
+ 
+Æ…øps
+
+
+432 .
+globl
+ 
+ve˘‹87
+
+
+433 
+ve˘‹87
+:
+
+434 
+pushl
+ 
+$0
+
+
+435 
+pushl
+ 
+$87
+
+
+436 
+jmp
+ 
+Æ…øps
+
+
+437 .
+globl
+ 
+ve˘‹88
+
+
+438 
+ve˘‹88
+:
+
+439 
+pushl
+ 
+$0
+
+
+440 
+pushl
+ 
+$88
+
+
+441 
+jmp
+ 
+Æ…øps
+
+
+442 .
+globl
+ 
+ve˘‹89
+
+
+443 
+ve˘‹89
+:
+
+444 
+pushl
+ 
+$0
+
+
+445 
+pushl
+ 
+$89
+
+
+446 
+jmp
+ 
+Æ…øps
+
+
+447 .
+globl
+ 
+ve˘‹90
+
+
+448 
+ve˘‹90
+:
+
+449 
+pushl
+ 
+$0
+
+
+450 
+pushl
+ 
+$90
+
+
+451 
+jmp
+ 
+Æ…øps
+
+
+452 .
+globl
+ 
+ve˘‹91
+
+
+453 
+ve˘‹91
+:
+
+454 
+pushl
+ 
+$0
+
+
+455 
+pushl
+ 
+$91
+
+
+456 
+jmp
+ 
+Æ…øps
+
+
+457 .
+globl
+ 
+ve˘‹92
+
+
+458 
+ve˘‹92
+:
+
+459 
+pushl
+ 
+$0
+
+
+460 
+pushl
+ 
+$92
+
+
+461 
+jmp
+ 
+Æ…øps
+
+
+462 .
+globl
+ 
+ve˘‹93
+
+
+463 
+ve˘‹93
+:
+
+464 
+pushl
+ 
+$0
+
+
+465 
+pushl
+ 
+$93
+
+
+466 
+jmp
+ 
+Æ…øps
+
+
+467 .
+globl
+ 
+ve˘‹94
+
+
+468 
+ve˘‹94
+:
+
+469 
+pushl
+ 
+$0
+
+
+470 
+pushl
+ 
+$94
+
+
+471 
+jmp
+ 
+Æ…øps
+
+
+472 .
+globl
+ 
+ve˘‹95
+
+
+473 
+ve˘‹95
+:
+
+474 
+pushl
+ 
+$0
+
+
+475 
+pushl
+ 
+$95
+
+
+476 
+jmp
+ 
+Æ…øps
+
+
+477 .
+globl
+ 
+ve˘‹96
+
+
+478 
+ve˘‹96
+:
+
+479 
+pushl
+ 
+$0
+
+
+480 
+pushl
+ 
+$96
+
+
+481 
+jmp
+ 
+Æ…øps
+
+
+482 .
+globl
+ 
+ve˘‹97
+
+
+483 
+ve˘‹97
+:
+
+484 
+pushl
+ 
+$0
+
+
+485 
+pushl
+ 
+$97
+
+
+486 
+jmp
+ 
+Æ…øps
+
+
+487 .
+globl
+ 
+ve˘‹98
+
+
+488 
+ve˘‹98
+:
+
+489 
+pushl
+ 
+$0
+
+
+490 
+pushl
+ 
+$98
+
+
+491 
+jmp
+ 
+Æ…øps
+
+
+492 .
+globl
+ 
+ve˘‹99
+
+
+493 
+ve˘‹99
+:
+
+494 
+pushl
+ 
+$0
+
+
+495 
+pushl
+ 
+$99
+
+
+496 
+jmp
+ 
+Æ…øps
+
+
+497 .
+globl
+ 
+ve˘‹100
+
+
+498 
+ve˘‹100
+:
+
+499 
+pushl
+ 
+$0
+
+
+500 
+pushl
+ 
+$100
+
+
+501 
+jmp
+ 
+Æ…øps
+
+
+502 .
+globl
+ 
+ve˘‹101
+
+
+503 
+ve˘‹101
+:
+
+504 
+pushl
+ 
+$0
+
+
+505 
+pushl
+ 
+$101
+
+
+506 
+jmp
+ 
+Æ…øps
+
+
+507 .
+globl
+ 
+ve˘‹102
+
+
+508 
+ve˘‹102
+:
+
+509 
+pushl
+ 
+$0
+
+
+510 
+pushl
+ 
+$102
+
+
+511 
+jmp
+ 
+Æ…øps
+
+
+512 .
+globl
+ 
+ve˘‹103
+
+
+513 
+ve˘‹103
+:
+
+514 
+pushl
+ 
+$0
+
+
+515 
+pushl
+ 
+$103
+
+
+516 
+jmp
+ 
+Æ…øps
+
+
+517 .
+globl
+ 
+ve˘‹104
+
+
+518 
+ve˘‹104
+:
+
+519 
+pushl
+ 
+$0
+
+
+520 
+pushl
+ 
+$104
+
+
+521 
+jmp
+ 
+Æ…øps
+
+
+522 .
+globl
+ 
+ve˘‹105
+
+
+523 
+ve˘‹105
+:
+
+524 
+pushl
+ 
+$0
+
+
+525 
+pushl
+ 
+$105
+
+
+526 
+jmp
+ 
+Æ…øps
+
+
+527 .
+globl
+ 
+ve˘‹106
+
+
+528 
+ve˘‹106
+:
+
+529 
+pushl
+ 
+$0
+
+
+530 
+pushl
+ 
+$106
+
+
+531 
+jmp
+ 
+Æ…øps
+
+
+532 .
+globl
+ 
+ve˘‹107
+
+
+533 
+ve˘‹107
+:
+
+534 
+pushl
+ 
+$0
+
+
+535 
+pushl
+ 
+$107
+
+
+536 
+jmp
+ 
+Æ…øps
+
+
+537 .
+globl
+ 
+ve˘‹108
+
+
+538 
+ve˘‹108
+:
+
+539 
+pushl
+ 
+$0
+
+
+540 
+pushl
+ 
+$108
+
+
+541 
+jmp
+ 
+Æ…øps
+
+
+542 .
+globl
+ 
+ve˘‹109
+
+
+543 
+ve˘‹109
+:
+
+544 
+pushl
+ 
+$0
+
+
+545 
+pushl
+ 
+$109
+
+
+546 
+jmp
+ 
+Æ…øps
+
+
+547 .
+globl
+ 
+ve˘‹110
+
+
+548 
+ve˘‹110
+:
+
+549 
+pushl
+ 
+$0
+
+
+550 
+pushl
+ 
+$110
+
+
+551 
+jmp
+ 
+Æ…øps
+
+
+552 .
+globl
+ 
+ve˘‹111
+
+
+553 
+ve˘‹111
+:
+
+554 
+pushl
+ 
+$0
+
+
+555 
+pushl
+ 
+$111
+
+
+556 
+jmp
+ 
+Æ…øps
+
+
+557 .
+globl
+ 
+ve˘‹112
+
+
+558 
+ve˘‹112
+:
+
+559 
+pushl
+ 
+$0
+
+
+560 
+pushl
+ 
+$112
+
+
+561 
+jmp
+ 
+Æ…øps
+
+
+562 .
+globl
+ 
+ve˘‹113
+
+
+563 
+ve˘‹113
+:
+
+564 
+pushl
+ 
+$0
+
+
+565 
+pushl
+ 
+$113
+
+
+566 
+jmp
+ 
+Æ…øps
+
+
+567 .
+globl
+ 
+ve˘‹114
+
+
+568 
+ve˘‹114
+:
+
+569 
+pushl
+ 
+$0
+
+
+570 
+pushl
+ 
+$114
+
+
+571 
+jmp
+ 
+Æ…øps
+
+
+572 .
+globl
+ 
+ve˘‹115
+
+
+573 
+ve˘‹115
+:
+
+574 
+pushl
+ 
+$0
+
+
+575 
+pushl
+ 
+$115
+
+
+576 
+jmp
+ 
+Æ…øps
+
+
+577 .
+globl
+ 
+ve˘‹116
+
+
+578 
+ve˘‹116
+:
+
+579 
+pushl
+ 
+$0
+
+
+580 
+pushl
+ 
+$116
+
+
+581 
+jmp
+ 
+Æ…øps
+
+
+582 .
+globl
+ 
+ve˘‹117
+
+
+583 
+ve˘‹117
+:
+
+584 
+pushl
+ 
+$0
+
+
+585 
+pushl
+ 
+$117
+
+
+586 
+jmp
+ 
+Æ…øps
+
+
+587 .
+globl
+ 
+ve˘‹118
+
+
+588 
+ve˘‹118
+:
+
+589 
+pushl
+ 
+$0
+
+
+590 
+pushl
+ 
+$118
+
+
+591 
+jmp
+ 
+Æ…øps
+
+
+592 .
+globl
+ 
+ve˘‹119
+
+
+593 
+ve˘‹119
+:
+
+594 
+pushl
+ 
+$0
+
+
+595 
+pushl
+ 
+$119
+
+
+596 
+jmp
+ 
+Æ…øps
+
+
+597 .
+globl
+ 
+ve˘‹120
+
+
+598 
+ve˘‹120
+:
+
+599 
+pushl
+ 
+$0
+
+
+600 
+pushl
+ 
+$120
+
+
+601 
+jmp
+ 
+Æ…øps
+
+
+602 .
+globl
+ 
+ve˘‹121
+
+
+603 
+ve˘‹121
+:
+
+604 
+pushl
+ 
+$0
+
+
+605 
+pushl
+ 
+$121
+
+
+606 
+jmp
+ 
+Æ…øps
+
+
+607 .
+globl
+ 
+ve˘‹122
+
+
+608 
+ve˘‹122
+:
+
+609 
+pushl
+ 
+$0
+
+
+610 
+pushl
+ 
+$122
+
+
+611 
+jmp
+ 
+Æ…øps
+
+
+612 .
+globl
+ 
+ve˘‹123
+
+
+613 
+ve˘‹123
+:
+
+614 
+pushl
+ 
+$0
+
+
+615 
+pushl
+ 
+$123
+
+
+616 
+jmp
+ 
+Æ…øps
+
+
+617 .
+globl
+ 
+ve˘‹124
+
+
+618 
+ve˘‹124
+:
+
+619 
+pushl
+ 
+$0
+
+
+620 
+pushl
+ 
+$124
+
+
+621 
+jmp
+ 
+Æ…øps
+
+
+622 .
+globl
+ 
+ve˘‹125
+
+
+623 
+ve˘‹125
+:
+
+624 
+pushl
+ 
+$0
+
+
+625 
+pushl
+ 
+$125
+
+
+626 
+jmp
+ 
+Æ…øps
+
+
+627 .
+globl
+ 
+ve˘‹126
+
+
+628 
+ve˘‹126
+:
+
+629 
+pushl
+ 
+$0
+
+
+630 
+pushl
+ 
+$126
+
+
+631 
+jmp
+ 
+Æ…øps
+
+
+632 .
+globl
+ 
+ve˘‹127
+
+
+633 
+ve˘‹127
+:
+
+634 
+pushl
+ 
+$0
+
+
+635 
+pushl
+ 
+$127
+
+
+636 
+jmp
+ 
+Æ…øps
+
+
+637 .
+globl
+ 
+ve˘‹128
+
+
+638 
+ve˘‹128
+:
+
+639 
+pushl
+ 
+$0
+
+
+640 
+pushl
+ 
+$128
+
+
+641 
+jmp
+ 
+Æ…øps
+
+
+642 .
+globl
+ 
+ve˘‹129
+
+
+643 
+ve˘‹129
+:
+
+644 
+pushl
+ 
+$0
+
+
+645 
+pushl
+ 
+$129
+
+
+646 
+jmp
+ 
+Æ…øps
+
+
+647 .
+globl
+ 
+ve˘‹130
+
+
+648 
+ve˘‹130
+:
+
+649 
+pushl
+ 
+$0
+
+
+650 
+pushl
+ 
+$130
+
+
+651 
+jmp
+ 
+Æ…øps
+
+
+652 .
+globl
+ 
+ve˘‹131
+
+
+653 
+ve˘‹131
+:
+
+654 
+pushl
+ 
+$0
+
+
+655 
+pushl
+ 
+$131
+
+
+656 
+jmp
+ 
+Æ…øps
+
+
+657 .
+globl
+ 
+ve˘‹132
+
+
+658 
+ve˘‹132
+:
+
+659 
+pushl
+ 
+$0
+
+
+660 
+pushl
+ 
+$132
+
+
+661 
+jmp
+ 
+Æ…øps
+
+
+662 .
+globl
+ 
+ve˘‹133
+
+
+663 
+ve˘‹133
+:
+
+664 
+pushl
+ 
+$0
+
+
+665 
+pushl
+ 
+$133
+
+
+666 
+jmp
+ 
+Æ…øps
+
+
+667 .
+globl
+ 
+ve˘‹134
+
+
+668 
+ve˘‹134
+:
+
+669 
+pushl
+ 
+$0
+
+
+670 
+pushl
+ 
+$134
+
+
+671 
+jmp
+ 
+Æ…øps
+
+
+672 .
+globl
+ 
+ve˘‹135
+
+
+673 
+ve˘‹135
+:
+
+674 
+pushl
+ 
+$0
+
+
+675 
+pushl
+ 
+$135
+
+
+676 
+jmp
+ 
+Æ…øps
+
+
+677 .
+globl
+ 
+ve˘‹136
+
+
+678 
+ve˘‹136
+:
+
+679 
+pushl
+ 
+$0
+
+
+680 
+pushl
+ 
+$136
+
+
+681 
+jmp
+ 
+Æ…øps
+
+
+682 .
+globl
+ 
+ve˘‹137
+
+
+683 
+ve˘‹137
+:
+
+684 
+pushl
+ 
+$0
+
+
+685 
+pushl
+ 
+$137
+
+
+686 
+jmp
+ 
+Æ…øps
+
+
+687 .
+globl
+ 
+ve˘‹138
+
+
+688 
+ve˘‹138
+:
+
+689 
+pushl
+ 
+$0
+
+
+690 
+pushl
+ 
+$138
+
+
+691 
+jmp
+ 
+Æ…øps
+
+
+692 .
+globl
+ 
+ve˘‹139
+
+
+693 
+ve˘‹139
+:
+
+694 
+pushl
+ 
+$0
+
+
+695 
+pushl
+ 
+$139
+
+
+696 
+jmp
+ 
+Æ…øps
+
+
+697 .
+globl
+ 
+ve˘‹140
+
+
+698 
+ve˘‹140
+:
+
+699 
+pushl
+ 
+$0
+
+
+700 
+pushl
+ 
+$140
+
+
+701 
+jmp
+ 
+Æ…øps
+
+
+702 .
+globl
+ 
+ve˘‹141
+
+
+703 
+ve˘‹141
+:
+
+704 
+pushl
+ 
+$0
+
+
+705 
+pushl
+ 
+$141
+
+
+706 
+jmp
+ 
+Æ…øps
+
+
+707 .
+globl
+ 
+ve˘‹142
+
+
+708 
+ve˘‹142
+:
+
+709 
+pushl
+ 
+$0
+
+
+710 
+pushl
+ 
+$142
+
+
+711 
+jmp
+ 
+Æ…øps
+
+
+712 .
+globl
+ 
+ve˘‹143
+
+
+713 
+ve˘‹143
+:
+
+714 
+pushl
+ 
+$0
+
+
+715 
+pushl
+ 
+$143
+
+
+716 
+jmp
+ 
+Æ…øps
+
+
+717 .
+globl
+ 
+ve˘‹144
+
+
+718 
+ve˘‹144
+:
+
+719 
+pushl
+ 
+$0
+
+
+720 
+pushl
+ 
+$144
+
+
+721 
+jmp
+ 
+Æ…øps
+
+
+722 .
+globl
+ 
+ve˘‹145
+
+
+723 
+ve˘‹145
+:
+
+724 
+pushl
+ 
+$0
+
+
+725 
+pushl
+ 
+$145
+
+
+726 
+jmp
+ 
+Æ…øps
+
+
+727 .
+globl
+ 
+ve˘‹146
+
+
+728 
+ve˘‹146
+:
+
+729 
+pushl
+ 
+$0
+
+
+730 
+pushl
+ 
+$146
+
+
+731 
+jmp
+ 
+Æ…øps
+
+
+732 .
+globl
+ 
+ve˘‹147
+
+
+733 
+ve˘‹147
+:
+
+734 
+pushl
+ 
+$0
+
+
+735 
+pushl
+ 
+$147
+
+
+736 
+jmp
+ 
+Æ…øps
+
+
+737 .
+globl
+ 
+ve˘‹148
+
+
+738 
+ve˘‹148
+:
+
+739 
+pushl
+ 
+$0
+
+
+740 
+pushl
+ 
+$148
+
+
+741 
+jmp
+ 
+Æ…øps
+
+
+742 .
+globl
+ 
+ve˘‹149
+
+
+743 
+ve˘‹149
+:
+
+744 
+pushl
+ 
+$0
+
+
+745 
+pushl
+ 
+$149
+
+
+746 
+jmp
+ 
+Æ…øps
+
+
+747 .
+globl
+ 
+ve˘‹150
+
+
+748 
+ve˘‹150
+:
+
+749 
+pushl
+ 
+$0
+
+
+750 
+pushl
+ 
+$150
+
+
+751 
+jmp
+ 
+Æ…øps
+
+
+752 .
+globl
+ 
+ve˘‹151
+
+
+753 
+ve˘‹151
+:
+
+754 
+pushl
+ 
+$0
+
+
+755 
+pushl
+ 
+$151
+
+
+756 
+jmp
+ 
+Æ…øps
+
+
+757 .
+globl
+ 
+ve˘‹152
+
+
+758 
+ve˘‹152
+:
+
+759 
+pushl
+ 
+$0
+
+
+760 
+pushl
+ 
+$152
+
+
+761 
+jmp
+ 
+Æ…øps
+
+
+762 .
+globl
+ 
+ve˘‹153
+
+
+763 
+ve˘‹153
+:
+
+764 
+pushl
+ 
+$0
+
+
+765 
+pushl
+ 
+$153
+
+
+766 
+jmp
+ 
+Æ…øps
+
+
+767 .
+globl
+ 
+ve˘‹154
+
+
+768 
+ve˘‹154
+:
+
+769 
+pushl
+ 
+$0
+
+
+770 
+pushl
+ 
+$154
+
+
+771 
+jmp
+ 
+Æ…øps
+
+
+772 .
+globl
+ 
+ve˘‹155
+
+
+773 
+ve˘‹155
+:
+
+774 
+pushl
+ 
+$0
+
+
+775 
+pushl
+ 
+$155
+
+
+776 
+jmp
+ 
+Æ…øps
+
+
+777 .
+globl
+ 
+ve˘‹156
+
+
+778 
+ve˘‹156
+:
+
+779 
+pushl
+ 
+$0
+
+
+780 
+pushl
+ 
+$156
+
+
+781 
+jmp
+ 
+Æ…øps
+
+
+782 .
+globl
+ 
+ve˘‹157
+
+
+783 
+ve˘‹157
+:
+
+784 
+pushl
+ 
+$0
+
+
+785 
+pushl
+ 
+$157
+
+
+786 
+jmp
+ 
+Æ…øps
+
+
+787 .
+globl
+ 
+ve˘‹158
+
+
+788 
+ve˘‹158
+:
+
+789 
+pushl
+ 
+$0
+
+
+790 
+pushl
+ 
+$158
+
+
+791 
+jmp
+ 
+Æ…øps
+
+
+792 .
+globl
+ 
+ve˘‹159
+
+
+793 
+ve˘‹159
+:
+
+794 
+pushl
+ 
+$0
+
+
+795 
+pushl
+ 
+$159
+
+
+796 
+jmp
+ 
+Æ…øps
+
+
+797 .
+globl
+ 
+ve˘‹160
+
+
+798 
+ve˘‹160
+:
+
+799 
+pushl
+ 
+$0
+
+
+800 
+pushl
+ 
+$160
+
+
+801 
+jmp
+ 
+Æ…øps
+
+
+802 .
+globl
+ 
+ve˘‹161
+
+
+803 
+ve˘‹161
+:
+
+804 
+pushl
+ 
+$0
+
+
+805 
+pushl
+ 
+$161
+
+
+806 
+jmp
+ 
+Æ…øps
+
+
+807 .
+globl
+ 
+ve˘‹162
+
+
+808 
+ve˘‹162
+:
+
+809 
+pushl
+ 
+$0
+
+
+810 
+pushl
+ 
+$162
+
+
+811 
+jmp
+ 
+Æ…øps
+
+
+812 .
+globl
+ 
+ve˘‹163
+
+
+813 
+ve˘‹163
+:
+
+814 
+pushl
+ 
+$0
+
+
+815 
+pushl
+ 
+$163
+
+
+816 
+jmp
+ 
+Æ…øps
+
+
+817 .
+globl
+ 
+ve˘‹164
+
+
+818 
+ve˘‹164
+:
+
+819 
+pushl
+ 
+$0
+
+
+820 
+pushl
+ 
+$164
+
+
+821 
+jmp
+ 
+Æ…øps
+
+
+822 .
+globl
+ 
+ve˘‹165
+
+
+823 
+ve˘‹165
+:
+
+824 
+pushl
+ 
+$0
+
+
+825 
+pushl
+ 
+$165
+
+
+826 
+jmp
+ 
+Æ…øps
+
+
+827 .
+globl
+ 
+ve˘‹166
+
+
+828 
+ve˘‹166
+:
+
+829 
+pushl
+ 
+$0
+
+
+830 
+pushl
+ 
+$166
+
+
+831 
+jmp
+ 
+Æ…øps
+
+
+832 .
+globl
+ 
+ve˘‹167
+
+
+833 
+ve˘‹167
+:
+
+834 
+pushl
+ 
+$0
+
+
+835 
+pushl
+ 
+$167
+
+
+836 
+jmp
+ 
+Æ…øps
+
+
+837 .
+globl
+ 
+ve˘‹168
+
+
+838 
+ve˘‹168
+:
+
+839 
+pushl
+ 
+$0
+
+
+840 
+pushl
+ 
+$168
+
+
+841 
+jmp
+ 
+Æ…øps
+
+
+842 .
+globl
+ 
+ve˘‹169
+
+
+843 
+ve˘‹169
+:
+
+844 
+pushl
+ 
+$0
+
+
+845 
+pushl
+ 
+$169
+
+
+846 
+jmp
+ 
+Æ…øps
+
+
+847 .
+globl
+ 
+ve˘‹170
+
+
+848 
+ve˘‹170
+:
+
+849 
+pushl
+ 
+$0
+
+
+850 
+pushl
+ 
+$170
+
+
+851 
+jmp
+ 
+Æ…øps
+
+
+852 .
+globl
+ 
+ve˘‹171
+
+
+853 
+ve˘‹171
+:
+
+854 
+pushl
+ 
+$0
+
+
+855 
+pushl
+ 
+$171
+
+
+856 
+jmp
+ 
+Æ…øps
+
+
+857 .
+globl
+ 
+ve˘‹172
+
+
+858 
+ve˘‹172
+:
+
+859 
+pushl
+ 
+$0
+
+
+860 
+pushl
+ 
+$172
+
+
+861 
+jmp
+ 
+Æ…øps
+
+
+862 .
+globl
+ 
+ve˘‹173
+
+
+863 
+ve˘‹173
+:
+
+864 
+pushl
+ 
+$0
+
+
+865 
+pushl
+ 
+$173
+
+
+866 
+jmp
+ 
+Æ…øps
+
+
+867 .
+globl
+ 
+ve˘‹174
+
+
+868 
+ve˘‹174
+:
+
+869 
+pushl
+ 
+$0
+
+
+870 
+pushl
+ 
+$174
+
+
+871 
+jmp
+ 
+Æ…øps
+
+
+872 .
+globl
+ 
+ve˘‹175
+
+
+873 
+ve˘‹175
+:
+
+874 
+pushl
+ 
+$0
+
+
+875 
+pushl
+ 
+$175
+
+
+876 
+jmp
+ 
+Æ…øps
+
+
+877 .
+globl
+ 
+ve˘‹176
+
+
+878 
+ve˘‹176
+:
+
+879 
+pushl
+ 
+$0
+
+
+880 
+pushl
+ 
+$176
+
+
+881 
+jmp
+ 
+Æ…øps
+
+
+882 .
+globl
+ 
+ve˘‹177
+
+
+883 
+ve˘‹177
+:
+
+884 
+pushl
+ 
+$0
+
+
+885 
+pushl
+ 
+$177
+
+
+886 
+jmp
+ 
+Æ…øps
+
+
+887 .
+globl
+ 
+ve˘‹178
+
+
+888 
+ve˘‹178
+:
+
+889 
+pushl
+ 
+$0
+
+
+890 
+pushl
+ 
+$178
+
+
+891 
+jmp
+ 
+Æ…øps
+
+
+892 .
+globl
+ 
+ve˘‹179
+
+
+893 
+ve˘‹179
+:
+
+894 
+pushl
+ 
+$0
+
+
+895 
+pushl
+ 
+$179
+
+
+896 
+jmp
+ 
+Æ…øps
+
+
+897 .
+globl
+ 
+ve˘‹180
+
+
+898 
+ve˘‹180
+:
+
+899 
+pushl
+ 
+$0
+
+
+900 
+pushl
+ 
+$180
+
+
+901 
+jmp
+ 
+Æ…øps
+
+
+902 .
+globl
+ 
+ve˘‹181
+
+
+903 
+ve˘‹181
+:
+
+904 
+pushl
+ 
+$0
+
+
+905 
+pushl
+ 
+$181
+
+
+906 
+jmp
+ 
+Æ…øps
+
+
+907 .
+globl
+ 
+ve˘‹182
+
+
+908 
+ve˘‹182
+:
+
+909 
+pushl
+ 
+$0
+
+
+910 
+pushl
+ 
+$182
+
+
+911 
+jmp
+ 
+Æ…øps
+
+
+912 .
+globl
+ 
+ve˘‹183
+
+
+913 
+ve˘‹183
+:
+
+914 
+pushl
+ 
+$0
+
+
+915 
+pushl
+ 
+$183
+
+
+916 
+jmp
+ 
+Æ…øps
+
+
+917 .
+globl
+ 
+ve˘‹184
+
+
+918 
+ve˘‹184
+:
+
+919 
+pushl
+ 
+$0
+
+
+920 
+pushl
+ 
+$184
+
+
+921 
+jmp
+ 
+Æ…øps
+
+
+922 .
+globl
+ 
+ve˘‹185
+
+
+923 
+ve˘‹185
+:
+
+924 
+pushl
+ 
+$0
+
+
+925 
+pushl
+ 
+$185
+
+
+926 
+jmp
+ 
+Æ…øps
+
+
+927 .
+globl
+ 
+ve˘‹186
+
+
+928 
+ve˘‹186
+:
+
+929 
+pushl
+ 
+$0
+
+
+930 
+pushl
+ 
+$186
+
+
+931 
+jmp
+ 
+Æ…øps
+
+
+932 .
+globl
+ 
+ve˘‹187
+
+
+933 
+ve˘‹187
+:
+
+934 
+pushl
+ 
+$0
+
+
+935 
+pushl
+ 
+$187
+
+
+936 
+jmp
+ 
+Æ…øps
+
+
+937 .
+globl
+ 
+ve˘‹188
+
+
+938 
+ve˘‹188
+:
+
+939 
+pushl
+ 
+$0
+
+
+940 
+pushl
+ 
+$188
+
+
+941 
+jmp
+ 
+Æ…øps
+
+
+942 .
+globl
+ 
+ve˘‹189
+
+
+943 
+ve˘‹189
+:
+
+944 
+pushl
+ 
+$0
+
+
+945 
+pushl
+ 
+$189
+
+
+946 
+jmp
+ 
+Æ…øps
+
+
+947 .
+globl
+ 
+ve˘‹190
+
+
+948 
+ve˘‹190
+:
+
+949 
+pushl
+ 
+$0
+
+
+950 
+pushl
+ 
+$190
+
+
+951 
+jmp
+ 
+Æ…øps
+
+
+952 .
+globl
+ 
+ve˘‹191
+
+
+953 
+ve˘‹191
+:
+
+954 
+pushl
+ 
+$0
+
+
+955 
+pushl
+ 
+$191
+
+
+956 
+jmp
+ 
+Æ…øps
+
+
+957 .
+globl
+ 
+ve˘‹192
+
+
+958 
+ve˘‹192
+:
+
+959 
+pushl
+ 
+$0
+
+
+960 
+pushl
+ 
+$192
+
+
+961 
+jmp
+ 
+Æ…øps
+
+
+962 .
+globl
+ 
+ve˘‹193
+
+
+963 
+ve˘‹193
+:
+
+964 
+pushl
+ 
+$0
+
+
+965 
+pushl
+ 
+$193
+
+
+966 
+jmp
+ 
+Æ…øps
+
+
+967 .
+globl
+ 
+ve˘‹194
+
+
+968 
+ve˘‹194
+:
+
+969 
+pushl
+ 
+$0
+
+
+970 
+pushl
+ 
+$194
+
+
+971 
+jmp
+ 
+Æ…øps
+
+
+972 .
+globl
+ 
+ve˘‹195
+
+
+973 
+ve˘‹195
+:
+
+974 
+pushl
+ 
+$0
+
+
+975 
+pushl
+ 
+$195
+
+
+976 
+jmp
+ 
+Æ…øps
+
+
+977 .
+globl
+ 
+ve˘‹196
+
+
+978 
+ve˘‹196
+:
+
+979 
+pushl
+ 
+$0
+
+
+980 
+pushl
+ 
+$196
+
+
+981 
+jmp
+ 
+Æ…øps
+
+
+982 .
+globl
+ 
+ve˘‹197
+
+
+983 
+ve˘‹197
+:
+
+984 
+pushl
+ 
+$0
+
+
+985 
+pushl
+ 
+$197
+
+
+986 
+jmp
+ 
+Æ…øps
+
+
+987 .
+globl
+ 
+ve˘‹198
+
+
+988 
+ve˘‹198
+:
+
+989 
+pushl
+ 
+$0
+
+
+990 
+pushl
+ 
+$198
+
+
+991 
+jmp
+ 
+Æ…øps
+
+
+992 .
+globl
+ 
+ve˘‹199
+
+
+993 
+ve˘‹199
+:
+
+994 
+pushl
+ 
+$0
+
+
+995 
+pushl
+ 
+$199
+
+
+996 
+jmp
+ 
+Æ…øps
+
+
+997 .
+globl
+ 
+ve˘‹200
+
+
+998 
+ve˘‹200
+:
+
+999 
+pushl
+ 
+$0
+
+
+1000 
+pushl
+ 
+$200
+
+
+1001 
+jmp
+ 
+Æ…øps
+
+
+1002 .
+globl
+ 
+ve˘‹201
+
+
+1003 
+ve˘‹201
+:
+
+1004 
+pushl
+ 
+$0
+
+
+1005 
+pushl
+ 
+$201
+
+
+1006 
+jmp
+ 
+Æ…øps
+
+
+1007 .
+globl
+ 
+ve˘‹202
+
+
+1008 
+ve˘‹202
+:
+
+1009 
+pushl
+ 
+$0
+
+
+1010 
+pushl
+ 
+$202
+
+
+1011 
+jmp
+ 
+Æ…øps
+
+
+1012 .
+globl
+ 
+ve˘‹203
+
+
+1013 
+ve˘‹203
+:
+
+1014 
+pushl
+ 
+$0
+
+
+1015 
+pushl
+ 
+$203
+
+
+1016 
+jmp
+ 
+Æ…øps
+
+
+1017 .
+globl
+ 
+ve˘‹204
+
+
+1018 
+ve˘‹204
+:
+
+1019 
+pushl
+ 
+$0
+
+
+1020 
+pushl
+ 
+$204
+
+
+1021 
+jmp
+ 
+Æ…øps
+
+
+1022 .
+globl
+ 
+ve˘‹205
+
+
+1023 
+ve˘‹205
+:
+
+1024 
+pushl
+ 
+$0
+
+
+1025 
+pushl
+ 
+$205
+
+
+1026 
+jmp
+ 
+Æ…øps
+
+
+1027 .
+globl
+ 
+ve˘‹206
+
+
+1028 
+ve˘‹206
+:
+
+1029 
+pushl
+ 
+$0
+
+
+1030 
+pushl
+ 
+$206
+
+
+1031 
+jmp
+ 
+Æ…øps
+
+
+1032 .
+globl
+ 
+ve˘‹207
+
+
+1033 
+ve˘‹207
+:
+
+1034 
+pushl
+ 
+$0
+
+
+1035 
+pushl
+ 
+$207
+
+
+1036 
+jmp
+ 
+Æ…øps
+
+
+1037 .
+globl
+ 
+ve˘‹208
+
+
+1038 
+ve˘‹208
+:
+
+1039 
+pushl
+ 
+$0
+
+
+1040 
+pushl
+ 
+$208
+
+
+1041 
+jmp
+ 
+Æ…øps
+
+
+1042 .
+globl
+ 
+ve˘‹209
+
+
+1043 
+ve˘‹209
+:
+
+1044 
+pushl
+ 
+$0
+
+
+1045 
+pushl
+ 
+$209
+
+
+1046 
+jmp
+ 
+Æ…øps
+
+
+1047 .
+globl
+ 
+ve˘‹210
+
+
+1048 
+ve˘‹210
+:
+
+1049 
+pushl
+ 
+$0
+
+
+1050 
+pushl
+ 
+$210
+
+
+1051 
+jmp
+ 
+Æ…øps
+
+
+1052 .
+globl
+ 
+ve˘‹211
+
+
+1053 
+ve˘‹211
+:
+
+1054 
+pushl
+ 
+$0
+
+
+1055 
+pushl
+ 
+$211
+
+
+1056 
+jmp
+ 
+Æ…øps
+
+
+1057 .
+globl
+ 
+ve˘‹212
+
+
+1058 
+ve˘‹212
+:
+
+1059 
+pushl
+ 
+$0
+
+
+1060 
+pushl
+ 
+$212
+
+
+1061 
+jmp
+ 
+Æ…øps
+
+
+1062 .
+globl
+ 
+ve˘‹213
+
+
+1063 
+ve˘‹213
+:
+
+1064 
+pushl
+ 
+$0
+
+
+1065 
+pushl
+ 
+$213
+
+
+1066 
+jmp
+ 
+Æ…øps
+
+
+1067 .
+globl
+ 
+ve˘‹214
+
+
+1068 
+ve˘‹214
+:
+
+1069 
+pushl
+ 
+$0
+
+
+1070 
+pushl
+ 
+$214
+
+
+1071 
+jmp
+ 
+Æ…øps
+
+
+1072 .
+globl
+ 
+ve˘‹215
+
+
+1073 
+ve˘‹215
+:
+
+1074 
+pushl
+ 
+$0
+
+
+1075 
+pushl
+ 
+$215
+
+
+1076 
+jmp
+ 
+Æ…øps
+
+
+1077 .
+globl
+ 
+ve˘‹216
+
+
+1078 
+ve˘‹216
+:
+
+1079 
+pushl
+ 
+$0
+
+
+1080 
+pushl
+ 
+$216
+
+
+1081 
+jmp
+ 
+Æ…øps
+
+
+1082 .
+globl
+ 
+ve˘‹217
+
+
+1083 
+ve˘‹217
+:
+
+1084 
+pushl
+ 
+$0
+
+
+1085 
+pushl
+ 
+$217
+
+
+1086 
+jmp
+ 
+Æ…øps
+
+
+1087 .
+globl
+ 
+ve˘‹218
+
+
+1088 
+ve˘‹218
+:
+
+1089 
+pushl
+ 
+$0
+
+
+1090 
+pushl
+ 
+$218
+
+
+1091 
+jmp
+ 
+Æ…øps
+
+
+1092 .
+globl
+ 
+ve˘‹219
+
+
+1093 
+ve˘‹219
+:
+
+1094 
+pushl
+ 
+$0
+
+
+1095 
+pushl
+ 
+$219
+
+
+1096 
+jmp
+ 
+Æ…øps
+
+
+1097 .
+globl
+ 
+ve˘‹220
+
+
+1098 
+ve˘‹220
+:
+
+1099 
+pushl
+ 
+$0
+
+
+1100 
+pushl
+ 
+$220
+
+
+1101 
+jmp
+ 
+Æ…øps
+
+
+1102 .
+globl
+ 
+ve˘‹221
+
+
+1103 
+ve˘‹221
+:
+
+1104 
+pushl
+ 
+$0
+
+
+1105 
+pushl
+ 
+$221
+
+
+1106 
+jmp
+ 
+Æ…øps
+
+
+1107 .
+globl
+ 
+ve˘‹222
+
+
+1108 
+ve˘‹222
+:
+
+1109 
+pushl
+ 
+$0
+
+
+1110 
+pushl
+ 
+$222
+
+
+1111 
+jmp
+ 
+Æ…øps
+
+
+1112 .
+globl
+ 
+ve˘‹223
+
+
+1113 
+ve˘‹223
+:
+
+1114 
+pushl
+ 
+$0
+
+
+1115 
+pushl
+ 
+$223
+
+
+1116 
+jmp
+ 
+Æ…øps
+
+
+1117 .
+globl
+ 
+ve˘‹224
+
+
+1118 
+ve˘‹224
+:
+
+1119 
+pushl
+ 
+$0
+
+
+1120 
+pushl
+ 
+$224
+
+
+1121 
+jmp
+ 
+Æ…øps
+
+
+1122 .
+globl
+ 
+ve˘‹225
+
+
+1123 
+ve˘‹225
+:
+
+1124 
+pushl
+ 
+$0
+
+
+1125 
+pushl
+ 
+$225
+
+
+1126 
+jmp
+ 
+Æ…øps
+
+
+1127 .
+globl
+ 
+ve˘‹226
+
+
+1128 
+ve˘‹226
+:
+
+1129 
+pushl
+ 
+$0
+
+
+1130 
+pushl
+ 
+$226
+
+
+1131 
+jmp
+ 
+Æ…øps
+
+
+1132 .
+globl
+ 
+ve˘‹227
+
+
+1133 
+ve˘‹227
+:
+
+1134 
+pushl
+ 
+$0
+
+
+1135 
+pushl
+ 
+$227
+
+
+1136 
+jmp
+ 
+Æ…øps
+
+
+1137 .
+globl
+ 
+ve˘‹228
+
+
+1138 
+ve˘‹228
+:
+
+1139 
+pushl
+ 
+$0
+
+
+1140 
+pushl
+ 
+$228
+
+
+1141 
+jmp
+ 
+Æ…øps
+
+
+1142 .
+globl
+ 
+ve˘‹229
+
+
+1143 
+ve˘‹229
+:
+
+1144 
+pushl
+ 
+$0
+
+
+1145 
+pushl
+ 
+$229
+
+
+1146 
+jmp
+ 
+Æ…øps
+
+
+1147 .
+globl
+ 
+ve˘‹230
+
+
+1148 
+ve˘‹230
+:
+
+1149 
+pushl
+ 
+$0
+
+
+1150 
+pushl
+ 
+$230
+
+
+1151 
+jmp
+ 
+Æ…øps
+
+
+1152 .
+globl
+ 
+ve˘‹231
+
+
+1153 
+ve˘‹231
+:
+
+1154 
+pushl
+ 
+$0
+
+
+1155 
+pushl
+ 
+$231
+
+
+1156 
+jmp
+ 
+Æ…øps
+
+
+1157 .
+globl
+ 
+ve˘‹232
+
+
+1158 
+ve˘‹232
+:
+
+1159 
+pushl
+ 
+$0
+
+
+1160 
+pushl
+ 
+$232
+
+
+1161 
+jmp
+ 
+Æ…øps
+
+
+1162 .
+globl
+ 
+ve˘‹233
+
+
+1163 
+ve˘‹233
+:
+
+1164 
+pushl
+ 
+$0
+
+
+1165 
+pushl
+ 
+$233
+
+
+1166 
+jmp
+ 
+Æ…øps
+
+
+1167 .
+globl
+ 
+ve˘‹234
+
+
+1168 
+ve˘‹234
+:
+
+1169 
+pushl
+ 
+$0
+
+
+1170 
+pushl
+ 
+$234
+
+
+1171 
+jmp
+ 
+Æ…øps
+
+
+1172 .
+globl
+ 
+ve˘‹235
+
+
+1173 
+ve˘‹235
+:
+
+1174 
+pushl
+ 
+$0
+
+
+1175 
+pushl
+ 
+$235
+
+
+1176 
+jmp
+ 
+Æ…øps
+
+
+1177 .
+globl
+ 
+ve˘‹236
+
+
+1178 
+ve˘‹236
+:
+
+1179 
+pushl
+ 
+$0
+
+
+1180 
+pushl
+ 
+$236
+
+
+1181 
+jmp
+ 
+Æ…øps
+
+
+1182 .
+globl
+ 
+ve˘‹237
+
+
+1183 
+ve˘‹237
+:
+
+1184 
+pushl
+ 
+$0
+
+
+1185 
+pushl
+ 
+$237
+
+
+1186 
+jmp
+ 
+Æ…øps
+
+
+1187 .
+globl
+ 
+ve˘‹238
+
+
+1188 
+ve˘‹238
+:
+
+1189 
+pushl
+ 
+$0
+
+
+1190 
+pushl
+ 
+$238
+
+
+1191 
+jmp
+ 
+Æ…øps
+
+
+1192 .
+globl
+ 
+ve˘‹239
+
+
+1193 
+ve˘‹239
+:
+
+1194 
+pushl
+ 
+$0
+
+
+1195 
+pushl
+ 
+$239
+
+
+1196 
+jmp
+ 
+Æ…øps
+
+
+1197 .
+globl
+ 
+ve˘‹240
+
+
+1198 
+ve˘‹240
+:
+
+1199 
+pushl
+ 
+$0
+
+
+1200 
+pushl
+ 
+$240
+
+
+1201 
+jmp
+ 
+Æ…øps
+
+
+1202 .
+globl
+ 
+ve˘‹241
+
+
+1203 
+ve˘‹241
+:
+
+1204 
+pushl
+ 
+$0
+
+
+1205 
+pushl
+ 
+$241
+
+
+1206 
+jmp
+ 
+Æ…øps
+
+
+1207 .
+globl
+ 
+ve˘‹242
+
+
+1208 
+ve˘‹242
+:
+
+1209 
+pushl
+ 
+$0
+
+
+1210 
+pushl
+ 
+$242
+
+
+1211 
+jmp
+ 
+Æ…øps
+
+
+1212 .
+globl
+ 
+ve˘‹243
+
+
+1213 
+ve˘‹243
+:
+
+1214 
+pushl
+ 
+$0
+
+
+1215 
+pushl
+ 
+$243
+
+
+1216 
+jmp
+ 
+Æ…øps
+
+
+1217 .
+globl
+ 
+ve˘‹244
+
+
+1218 
+ve˘‹244
+:
+
+1219 
+pushl
+ 
+$0
+
+
+1220 
+pushl
+ 
+$244
+
+
+1221 
+jmp
+ 
+Æ…øps
+
+
+1222 .
+globl
+ 
+ve˘‹245
+
+
+1223 
+ve˘‹245
+:
+
+1224 
+pushl
+ 
+$0
+
+
+1225 
+pushl
+ 
+$245
+
+
+1226 
+jmp
+ 
+Æ…øps
+
+
+1227 .
+globl
+ 
+ve˘‹246
+
+
+1228 
+ve˘‹246
+:
+
+1229 
+pushl
+ 
+$0
+
+
+1230 
+pushl
+ 
+$246
+
+
+1231 
+jmp
+ 
+Æ…øps
+
+
+1232 .
+globl
+ 
+ve˘‹247
+
+
+1233 
+ve˘‹247
+:
+
+1234 
+pushl
+ 
+$0
+
+
+1235 
+pushl
+ 
+$247
+
+
+1236 
+jmp
+ 
+Æ…øps
+
+
+1237 .
+globl
+ 
+ve˘‹248
+
+
+1238 
+ve˘‹248
+:
+
+1239 
+pushl
+ 
+$0
+
+
+1240 
+pushl
+ 
+$248
+
+
+1241 
+jmp
+ 
+Æ…øps
+
+
+1242 .
+globl
+ 
+ve˘‹249
+
+
+1243 
+ve˘‹249
+:
+
+1244 
+pushl
+ 
+$0
+
+
+1245 
+pushl
+ 
+$249
+
+
+1246 
+jmp
+ 
+Æ…øps
+
+
+1247 .
+globl
+ 
+ve˘‹250
+
+
+1248 
+ve˘‹250
+:
+
+1249 
+pushl
+ 
+$0
+
+
+1250 
+pushl
+ 
+$250
+
+
+1251 
+jmp
+ 
+Æ…øps
+
+
+1252 .
+globl
+ 
+ve˘‹251
+
+
+1253 
+ve˘‹251
+:
+
+1254 
+pushl
+ 
+$0
+
+
+1255 
+pushl
+ 
+$251
+
+
+1256 
+jmp
+ 
+Æ…øps
+
+
+1257 .
+globl
+ 
+ve˘‹252
+
+
+1258 
+ve˘‹252
+:
+
+1259 
+pushl
+ 
+$0
+
+
+1260 
+pushl
+ 
+$252
+
+
+1261 
+jmp
+ 
+Æ…øps
+
+
+1262 .
+globl
+ 
+ve˘‹253
+
+
+1263 
+ve˘‹253
+:
+
+1264 
+pushl
+ 
+$0
+
+
+1265 
+pushl
+ 
+$253
+
+
+1266 
+jmp
+ 
+Æ…øps
+
+
+1267 .
+globl
+ 
+ve˘‹254
+
+
+1268 
+ve˘‹254
+:
+
+1269 
+pushl
+ 
+$0
+
+
+1270 
+pushl
+ 
+$254
+
+
+1271 
+jmp
+ 
+Æ…øps
+
+
+1272 .
+globl
+ 
+ve˘‹255
+
+
+1273 
+ve˘‹255
+:
+
+1274 
+pushl
+ 
+$0
+
+
+1275 
+pushl
+ 
+$255
+
+
+1276 
+jmp
+ 
+Æ…øps
+
+
+1278 #ve˘‹ 
+èbÀ
+
+
+1279 .
+d©a
+
+
+1280 .
+globl
+ 
+ve˘‹s
+
+
+1281 
+ve˘‹s
+:
+
+1282 .
+ve˘‹0
+
+
+1283 .
+ve˘‹1
+
+
+1284 .
+ve˘‹2
+
+
+1285 .
+ve˘‹3
+
+
+1286 .
+ve˘‹4
+
+
+1287 .
+ve˘‹5
+
+
+1288 .
+ve˘‹6
+
+
+1289 .
+ve˘‹7
+
+
+1290 .
+ve˘‹8
+
+
+1291 .
+ve˘‹9
+
+
+1292 .
+ve˘‹10
+
+
+1293 .
+ve˘‹11
+
+
+1294 .
+ve˘‹12
+
+
+1295 .
+ve˘‹13
+
+
+1296 .
+ve˘‹14
+
+
+1297 .
+ve˘‹15
+
+
+1298 .
+ve˘‹16
+
+
+1299 .
+ve˘‹17
+
+
+1300 .
+ve˘‹18
+
+
+1301 .
+ve˘‹19
+
+
+1302 .
+ve˘‹20
+
+
+1303 .
+ve˘‹21
+
+
+1304 .
+ve˘‹22
+
+
+1305 .
+ve˘‹23
+
+
+1306 .
+ve˘‹24
+
+
+1307 .
+ve˘‹25
+
+
+1308 .
+ve˘‹26
+
+
+1309 .
+ve˘‹27
+
+
+1310 .
+ve˘‹28
+
+
+1311 .
+ve˘‹29
+
+
+1312 .
+ve˘‹30
+
+
+1313 .
+ve˘‹31
+
+
+1314 .
+ve˘‹32
+
+
+1315 .
+ve˘‹33
+
+
+1316 .
+ve˘‹34
+
+
+1317 .
+ve˘‹35
+
+
+1318 .
+ve˘‹36
+
+
+1319 .
+ve˘‹37
+
+
+1320 .
+ve˘‹38
+
+
+1321 .
+ve˘‹39
+
+
+1322 .
+ve˘‹40
+
+
+1323 .
+ve˘‹41
+
+
+1324 .
+ve˘‹42
+
+
+1325 .
+ve˘‹43
+
+
+1326 .
+ve˘‹44
+
+
+1327 .
+ve˘‹45
+
+
+1328 .
+ve˘‹46
+
+
+1329 .
+ve˘‹47
+
+
+1330 .
+ve˘‹48
+
+
+1331 .
+ve˘‹49
+
+
+1332 .
+ve˘‹50
+
+
+1333 .
+ve˘‹51
+
+
+1334 .
+ve˘‹52
+
+
+1335 .
+ve˘‹53
+
+
+1336 .
+ve˘‹54
+
+
+1337 .
+ve˘‹55
+
+
+1338 .
+ve˘‹56
+
+
+1339 .
+ve˘‹57
+
+
+1340 .
+ve˘‹58
+
+
+1341 .
+ve˘‹59
+
+
+1342 .
+ve˘‹60
+
+
+1343 .
+ve˘‹61
+
+
+1344 .
+ve˘‹62
+
+
+1345 .
+ve˘‹63
+
+
+1346 .
+ve˘‹64
+
+
+1347 .
+ve˘‹65
+
+
+1348 .
+ve˘‹66
+
+
+1349 .
+ve˘‹67
+
+
+1350 .
+ve˘‹68
+
+
+1351 .
+ve˘‹69
+
+
+1352 .
+ve˘‹70
+
+
+1353 .
+ve˘‹71
+
+
+1354 .
+ve˘‹72
+
+
+1355 .
+ve˘‹73
+
+
+1356 .
+ve˘‹74
+
+
+1357 .
+ve˘‹75
+
+
+1358 .
+ve˘‹76
+
+
+1359 .
+ve˘‹77
+
+
+1360 .
+ve˘‹78
+
+
+1361 .
+ve˘‹79
+
+
+1362 .
+ve˘‹80
+
+
+1363 .
+ve˘‹81
+
+
+1364 .
+ve˘‹82
+
+
+1365 .
+ve˘‹83
+
+
+1366 .
+ve˘‹84
+
+
+1367 .
+ve˘‹85
+
+
+1368 .
+ve˘‹86
+
+
+1369 .
+ve˘‹87
+
+
+1370 .
+ve˘‹88
+
+
+1371 .
+ve˘‹89
+
+
+1372 .
+ve˘‹90
+
+
+1373 .
+ve˘‹91
+
+
+1374 .
+ve˘‹92
+
+
+1375 .
+ve˘‹93
+
+
+1376 .
+ve˘‹94
+
+
+1377 .
+ve˘‹95
+
+
+1378 .
+ve˘‹96
+
+
+1379 .
+ve˘‹97
+
+
+1380 .
+ve˘‹98
+
+
+1381 .
+ve˘‹99
+
+
+1382 .
+ve˘‹100
+
+
+1383 .
+ve˘‹101
+
+
+1384 .
+ve˘‹102
+
+
+1385 .
+ve˘‹103
+
+
+1386 .
+ve˘‹104
+
+
+1387 .
+ve˘‹105
+
+
+1388 .
+ve˘‹106
+
+
+1389 .
+ve˘‹107
+
+
+1390 .
+ve˘‹108
+
+
+1391 .
+ve˘‹109
+
+
+1392 .
+ve˘‹110
+
+
+1393 .
+ve˘‹111
+
+
+1394 .
+ve˘‹112
+
+
+1395 .
+ve˘‹113
+
+
+1396 .
+ve˘‹114
+
+
+1397 .
+ve˘‹115
+
+
+1398 .
+ve˘‹116
+
+
+1399 .
+ve˘‹117
+
+
+1400 .
+ve˘‹118
+
+
+1401 .
+ve˘‹119
+
+
+1402 .
+ve˘‹120
+
+
+1403 .
+ve˘‹121
+
+
+1404 .
+ve˘‹122
+
+
+1405 .
+ve˘‹123
+
+
+1406 .
+ve˘‹124
+
+
+1407 .
+ve˘‹125
+
+
+1408 .
+ve˘‹126
+
+
+1409 .
+ve˘‹127
+
+
+1410 .
+ve˘‹128
+
+
+1411 .
+ve˘‹129
+
+
+1412 .
+ve˘‹130
+
+
+1413 .
+ve˘‹131
+
+
+1414 .
+ve˘‹132
+
+
+1415 .
+ve˘‹133
+
+
+1416 .
+ve˘‹134
+
+
+1417 .
+ve˘‹135
+
+
+1418 .
+ve˘‹136
+
+
+1419 .
+ve˘‹137
+
+
+1420 .
+ve˘‹138
+
+
+1421 .
+ve˘‹139
+
+
+1422 .
+ve˘‹140
+
+
+1423 .
+ve˘‹141
+
+
+1424 .
+ve˘‹142
+
+
+1425 .
+ve˘‹143
+
+
+1426 .
+ve˘‹144
+
+
+1427 .
+ve˘‹145
+
+
+1428 .
+ve˘‹146
+
+
+1429 .
+ve˘‹147
+
+
+1430 .
+ve˘‹148
+
+
+1431 .
+ve˘‹149
+
+
+1432 .
+ve˘‹150
+
+
+1433 .
+ve˘‹151
+
+
+1434 .
+ve˘‹152
+
+
+1435 .
+ve˘‹153
+
+
+1436 .
+ve˘‹154
+
+
+1437 .
+ve˘‹155
+
+
+1438 .
+ve˘‹156
+
+
+1439 .
+ve˘‹157
+
+
+1440 .
+ve˘‹158
+
+
+1441 .
+ve˘‹159
+
+
+1442 .
+ve˘‹160
+
+
+1443 .
+ve˘‹161
+
+
+1444 .
+ve˘‹162
+
+
+1445 .
+ve˘‹163
+
+
+1446 .
+ve˘‹164
+
+
+1447 .
+ve˘‹165
+
+
+1448 .
+ve˘‹166
+
+
+1449 .
+ve˘‹167
+
+
+1450 .
+ve˘‹168
+
+
+1451 .
+ve˘‹169
+
+
+1452 .
+ve˘‹170
+
+
+1453 .
+ve˘‹171
+
+
+1454 .
+ve˘‹172
+
+
+1455 .
+ve˘‹173
+
+
+1456 .
+ve˘‹174
+
+
+1457 .
+ve˘‹175
+
+
+1458 .
+ve˘‹176
+
+
+1459 .
+ve˘‹177
+
+
+1460 .
+ve˘‹178
+
+
+1461 .
+ve˘‹179
+
+
+1462 .
+ve˘‹180
+
+
+1463 .
+ve˘‹181
+
+
+1464 .
+ve˘‹182
+
+
+1465 .
+ve˘‹183
+
+
+1466 .
+ve˘‹184
+
+
+1467 .
+ve˘‹185
+
+
+1468 .
+ve˘‹186
+
+
+1469 .
+ve˘‹187
+
+
+1470 .
+ve˘‹188
+
+
+1471 .
+ve˘‹189
+
+
+1472 .
+ve˘‹190
+
+
+1473 .
+ve˘‹191
+
+
+1474 .
+ve˘‹192
+
+
+1475 .
+ve˘‹193
+
+
+1476 .
+ve˘‹194
+
+
+1477 .
+ve˘‹195
+
+
+1478 .
+ve˘‹196
+
+
+1479 .
+ve˘‹197
+
+
+1480 .
+ve˘‹198
+
+
+1481 .
+ve˘‹199
+
+
+1482 .
+ve˘‹200
+
+
+1483 .
+ve˘‹201
+
+
+1484 .
+ve˘‹202
+
+
+1485 .
+ve˘‹203
+
+
+1486 .
+ve˘‹204
+
+
+1487 .
+ve˘‹205
+
+
+1488 .
+ve˘‹206
+
+
+1489 .
+ve˘‹207
+
+
+1490 .
+ve˘‹208
+
+
+1491 .
+ve˘‹209
+
+
+1492 .
+ve˘‹210
+
+
+1493 .
+ve˘‹211
+
+
+1494 .
+ve˘‹212
+
+
+1495 .
+ve˘‹213
+
+
+1496 .
+ve˘‹214
+
+
+1497 .
+ve˘‹215
+
+
+1498 .
+ve˘‹216
+
+
+1499 .
+ve˘‹217
+
+
+1500 .
+ve˘‹218
+
+
+1501 .
+ve˘‹219
+
+
+1502 .
+ve˘‹220
+
+
+1503 .
+ve˘‹221
+
+
+1504 .
+ve˘‹222
+
+
+1505 .
+ve˘‹223
+
+
+1506 .
+ve˘‹224
+
+
+1507 .
+ve˘‹225
+
+
+1508 .
+ve˘‹226
+
+
+1509 .
+ve˘‹227
+
+
+1510 .
+ve˘‹228
+
+
+1511 .
+ve˘‹229
+
+
+1512 .
+ve˘‹230
+
+
+1513 .
+ve˘‹231
+
+
+1514 .
+ve˘‹232
+
+
+1515 .
+ve˘‹233
+
+
+1516 .
+ve˘‹234
+
+
+1517 .
+ve˘‹235
+
+
+1518 .
+ve˘‹236
+
+
+1519 .
+ve˘‹237
+
+
+1520 .
+ve˘‹238
+
+
+1521 .
+ve˘‹239
+
+
+1522 .
+ve˘‹240
+
+
+1523 .
+ve˘‹241
+
+
+1524 .
+ve˘‹242
+
+
+1525 .
+ve˘‹243
+
+
+1526 .
+ve˘‹244
+
+
+1527 .
+ve˘‹245
+
+
+1528 .
+ve˘‹246
+
+
+1529 .
+ve˘‹247
+
+
+1530 .
+ve˘‹248
+
+
+1531 .
+ve˘‹249
+
+
+1532 .
+ve˘‹250
+
+
+1533 .
+ve˘‹251
+
+
+1534 .
+ve˘‹252
+
+
+1535 .
+ve˘‹253
+
+
+1536 .
+ve˘‹254
+
+
+1537 .
+ve˘‹255
+
+
 	@vm.c
 
 1 
@@ -47245,8 +55559,8 @@ ush‹t
 1
 .
 0
-92
-808
+93
+818
 asm.h
 bio.c
 bootasm.S
@@ -47335,6 +55649,7 @@ umalloc.c
 user.h
 usertests.c
 usys.S
+vectors.S
 vm.c
 wc.c
 x86.h

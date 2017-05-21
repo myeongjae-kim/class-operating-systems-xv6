@@ -77,7 +77,14 @@ struct proc {
   // Design Document 2-1-2-3
   thread_t tid;                // thread id
   int pgdir_ref_idx;           // page table reference counter idx
-  void* thread_return;           // a variable used to return in thread
+  void* thread_return;         // a variable used to return in thread
+
+  // Design Document 2-2-2-3
+  int num_of_threads;          // only a master thread has its value which is not zero.
+                               // (tid == 0 && num_of_threads == 0) -> a process
+                               // (tid == 0 && num_of_threads != 0) -> a master thread
+                               // (tid != 0 && num_of_threads == 0) -> a thread
+                               // (tid != 0 && num_of_threads != 0) -> no existing case
 };
 
 // Process memory is laid out contiguously, low addresses first:
