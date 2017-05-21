@@ -141,6 +141,7 @@ pinit(void)
   int queue_level;
   int default_ticks = 5;
   initlock(&ptable.lock, "ptable");
+  initlock(&thread_lock, "thread");
 
   // Initializing ptable variables.
   // Design Document 1-2-2-3.
