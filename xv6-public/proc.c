@@ -1494,6 +1494,9 @@ thread_join(thread_t thread, void **retval)
 
     // No point waiting if we don't have any threads.
     if(!havekids || proc->killed){
+#ifdef THREAD_DEBUGGING
+      cprintf("(thread_join) thread resources is not cleared.\n");
+#endif
       release(&ptable.lock);
       return -1;
     }
