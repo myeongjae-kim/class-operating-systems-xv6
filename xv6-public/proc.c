@@ -477,7 +477,7 @@ exit(void)
     cprintf(" ** A process with threads calls exit() **\n");
     cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
 #endif
-    // remove threads first, and remove the master thread next.
+    // remove threads, and remove the master thread next.
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       int tid;
       if (p->pid == proc->pid && p->tid != 0) {
@@ -490,23 +490,44 @@ exit(void)
         thread_join(tid, (void**)0);
       }
     }
-    // remove master threads;
+    // remove the master thread;
     common_exit(proc);
+
+    // Jump into the scheduler, never to return.
+    sched();
+    panic("zombie exit");
+    
+
+  // a thread(not mastser thread) calls exit()
+  } else if (proc->tid != 0 && proc->num_of_threads == 0) {
+    struct proc* master_thread = proc->parent;
+    struct proc *p;
+#ifdef THREAD_DEBUGGING
+    cprintf(" ** A thread(not master thread) calls exit() **\n");
+    cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
+#endif
+
+    // remove threads, and remove the master thread next.
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      int tid;
+      if (p->pid == proc->pid && p->tid != 0) {
+        tid = p->tid;
+        cprintf(" ** pid: %d, tid:%d **\n", p->pid, p->tid);
+        common_exit(p);
+        release(&ptable.lock);
+
+        // clear resources
+        thread_join(tid, (void**)0);
+      }
+    }
+    // remove the master thread;
+    common_exit(master_thread);
 
     // Jump into the scheduler, never to return.
     sched();
     panic("zombie exit");
 
 
-    
-  // a thread(not mastser thread) calls exit()
-  } else if (proc->tid != 0 && proc->num_of_threads == 0) {
-#ifdef THREAD_DEBUGGING
-    cprintf(" ** A thread(not master thread) calls exit() **\n");
-    cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
-#endif
-
-    //TODO
 
     
   // prohibited case. panic!
@@ -1314,7 +1335,11 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   proc->sz = np->sz;
 
   // increase the counter of master threads
-  proc->num_of_threads++;
+  if (proc->tid == 0) {
+    proc->num_of_threads++;
+  } else {
+    proc->parent->num_of_threads++;
+  }
   release(&thread_lock);
 
   // edit return address to run desiganted function

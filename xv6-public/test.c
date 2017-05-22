@@ -31,6 +31,8 @@ void* finite_thread(void *arg) {
 }
 
 void* exit_calling_thread(void *arg) {
+  printf(1, " **** I am a thread calling exit()!! ****\n");
+  printf(1, " **** My pid:%d, tid:%d, ****\n", getpid(), gettid());
   exit();
 }
 
@@ -39,6 +41,7 @@ main(int argc, char *argv[])
 {
   thread_t inf_tids[N_THREAD];
   thread_t f_tids[N_THREAD];
+  thread_t exit_tid;
   int i;
   for (i = 0; i < N_THREAD; ++i) {
     thread_create(&inf_tids[i], infinite_thread, (void*)i);
@@ -52,6 +55,9 @@ main(int argc, char *argv[])
     printf(1, "f_tids[%d] is end.\n", i);
   }
 
+  thread_create(&exit_tid, exit_calling_thread, (void*)0);
+
+  while(1);
   exit();
 
   for (i = 0; i < N_THREAD; ++i) {
