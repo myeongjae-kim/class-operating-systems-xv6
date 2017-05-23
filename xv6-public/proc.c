@@ -437,7 +437,13 @@ common_exit(struct proc* proc)
   }
 
   // Parent might be sleeping in wait().
+#ifdef THREAD_DEBUGGING
+  cprintf("(common_exit) wakeup1 pname:%s, chan:%p, pid:%d, tid:%d\n", proc->parent->name, proc->parent, proc->parent->pid, proc->parent->tid);
+#endif
   wakeup1(proc->parent);
+#ifdef THREAD_DEBUGGING
+  cprintf("(common_exit) proc->parent->state:%d\n", proc->parent->state);
+#endif
 
   // Pass abandoned children to init.
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -544,6 +550,9 @@ exit(void)
 
     // 3. remove the master thread;
     //    It is a process so remove_thread_stack() does not need to be called.
+#ifdef THREAD_DEBUGGING
+    cprintf("(exit, a thread) master thread's parent adr:%p, pid:%d, tid:%d\n", master_thread->parent, master_thread->parent->pid, master_thread->parent->tid);
+#endif
     common_exit(master_thread);
 
     //FIXME: remove resources of exit() calling thread.
@@ -652,6 +661,9 @@ wait(void)
     }
 
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+#ifdef THREAD_DEBUGGING
+    cprintf("(wait) proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+#endif
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
 }
