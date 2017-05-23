@@ -50,6 +50,9 @@ int pgdir_ref_next_idx = 0;
 // Design Dcoument 2-1-2-4
 void
 check_pgdir_counter_and_call_freevm(struct proc* p) {
+#ifdef THREAD_DEBUGGING
+  cprintf("(check_pgdir_count...) ** p->name:%s, p->tid:%d, pgdir_ref[p->pgdir_ref_idx]:%d\n", p->name, p->tid, pgdir_ref[p->pgdir_ref_idx]);
+#endif
   if (p->pgdir_ref_idx == -1) {
     // This is a case in booting
     freevm(p->pgdir);
@@ -60,6 +63,8 @@ check_pgdir_counter_and_call_freevm(struct proc* p) {
     pgdir_ref[p->pgdir_ref_idx] = 0;
     release(&thread_lock);
     freevm(p->pgdir);
+
+
   } else {
     // There is a thread using a same addres space.
     // Do not free it.
@@ -309,7 +314,6 @@ growproc(int n)
 int
 fork(void)
 {
-  // TODO: 'stressfs' is failed because of handling a opened file.
   int i, pid;
   struct proc *np;
 
@@ -449,6 +453,11 @@ common_exit(struct proc* proc)
 
 int thread_join(thread_t , void **);
 
+int clear_proc(struct proc *);
+
+void remove_thread_stack(struct proc *);
+
+
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait() to find out it exited.
@@ -507,22 +516,38 @@ exit(void)
     cprintf(" ** pname:%s, pid:%d, tid:%d **\n", proc->name, proc->pid, proc->tid);
 #endif
 
-    // remove threads, and remove the master thread next.
+    // 1. remove threads without a exit() calling thread and a master thread.
+    // 2. remove an exit() calling thread's resource.
+    // 3. remove the master thread;
+    
+    // 1. remove threads without a exit() calling thread and a master thread.
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      int tid;
-      if (p->pid == proc->pid && p->tid != 0) {
-        tid = p->tid;
+      /** int tid; */
+      if (p->pid == proc->pid && p->tid != 0 && p != proc) {
+        /** tid = p->tid; */
         cprintf(" ** pid: %d, tid:%d **\n", p->pid, p->tid);
-        common_exit(p);
-        release(&ptable.lock);
 
+        acquire(&ptable.lock);
         // clear resources
-        thread_join(tid, (void**)0);
+        remove_thread_stack(p);
+        clear_proc(p);
+
+        release(&ptable.lock);
       }
     }
-    // remove the master thread;
+    // 2. remove an exit() calling thread's resource.
+    acquire(&ptable.lock);
+    // clear resources
+    remove_thread_stack(proc);
+    check_pgdir_counter_and_call_freevm(proc);
+    release(&ptable.lock);
+
+    // 3. remove the master thread;
+    //    It is a process so remove_thread_stack() does not need to be called.
     common_exit(master_thread);
 
+    //FIXME: remove resources of exit() calling thread.
+    proc->state = UNUSED;
     // Jump into the scheduler, never to return.
     sched();
     panic("zombie exit");
@@ -1447,10 +1472,35 @@ sys_thread_exit(void)
   return 0;
 }
 
+void
+remove_thread_stack(struct proc* p) {
+  if (p == 0) {
+    panic("p should not be a zero.\n");
+  }
+
+  if (pgdir_ref[p->pgdir_ref_idx] > 1) {
+    int newsz;
+#ifdef THREAD_DEBUGGING
+    /** cprintf("** deallocuvm to free thread stack. **\n"); */
+#endif
+    // if deallocated sz is smaller than parent's sz, update it.
+    // But here is still a problem.
+    // For example, there are two thread.
+    // First thread is deallocated, and two thread are added.
+    // Then the fourth thread will use a same stack with second one.
+    // How can I solve this?
+    newsz = deallocuvm(p->pgdir, p->sz, p->sz - 2*PGSIZE);
+    p->parent->sz = newsz < p->parent->sz ? newsz : p->parent->sz;
+  }
+  acquire(&thread_lock);
+  // the master thread should wait until all of its threads die.
+  p->parent->num_of_threads--;
+  release(&thread_lock);
+}
+
 int
 thread_join(thread_t thread, void **retval)
 {
-  // TODO
   struct proc *p;
   int havekids;
 
@@ -1466,24 +1516,7 @@ thread_join(thread_t thread, void **retval)
         *retval = p->thread_return;
 
         // when pgdir is not freed, we should call deallocuvm to remove thread stack.
-        if (pgdir_ref[p->pgdir_ref_idx] > 1) {
-          int newsz;
-#ifdef THREAD_DEBUGGING
-          /** cprintf("** deallocuvm to free thread stack. **\n"); */
-#endif
-          // if deallocated sz is smaller than parent's sz, update it.
-          // But here is still a problem.
-          // For example, there are two thread.
-          // First thread is deallocated, and two thread are added.
-          // Then the fourth thread will use a same stack with second one.
-          // How can I solve this?
-          newsz = deallocuvm(p->pgdir, p->sz, p->sz - 2*PGSIZE);
-          p->parent->sz = newsz < p->parent->sz ? newsz : p->parent->sz;
-        }
-        acquire(&thread_lock);
-        // the master thread should wait until all of its threads die.
-        p->parent->num_of_threads--;
-        release(&thread_lock);
+        remove_thread_stack(p);
         clear_proc(p);
 
 
