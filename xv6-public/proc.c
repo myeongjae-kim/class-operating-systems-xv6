@@ -547,6 +547,7 @@ exit(void)
     common_exit(master_thread);
 
     //FIXME: remove resources of exit() calling thread.
+    //but allocproc() reinitialize the resources so it is not a problem.
     proc->state = UNUSED;
     // Jump into the scheduler, never to return.
     sched();
