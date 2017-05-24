@@ -113,12 +113,10 @@ main(int argc, char *argv[])
       exit();
     } else{
       close(gpipe[1]);
-      printf(1, "(threadtest2) waiting child process.\n");
       if (wait() == -1 || read(gpipe[0], (char*)&ret, sizeof(ret)) == -1 || ret != 0){
         printf(1,"%d. %s panic\n", i, testname[i]);
         exit();
       }
-      printf(1, "(threadtest2) waiting is end.\n");
       close(gpipe[0]);
     }
     printf(1,"%d. %s finish\n", i, testname[i]);
