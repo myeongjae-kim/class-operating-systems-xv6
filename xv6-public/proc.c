@@ -662,9 +662,12 @@ wait(void)
 
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
 #ifdef THREAD_DEBUGGING
-    cprintf("(wait) proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+    cprintf("(wait) go to sleep. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
 #endif
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
+#ifdef THREAD_DEBUGGING
+    cprintf("(wait) I wake up!. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+#endif
   }
 }
 void
