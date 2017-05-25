@@ -588,7 +588,9 @@ exit(void)
       int tid;
       if (p->pid == proc->pid && p->tid != 0) {
         tid = p->tid;
+#ifdef THREAD_DEBUGGING
         cprintf(" ** pid: %d, tid:%d **\n", p->pid, p->tid);
+#endif
         common_exit(p);
         release(&ptable.lock);
 
@@ -614,15 +616,17 @@ exit(void)
 #endif
 
     // 1. remove threads without a exit() calling thread and a master thread.
-    // 2. remove an exit() calling thread's resource.
-    // 3. remove the master thread;
+    // 2. remove the master thread;
+    // 3. remove an exit() calling thread's resource.
     
     // 1. remove threads without a exit() calling thread and a master thread.
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       /** int tid; */
       if (p->pid == proc->pid && p->tid != 0 && p != proc) {
         /** tid = p->tid; */
+#ifdef THREAD_DEBUGGING
         cprintf(" ** pid: %d, tid:%d **\n", p->pid, p->tid);
+#endif
 
         acquire(&ptable.lock);
         // clear resources
@@ -634,19 +638,22 @@ exit(void)
         release(&ptable.lock);
       }
     }
-    // 2. remove an exit() calling thread's resource.
-    acquire(&ptable.lock);
-    // clear resources
-    remove_thread_stack(proc);
-    check_pgdir_counter_and_call_freevm(proc);
-    release(&ptable.lock);
 
-    // 3. remove the master thread;
+    // 2. remove the master thread;
     //    It is a process so remove_thread_stack() does not need to be called.
 #ifdef THREAD_DEBUGGING
     cprintf("(exit, a thread) master thread's parent adr:%p, pid:%d, tid:%d\n", master_thread->parent, master_thread->parent->pid, master_thread->parent->tid);
 #endif
     common_exit(master_thread);
+    release(&ptable.lock);
+
+    // 3. remove an exit() calling thread's resource.
+    // clear thread stack resource
+    acquire(&ptable.lock);
+    remove_thread_stack(proc);
+    release(&ptable.lock);
+    // remove current proc
+    common_exit(proc);
 
     //FIXME: remove resources of exit() calling thread.
     //but allocproc() reinitialize the resources so it is not a problem.
