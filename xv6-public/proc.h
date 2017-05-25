@@ -85,6 +85,8 @@ struct proc {
                                // (tid == 0 && num_of_threads != 0) -> a master thread
                                // (tid != 0 && num_of_threads == 0) -> a thread
                                // (tid != 0 && num_of_threads != 0) -> no existing case
+
+  struct proc* proc_forked_in_thread; // it is used in wait() to wait a new generatd thread.
 };
 
 // Process memory is laid out contiguously, low addresses first:

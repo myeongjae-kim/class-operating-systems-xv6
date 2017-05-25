@@ -84,6 +84,7 @@
 ./console.c
 ./param.h
 ./file.c
+./threadtest2.c
 ./mp.h
 ./ln.c
 ./proc.c

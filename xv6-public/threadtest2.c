@@ -99,6 +99,7 @@ main(int argc, char *argv[])
       printf(1,"pipe panic\n");
       exit();
     }
+    printf(1, "(threadtest2) gpipe[0]:%d, gpipe[1]:%d\n", gpipe[0], gpipe[1]);
     ret = 0;
 
     if ((pid = fork()) < 0){
@@ -113,6 +114,7 @@ main(int argc, char *argv[])
       exit();
     } else{
       close(gpipe[1]);
+      printf(1, "(threadtest2) (parent) gpipe[1] is closed!!\n");
       if (wait() == -1 || read(gpipe[0], (char*)&ret, sizeof(ret)) == -1 || ret != 0){
         printf(1,"%d. %s panic\n", i, testname[i]);
         exit();

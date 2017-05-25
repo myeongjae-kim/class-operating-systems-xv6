@@ -219,6 +219,7 @@ found:
   // Design Document 2-2-2-2
   // Related with threads.
   p->num_of_threads = 0;
+  p->proc_forked_in_thread = 0;
 
   release(&ptable.lock);
 
@@ -308,6 +309,71 @@ growproc(int n)
   return 0;
 }
 
+int
+fork_master_thread(struct proc* t) {
+  // Make a new process but use same address space with already generated thread.
+
+  int i, pid;
+  struct proc *np;
+  struct proc *old_master_thread = t->parent;
+
+  // Allocate process.
+  if((np = allocproc()) == 0){
+    return -1;
+  }
+
+  // use same pid with the thread
+  np->pid = t->pid;
+
+  // Copy process state from the thread.
+  np->pgdir = t->pgdir;
+  np->sz = t->sz;
+
+  // np's parent should be an old master thread.
+  np->parent = old_master_thread;
+  // Change the thread's master thread to new master thread.
+  t->parent = np;
+  // A fork() calling thread should know the new process' address to wait a new thread.
+  proc->proc_forked_in_thread = np;
+
+  *np->tf = *old_master_thread->tf;
+
+  // use same counter with the thread.
+  np->pgdir_ref_idx = t->pgdir_ref_idx;
+  // increase the pgdir counter and num_of_threads.
+  acquire(&thread_lock);
+  pgdir_ref[np->pgdir_ref_idx]++;
+  np->num_of_threads++;
+  release(&thread_lock);
+
+  // Clear %eax so that fork returns 0 in the child.
+  np->tf->eax = 0;
+
+  for(i = 0; i < NOFILE; i++)
+    if(t->ofile[i])
+      t->ofile[i] = filedup(t->ofile[i]);
+  np->cwd = idup(t->cwd);
+
+  safestrcpy(np->name, t->name, sizeof(t->name));
+
+  pid = np->pid;
+
+  acquire(&ptable.lock);
+
+  // same state with old master thread
+  np->state = old_master_thread->state;
+
+  //Design Document 1-1-2-5. A new process is generated.
+
+  release(&ptable.lock);
+
+  return pid;
+
+  
+  // Find a master thread's proc.
+  // Copy the context of a master thread.
+}
+
 // Create a new process copying p as the parent.
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
@@ -347,6 +413,26 @@ fork(void)
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
   pid = np->pid;
+
+  // when a thread calls fork()
+  // current proc is a thread.
+  if (proc->tid != 0) {
+#ifdef THREAD_DEBUGGING
+    cprintf("** (fork) a thread calls fork(). **\n");
+#endif
+    /** panic("a thread calls fork().\n"); */
+
+    np->tid = next_thread_id++;
+
+    // np's parent is old master thread temporarily.
+    // In the end of the code, np's parent will be a new process(master thread).
+    np->parent = proc->parent;
+
+    if(fork_master_thread(np) == -1) {
+      panic("creating a new master thread is failed.");
+    }
+
+  }
 
   acquire(&ptable.lock);
 
@@ -419,6 +505,11 @@ common_exit(struct proc* proc)
   // Close all open files.
   for(fd = 0; fd < NOFILE; fd++){
     if(proc->ofile[fd]){
+#ifdef THREAD_DEBUGGING
+      if (proc->pid == 4) {
+        cprintf(" ** file closing. pid:%d, tid:%d, fd:%d\n",proc->pid, proc->tid, fd);
+      }
+#endif
       fileclose(proc->ofile[fd]);
       proc->ofile[fd] = 0;
     }
@@ -536,8 +627,10 @@ exit(void)
         acquire(&ptable.lock);
         // clear resources
         remove_thread_stack(p);
-        clear_proc(p);
+        release(&ptable.lock);
 
+        common_exit(p);
+        clear_proc(p);
         release(&ptable.lock);
       }
     }
@@ -613,6 +706,7 @@ clear_proc(struct proc *p) {
   p->pgdir_ref_idx = -1;
   p->thread_return = 0;
   p->num_of_threads = 0;
+  p->proc_forked_in_thread = 0;
 
   p->state = UNUSED;
   return pid;
@@ -625,6 +719,7 @@ wait(void)
 {
   struct proc *p;
   int havekids, pid;
+  int proc_is_thread = proc->tid;
 
   acquire(&ptable.lock);
   for(;;){
@@ -632,9 +727,20 @@ wait(void)
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       // We can find a hint of kernel memory leakage when we add a condition like below
-      if(p->parent != proc || p->tid != 0)
-      /** if(p->parent != proc) */
-        continue;
+
+      // wait() in threads.
+      if (proc_is_thread) {
+#ifdef THREAD_DEBUGGING
+        cprintf("(wait) wait() is called in a thread. pid of waiting thread:%d\n", proc->proc_forked_in_thread->pid);
+#endif
+        if(p->parent != proc->proc_forked_in_thread) // thread resource is removed in thread_join
+          continue;
+      // wait() in process
+      } else {
+        if(p->parent != proc || p->tid != 0) // thread resource is removed in thread_join
+        /** if(p->parent != proc) */
+          continue;
+      }
 
 #ifdef THREAD_DEBUGGING
       if (p->tid != 0) {
@@ -648,6 +754,10 @@ wait(void)
 
       havekids = 1;
       if(p->state == ZOMBIE){
+        
+        if (p->tid) {
+          remove_thread_stack(p);
+        }
         pid = clear_proc(p);
         release(&ptable.lock);
         return pid;
@@ -657,14 +767,24 @@ wait(void)
     // No point waiting if we don't have any children.
     if(!havekids || proc->killed){
       release(&ptable.lock);
+/** #ifdef THREAD_DEBUGGING */
+      cprintf("(wait) return -1. havekids:%d, proc->killed:%d, panem:%s, pid:%d, tid:%d\n", havekids, proc->killed, proc->name, proc->pid, proc->tid);
+/** #endif */
       return -1;
     }
 
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    if (proc_is_thread) {
 #ifdef THREAD_DEBUGGING
-    cprintf("(wait) go to sleep. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+      cprintf("(wait) go to sleep. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc->proc_forked_in_thread);
 #endif
-    sleep(proc, &ptable.lock);  //DOC: wait-sleep
+      sleep(proc->proc_forked_in_thread, &ptable.lock);
+    }else{
+#ifdef THREAD_DEBUGGING
+      cprintf("(wait) go to sleep. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+#endif
+      sleep(proc, &ptable.lock);  //DOC: wait-sleep
+    }
 #ifdef THREAD_DEBUGGING
     cprintf("(wait) I wake up!. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
 #endif
