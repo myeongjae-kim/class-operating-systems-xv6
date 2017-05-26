@@ -87,6 +87,7 @@ struct proc {
                                // (tid != 0 && num_of_threads != 0) -> no existing case
 
   struct proc* proc_forked_in_thread; // it is used in wait() to wait a new generatd thread.
+  int original_cpu_share;      // This is the sum of cpu_shares of threads.
 };
 
 // Process memory is laid out contiguously, low addresses first:

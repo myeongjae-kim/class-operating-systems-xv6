@@ -221,6 +221,7 @@ found:
   // Related with threads.
   p->num_of_threads = 0;
   p->proc_forked_in_thread = 0;
+  p->original_cpu_share = 0;
 
   release(&ptable.lock);
 
@@ -745,6 +746,7 @@ clear_proc(struct proc *p) {
   p->thread_return = 0;
   p->num_of_threads = 0;
   p->proc_forked_in_thread = 0;
+  p->original_cpu_share = 0;
 
   p->state = UNUSED;
   return pid;
