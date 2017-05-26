@@ -1559,8 +1559,9 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   cprintf("(thread_create) pname:%s, pid:%d, tid:%d, proc->sz:%d, np->sz:%d\n", proc->name, proc->pid, proc->tid, proc->sz, np->sz);
 #endif
 
-  // there should be a space for sbkr(). 2*PGSIZE
-  proc->sz = np->sz + 2*PGSIZE;
+  // there should be a space for sbkr().
+  // a thread takes a space 4MB. The reason of '-2' is that two page size is already allocated in the above codes.
+  proc->sz = np->sz + PGSIZE * (1024 - 2);
 
   // increase the counter of master threads
   if (proc->tid == 0) {
