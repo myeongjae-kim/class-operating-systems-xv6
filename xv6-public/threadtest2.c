@@ -2,7 +2,7 @@
 #include "stat.h"
 #include "user.h"
 
-#define NUM_THREAD 10
+#define NUM_THREAD 20
 #define NTEST 15
 
 // Show race condition
@@ -359,10 +359,10 @@ forkthreadmain(void *arg)
     printf(1, "panic at fork in forktest\n");
     exit();
   } else if (pid == 0){
-    printf(1, "child\n");
+    printf(1, "child, pid:%d, tid:%d\n", getpid(), gettid());
     exit();
   } else{
-    printf(1, "parent\n");
+    printf(1, "parent, pid:%d, tid:%d\n", getpid(), gettid());
     if (wait() == -1){
       printf(1, "panic at wait in forktest\n");
       exit();

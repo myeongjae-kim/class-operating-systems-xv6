@@ -7,6 +7,8 @@
 #include "mmu.h"
 #include "proc.h"
 
+extern struct spinlock thread_lock;
+
 int
 sys_fork(void)
 {
@@ -54,6 +56,11 @@ sys_sbrk(void)
 {
   int addr;
   int n;
+
+  /** if (proc->tid != 0) {
+    *   cprintf("(sbrk) sbrk() is called in a thread. This is not yet implemented.\n");
+    *   return -1;
+    * } */
 
   if(argint(0, &n) < 0)
     return -1;

@@ -196,7 +196,7 @@ clean:
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs mkfs \
-	.gdbinit \
+	.gdbinit a.out\
 	$(UPROGS)
 
 # make a printout
@@ -291,3 +291,8 @@ tar:
 	(cd /tmp; tar cf - xv6) | gzip >xv6-rev10.tar.gz  # the next one will be 10 (9/17)
 
 .PHONY: dist-test dist
+
+
+
+l:
+	gcc -pthread forktest_linux.c

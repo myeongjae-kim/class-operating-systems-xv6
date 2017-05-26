@@ -296,6 +296,12 @@ growproc(int n)
 {
   uint sz;
 
+#ifdef THREAD_DEBUGGING
+  cprintf("(growproc) pname:%s, pid:%d, tid:%d arg:%d\n", proc->name, proc->pid, proc->tid, n);
+#endif
+
+
+
   sz = proc->sz;
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
@@ -317,6 +323,10 @@ fork_master_thread(struct proc* t) {
   struct proc *np;
   struct proc *old_master_thread = t->parent;
 
+#ifdef THREAD_DEBUGGING
+  cprintf("(fork_master_thread) old_master_thread pid:%d, tid:%d\n", old_master_thread->pid, old_master_thread->tid);
+#endif
+
   // Allocate process.
   if((np = allocproc()) == 0){
     return -1;
@@ -326,8 +336,8 @@ fork_master_thread(struct proc* t) {
   np->pid = t->pid;
 
   // Copy process state from the thread.
-  np->pgdir = t->pgdir;
-  np->sz = t->sz;
+  np->pgdir = old_master_thread->pgdir;
+  np->sz = old_master_thread->sz;
 
   // np's parent should be an old master thread.
   np->parent = old_master_thread;
@@ -335,6 +345,12 @@ fork_master_thread(struct proc* t) {
   t->parent = np;
   // A fork() calling thread should know the new process' address to wait a new thread.
   proc->proc_forked_in_thread = np;
+
+#ifdef THREAD_DEBUGGING
+  cprintf("(fork_master_thread) after changing parnet. np is a new process. t is a new thread.\n");
+  cprintf("(fork_master_thread) np:%p, np->pid:%d, np->tid:%d, np->parent:%p, np->parent->pid:%d, np->parent->tid:%d\n", np, np->pid, np->tid, np->parent, np->parent->pid, np->parent->tid);
+  cprintf("(fork_master_thread) t:%p, t->pid:%d, t->tid:%d, t->parent:%p, t->parent->pid:%d, t->parent->tid:%d\n", t, t->pid, t->tid, t->parent, t->parent->pid, t->parent->tid);
+#endif
 
   *np->tf = *old_master_thread->tf;
 
@@ -363,15 +379,10 @@ fork_master_thread(struct proc* t) {
   // same state with old master thread
   np->state = old_master_thread->state;
 
-  //Design Document 1-1-2-5. A new process is generated.
-
   release(&ptable.lock);
 
   return pid;
 
-  
-  // Find a master thread's proc.
-  // Copy the context of a master thread.
 }
 
 // Create a new process copying p as the parent.
@@ -382,6 +393,11 @@ fork(void)
 {
   int i, pid;
   struct proc *np;
+
+  if (proc->tid != 0) {
+    cprintf("(fork) fork() is called in a thread. This is not yet implemented.\n");
+    return -1;
+  }
 
   // Allocate process.
   if((np = allocproc()) == 0){
@@ -426,6 +442,8 @@ fork(void)
 
     // np's parent is old master thread temporarily.
     // In the end of the code, np's parent will be a new process(master thread).
+    cprintf("** (fork) a thread's pid:%d, tid:%d **\n", proc->pid, proc->tid);
+    cprintf("** (fork) a thread's parent's pid:%d, tid:%d **\n", proc->parent->pid, proc->parent->tid);
     np->parent = proc->parent;
 
     if(fork_master_thread(np) == -1) {
@@ -505,11 +523,6 @@ common_exit(struct proc* proc)
   // Close all open files.
   for(fd = 0; fd < NOFILE; fd++){
     if(proc->ofile[fd]){
-#ifdef THREAD_DEBUGGING
-      if (proc->pid == 4) {
-        cprintf(" ** file closing. pid:%d, tid:%d, fd:%d\n",proc->pid, proc->tid, fd);
-      }
-#endif
       fileclose(proc->ofile[fd]);
       proc->ofile[fd] = 0;
     }
@@ -549,11 +562,8 @@ common_exit(struct proc* proc)
 
 
 int thread_join(thread_t , void **);
-
 int clear_proc(struct proc *);
-
 void remove_thread_stack(struct proc *);
-
 
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
@@ -621,9 +631,7 @@ exit(void)
     
     // 1. remove threads without a exit() calling thread and a master thread.
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      /** int tid; */
       if (p->pid == proc->pid && p->tid != 0 && p != proc) {
-        /** tid = p->tid; */
 #ifdef THREAD_DEBUGGING
         cprintf(" ** pid: %d, tid:%d **\n", p->pid, p->tid);
 #endif
@@ -647,12 +655,21 @@ exit(void)
     common_exit(master_thread);
     release(&ptable.lock);
 
+
     // 3. remove an exit() calling thread's resource.
     // clear thread stack resource
     acquire(&ptable.lock);
     remove_thread_stack(proc);
     release(&ptable.lock);
     // remove current proc
+#ifdef THREAD_DEBUGGING
+    cprintf("(exit, a thread) exit() calling thread tries to exit.\n");
+    cprintf("(exit, a thread) its chan:%p, chan's pid:%d, chan's tid:%d.\n", proc->parent, proc->parent->pid, proc->parent->tid);
+#endif
+    /** proc->parent = chan_backup; */
+#ifdef THREAD_DEBUGGING
+    cprintf("(exit, a thread) chan_resotred. proc->parent:%p\n", proc->parent);
+#endif
     common_exit(proc);
 
     //FIXME: remove resources of exit() calling thread.
@@ -719,14 +736,10 @@ clear_proc(struct proc *p) {
   return pid;
 }
 
-// Wait for a child process to exit and return its pid.
-// Return -1 if this process has no children.
 int
-wait(void)
-{
+wait_normal(void) {
   struct proc *p;
   int havekids, pid;
-  int proc_is_thread = proc->tid;
 
   acquire(&ptable.lock);
   for(;;){
@@ -734,20 +747,9 @@ wait(void)
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       // We can find a hint of kernel memory leakage when we add a condition like below
-
-      // wait() in threads.
-      if (proc_is_thread) {
-#ifdef THREAD_DEBUGGING
-        cprintf("(wait) wait() is called in a thread. pid of waiting thread:%d\n", proc->proc_forked_in_thread->pid);
-#endif
-        if(p->parent != proc->proc_forked_in_thread) // thread resource is removed in thread_join
-          continue;
-      // wait() in process
-      } else {
-        if(p->parent != proc || p->tid != 0) // thread resource is removed in thread_join
-        /** if(p->parent != proc) */
-          continue;
-      }
+      if(p->parent != proc || p->tid != 0)
+      /** if(p->parent != proc) */
+        continue;
 
 #ifdef THREAD_DEBUGGING
       if (p->tid != 0) {
@@ -757,14 +759,8 @@ wait(void)
       }
 #endif
 
-
-
       havekids = 1;
       if(p->state == ZOMBIE){
-        
-        if (p->tid) {
-          remove_thread_stack(p);
-        }
         pid = clear_proc(p);
         release(&ptable.lock);
         return pid;
@@ -774,27 +770,80 @@ wait(void)
     // No point waiting if we don't have any children.
     if(!havekids || proc->killed){
       release(&ptable.lock);
-/** #ifdef THREAD_DEBUGGING */
-      cprintf("(wait) return -1. havekids:%d, proc->killed:%d, panem:%s, pid:%d, tid:%d\n", havekids, proc->killed, proc->name, proc->pid, proc->tid);
-/** #endif */
       return -1;
     }
 
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
-    if (proc_is_thread) {
+    sleep(proc, &ptable.lock);  //DOC: wait-sleep
+  }
+
+  return 0;
+}
+
+int
+wait_thread(void) {
+  struct proc *p;
+  int havekids, pid;
+
 #ifdef THREAD_DEBUGGING
-      cprintf("(wait) go to sleep. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc->proc_forked_in_thread);
+  cprintf("(wait_thread) wait() is called in a thread. pid of waiting thread:%d\n", proc->proc_forked_in_thread->pid);
 #endif
-      sleep(proc->proc_forked_in_thread, &ptable.lock);
-    }else{
+
+  acquire(&ptable.lock);
+  for(;;){
+    // Scan through table looking for exited children.
+    havekids = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      // We can find a hint of kernel memory leakage when we add a condition like below
+      if(p->parent != proc->proc_forked_in_thread) // thread resource is removed in thread_join
+        continue;
+
+
+      havekids = 1;
+      // clean the resource
+      if(p->state == ZOMBIE){
 #ifdef THREAD_DEBUGGING
-      cprintf("(wait) go to sleep. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+        cprintf("(wait_thread) a forked thread is removed\n.");
 #endif
-      sleep(proc, &ptable.lock);  //DOC: wait-sleep
+        pid = clear_proc(p);
+        release(&ptable.lock);
+        return pid;
+      }
     }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || proc->killed){
+      release(&ptable.lock);
 #ifdef THREAD_DEBUGGING
-    cprintf("(wait) I wake up!. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+      cprintf("(wait_thread) return -1. havekids:%d, proc->killed:%d, panem:%s, pid:%d, tid:%d\n", havekids, proc->killed, proc->name, proc->pid, proc->tid);
 #endif
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+#ifdef THREAD_DEBUGGING
+    cprintf("(wait_thread) go to sleep. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan(proc_forked_in_thread):%p\n", proc->name, proc->pid, proc->tid, proc->proc_forked_in_thread);
+#endif
+    sleep(proc->proc_forked_in_thread, &ptable.lock);
+
+#ifdef THREAD_DEBUGGING
+    cprintf("(wait_thread) I wake up!. proc->name:%s, proc->pid:%d, proc->tid:%d is waiting. chan:%p\n", proc->name, proc->pid, proc->tid, proc);
+#endif
+  }
+  return 0;
+}
+
+// Wait for a child process to exit and return its pid.
+// Return -1 if this process has no children.
+int
+wait(void)
+{
+  if (proc->tid == 0) {
+    // a process calls wait().
+    return wait_normal();
+  } else {
+    // a thread calls wait().
+    return wait_thread();
   }
 }
 void
@@ -1382,6 +1431,11 @@ set_cpu_share(int required)
   int is_new;
   int idx;
 
+  if (proc->tid != 0 || proc->num_of_threads != 0) {
+    cprintf("(set_cpu_share) set_cpu_share() is called in a thread. This is not yet implemented.\n");
+    return -1;
+  }
+
   // function argument is not valid
   if( ! (MIN_CPU_SHARE <= required && required <= MAX_CPU_SHARE) ) 
     goto exception;
@@ -1487,6 +1541,8 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
   // allocate a new stack
+  acquire(&thread_lock);
+  np->sz = proc->sz;
   np->sz = PGROUNDUP(np->sz);
   if((np->sz = allocuvm(np->pgdir, np->sz, np->sz + 2*PGSIZE)) == 0) {
 #ifdef THREAD_DEBUGGING
@@ -1499,8 +1555,12 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   }
   clearpteu(np->pgdir, (char*)(np->sz - 2*PGSIZE));
 
-  acquire(&thread_lock);
-  proc->sz = np->sz;
+#ifdef THREAD_DEBUGGING
+  cprintf("(thread_create) pname:%s, pid:%d, tid:%d, proc->sz:%d, np->sz:%d\n", proc->name, proc->pid, proc->tid, proc->sz, np->sz);
+#endif
+
+  // there should be a space for sbkr(). 2*PGSIZE
+  proc->sz = np->sz + 2*PGSIZE;
 
   // increase the counter of master threads
   if (proc->tid == 0) {

@@ -244,6 +244,12 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       return 0;
     }
     memset(mem, 0, PGSIZE);
+
+#ifdef THREAD_DEBUGGING
+    cprintf("(allocuvm) hi! pname:%s, pid:%d, tid:%d\n", proc->name, proc->pid, proc->tid);
+#endif
+
+
     if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
       cprintf("allocuvm out of memory (2)\n");
       deallocuvm(pgdir, newsz, oldsz);

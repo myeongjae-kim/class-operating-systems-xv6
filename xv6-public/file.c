@@ -58,10 +58,6 @@ fileclose(struct file *f)
 {
   struct file ff;
 
-#ifdef THREAD_DEBUGGING
-  cprintf(" ** file closing. filetype:%d, ref:%d\n", f->type, f->ref);
-#endif
-
   acquire(&ftable.lock);
   if(f->ref < 1)
     panic("fileclose");

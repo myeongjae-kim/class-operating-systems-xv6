@@ -75,6 +75,7 @@
 ./umalloc.c
 ./grep.c
 ./test.c
+./forktest_linux.c
 ./sleeplock.c
 ./printf.c
 ./fcntl.h
