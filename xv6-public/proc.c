@@ -366,9 +366,15 @@ fork_master_thread(struct proc* t) {
   np->tf->eax = 0;
 
   for(i = 0; i < NOFILE; i++)
-    if(t->ofile[i])
+    if(t->ofile[i]) {
+      acquire(&thread_lock);
       t->ofile[i] = filedup(t->ofile[i]);
+      release(&thread_lock);
+    }
+
+  acquire(&thread_lock);
   np->cwd = idup(t->cwd);
+  release(&thread_lock);
 
   safestrcpy(np->name, t->name, sizeof(t->name));
 
@@ -422,9 +428,14 @@ fork(void)
   np->tf->eax = 0;
 
   for(i = 0; i < NOFILE; i++)
-    if(proc->ofile[i])
+    if(proc->ofile[i]) {
+      acquire(&thread_lock);
       np->ofile[i] = filedup(proc->ofile[i]);
+      release(&thread_lock);
+    }
+  acquire(&thread_lock);
   np->cwd = idup(proc->cwd);
+  release(&thread_lock);
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
@@ -523,7 +534,9 @@ common_exit(struct proc* proc)
   // Close all open files.
   for(fd = 0; fd < NOFILE; fd++){
     if(proc->ofile[fd]){
+      acquire(&thread_lock);
       fileclose(proc->ofile[fd]);
+      release(&thread_lock);
       proc->ofile[fd] = 0;
     }
   }
@@ -1534,9 +1547,14 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   np->tf->eax = 0;
 
   for(i = 0; i < NOFILE; i++)
-    if(proc->ofile[i])
+    if(proc->ofile[i]) {
+      acquire(&thread_lock);
       np->ofile[i] = filedup(proc->ofile[i]);
+      release(&thread_lock);
+    }
+  acquire(&thread_lock);
   np->cwd = idup(proc->cwd);
+  release(&thread_lock);
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
 
@@ -1625,7 +1643,9 @@ thread_exit(void *retval)
   // Close all open files.
   for(fd = 0; fd < NOFILE; fd++){
     if(proc->ofile[fd]){
+      acquire(&thread_lock);
       fileclose(proc->ofile[fd]);
+      release(&thread_lock);
       proc->ofile[fd] = 0;
     }
   }
