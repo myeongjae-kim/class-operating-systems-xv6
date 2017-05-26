@@ -37,6 +37,7 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+static void stride_queue_push(void);
 static void stride_queue_heapify_up(int stride_idx);
 static void stride_queue_heapify_down(int stride_idx);
 
@@ -1433,6 +1434,26 @@ priority_boost(void){
   }
 }
 
+
+void
+stride_queue_push() {
+  int idx;
+  // new process's stride_count should be minimum of a stride_count in the queue for preventing schuelder from being monopolized.
+  if(ptable.stride_queue[1]){
+    proc->stride_count = ptable.stride_queue[1]->stride_count;
+  }
+
+  // Heapify. Inserted process should be root of the queue because its stride_count is minium among processes in the stride queue.
+  idx = ++ptable.stride_queue_size;
+  while(idx != 1){
+    ptable.stride_queue[idx] = ptable.stride_queue[idx/2];
+    idx /= 2;
+  }
+  ptable.stride_queue[idx] = proc;
+  return;
+}
+
+
 // Design Document 1-1-2-4
 int
 set_cpu_share(int required) 
@@ -1442,7 +1463,6 @@ set_cpu_share(int required)
   const int MIN_CPU_SHARE = 1;
   const int MAX_CPU_SHARE = 80;
   int is_new;
-  int idx;
 
   if (proc->tid != 0 || proc->num_of_threads != 0) {
     cprintf("(set_cpu_share) set_cpu_share() is called in a thread. This is not yet implemented.\n");
@@ -1474,19 +1494,7 @@ set_cpu_share(int required)
   if(is_new){
     // Priority Queue Push
     // We do not need to check whether the stride queue is full because process cannot be generated more than 64
-
-    // new process's stride_count should be minimum of a stride_count in the queue for preventing schuelder from being monopolized.
-    if(ptable.stride_queue[1]){
-      proc->stride_count = ptable.stride_queue[1]->stride_count;
-    }
-
-    // Heapify. Inserted process should be root of the queue because its stride_count is minium among processes in the stride queue.
-    idx = ++ptable.stride_queue_size;
-    while(idx != 1){
-      ptable.stride_queue[idx] = ptable.stride_queue[idx/2];
-      idx /= 2;
-    }
-    ptable.stride_queue[idx] = proc;
+    stride_queue_push();
   }else{
     // if a process is already in the stride queue,
     // do nothing.
