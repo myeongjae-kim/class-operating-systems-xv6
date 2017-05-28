@@ -37,7 +37,7 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-static void stride_queue_push(void);
+static void stride_queue_push(struct proc*);
 static void stride_queue_heapify_up(int stride_idx);
 static void stride_queue_heapify_down(int stride_idx);
 
@@ -476,7 +476,7 @@ fork(void)
   return pid;
 }
 
-void stride_queue_delete() {
+void stride_queue_delete(struct proc* p) {
   int stride_idx;
   int heapify_up;
 
@@ -552,7 +552,7 @@ common_exit(struct proc* proc)
 
   // delete a process in stride queue
   if(proc->cpu_share != 0){
-    stride_queue_delete();
+    stride_queue_delete(proc);
   }
 
   // Parent might be sleeping in wait().
@@ -1153,21 +1153,48 @@ scheduler(void)
           *   }
           * } */
 #endif
+/** #ifdef THREAD_DEBUGGING
+  *         {
+  *           int i;
+  *           int print_head = 1;
+  *           for (i = 0; i < NPROC; ++i) {
+  *             if (ptable.proc[i].num_of_threads >= 1) {
+  *               if (print_head) {
+  *                 cprintf("** num_of_threads status **\n");
+  *                 print_head = 0;
+  *               }
+  *               cprintf("ptable.proc[%d], num_of_threads :%d\n", i, ptable.proc[i].num_of_threads);
+  *             }
+  *           }
+  *         }
+  * #endif */
+
 #ifdef THREAD_DEBUGGING
         {
-          int i;
+          struct proc* p;
           int print_head = 1;
-          for (i = 0; i < NPROC; ++i) {
-            if (ptable.proc[i].num_of_threads >= 1) {
+          for (p = ptable.proc; p < &ptable.proc[NPROC]; ++p) {
+            if (p->cpu_share > 0) {
               if (print_head) {
-                cprintf("** num_of_threads status **\n");
+                cprintf("** This process or thread is in stride **\n");
                 print_head = 0;
               }
-              cprintf("ptable.proc[%d], num_of_threads :%d\n", i, ptable.proc[i].num_of_threads);
+              cprintf("proc_name:%s, ", p->name);
+              cprintf("proc_id:%d, ", p->pid);
+              cprintf("proc_tid:%d, ", p->tid);
+              cprintf("proc_state:%d, ", p->state);
+              cprintf("original_cpu_share:%d, ", p->original_cpu_share);
+              cprintf("cpu_share:%d, ", p->cpu_share);
+              cprintf("sum_cpu_share: %d, ", ptable.sum_cpu_share);
+              cprintf("stride:%d, ", p->stride);
+              cprintf("stride_count:%d\n", p->stride_count);
             }
           }
         }
 #endif
+
+
+
         proc = p;
         switchuvm(p);
         p->state = RUNNING;
@@ -1438,7 +1465,7 @@ priority_boost(void){
 
 
 void
-stride_queue_push() {
+stride_queue_push(struct proc* proc) {
   int idx;
   // new process's stride_count should be minimum of a stride_count in the queue for preventing schuelder from being monopolized.
   if(ptable.stride_queue[1]){
@@ -1491,12 +1518,14 @@ set_cpu_share(int required)
   // It is okay to set cpu_share
   ptable.sum_cpu_share = desired_sum_cpu_share;
   proc->cpu_share = required;
-  proc->stride = NSTRIDE / required;
+  proc->original_cpu_share = proc->cpu_share;
+  proc->stride = NSTRIDE / proc->cpu_share;
+
 
   if(is_new){
     // Priority Queue Push
     // We do not need to check whether the stride queue is full because process cannot be generated more than 64
-    stride_queue_push();
+    stride_queue_push(proc);
   }else{
     // if a process is already in the stride queue,
     // do nothing.
@@ -1518,6 +1547,55 @@ sys_set_cpu_share(void)
 
   return set_cpu_share(required);
 }
+
+int
+set_cpu_share_in_thread_create(int required, struct proc* proc, struct proc* master_thread) 
+{
+  int cpu_share_already_set;
+  /** int desired_sum_cpu_share; // a variable indicating a value when set_cpu_share() succeeds */
+  const int MIN_CPU_SHARE = 1;
+  const int MAX_CPU_SHARE = 80;
+  int is_new;
+
+  // function argument is not valid
+  if( ! (MIN_CPU_SHARE <= required && required <= MAX_CPU_SHARE) ) 
+    goto exception;
+  
+  // Check whether a process is already in the stride queue
+  cpu_share_already_set = proc->cpu_share;
+  if(cpu_share_already_set == 0){
+    is_new = 1;
+  }else{
+    is_new = 0;
+  }
+
+  // Below codes are not needed because 'required' is a divided value which is already in stride queue.
+  /** desired_sum_cpu_share = ptable.sum_cpu_share - cpu_share_already_set + required;
+    * // If a required cpu share is too much, an exception occurs.
+    * if(desired_sum_cpu_share > MAX_CPU_SHARE )
+    *   goto exception; */
+
+  // It is okay to set cpu_share
+  /** ptable.sum_cpu_share = desired_sum_cpu_share; */
+  proc->cpu_share = required;
+  proc->original_cpu_share = master_thread->original_cpu_share;
+  proc->stride = NSTRIDE / proc->cpu_share;
+
+  if(is_new){
+    // Priority Queue Push
+    // We do not need to check whether the stride queue is full because process cannot be generated more than 64
+    stride_queue_push(proc);
+  }else{
+    // if a process is already in the stride queue,
+    // do nothing.
+  }
+  return 0;
+
+exception:
+  return -1;
+}
+
+
 
 int
 thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
@@ -1609,6 +1687,25 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   arg_ptr = (void**)(np->tf->esp + 4);
   *arg_ptr = arg; // argument
 
+
+  if (proc->cpu_share != 0) {
+#ifdef THREAD_DEBUGGING
+    cprintf(" ** thread_create is called by a process in a stride queue\n");
+#endif
+    int share_per_thread = proc->original_cpu_share / (proc->num_of_threads + 1);
+    struct proc* p;
+    //TODO: change master threads' cpu_share and creating threads
+    set_cpu_share_in_thread_create(share_per_thread, np, proc);
+
+    // find every threads including master thread and change cpu_share
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if (p->pid == proc->pid) {
+        p->cpu_share = share_per_thread;
+        p->stride = NSTRIDE / p->cpu_share;
+      }
+    }
+  }
+
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
@@ -1671,7 +1768,7 @@ thread_exit(void *retval)
 
   // delete a process in stride queue
   if(proc->cpu_share != 0){
-    stride_queue_delete();
+    stride_queue_delete(proc);
   }
 
   // Parent might be sleeping in wait().
