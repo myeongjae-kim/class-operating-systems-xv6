@@ -1159,7 +1159,8 @@ select_stride_or_MLFQ()
   queue_selector %= 100;
   release(&thread_lock);
 
-  if(queue_selector < ptable.sum_cpu_share){
+  // sum_cpu_share is divided by 10 because the range of sum_cpu_share is between zero and a thousand.
+  if(queue_selector < ptable.sum_cpu_share / 10){
     // The stride queue is selected.
     return 1;
   }else{
@@ -1170,9 +1171,11 @@ select_stride_or_MLFQ()
 /**   static int randstate = 1;
   *   int queue_selector;
   *   randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
+  *   acquire(&thread_lock);
   *   queue_selector = randstate % 100;
+  *   release(&thread_lock);
   *
-  *   if(queue_selector < ptable.sum_cpu_share){
+  *   if(queue_selector < ptable.sum_cpu_share / 10){
   *     // The stride queue is selected.
   *     return 1;
   *   }else{
