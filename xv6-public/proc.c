@@ -1162,7 +1162,14 @@ select_stride_or_MLFQ()
   // sum_cpu_share is divided by 10 because the range of sum_cpu_share is between zero and a thousand.
   if(queue_selector < ptable.sum_cpu_share / 10){
     // The stride queue is selected.
-    return 1;
+    // Check whether the stride queue is empty or not.
+    if (ptable.stride_queue_size == 0) {
+      // This case is occurred after implementing threads.
+      ptable.sum_cpu_share = 0;
+      return 0;
+    }else{
+      return 1;
+    }
   }else{
     // MLFQ is selected
     return 0;
@@ -1660,6 +1667,54 @@ stride_queue_push(struct proc* proc) {
   return;
 }
 
+int
+set_cpu_share_other_threads(int required, struct proc* t) {
+  int cpu_share_already_set;
+  int desired_sum_cpu_share; // a variable indicating a value when set_cpu_share() succeeds
+  int is_new;
+
+  if (proc->tid != 0) {
+    panic("(set_cpu_share_other_threads) The argument proc is not a thread.\n");
+  }
+
+  // function argument is not valid
+  if( ! (MIN_CPU_SHARE <= required && required <= MAX_CPU_SHARE) ) 
+    goto exception;
+  
+  // Check whether a process is already in the stride queue
+  cpu_share_already_set = t->cpu_share;
+  if(cpu_share_already_set == 0){
+    is_new = 1;
+  }else{
+    is_new = 0;
+  }
+
+  desired_sum_cpu_share = ptable.sum_cpu_share - cpu_share_already_set + required;
+  // If a required cpu share is too much, an exception occurs.
+  if(desired_sum_cpu_share > MAX_CPU_SHARE )
+    goto exception;
+
+  // It is okay to set cpu_share
+  ptable.sum_cpu_share = desired_sum_cpu_share;
+  t->cpu_share = required;
+  t->original_cpu_share = proc->original_cpu_share;
+  t->stride = NSTRIDE / t->cpu_share;
+
+
+  if(is_new){
+    // Priority Queue Push
+    // We do not need to check whether the stride queue is full because process cannot be generated more than 64
+    stride_queue_push(t);
+  }else{
+    // if a process is already in the stride queue,
+    // do nothing.
+  }
+  return 0;
+
+exception:
+  return -1;
+ 
+}
 
 // Design Document 1-1-2-4
 int
@@ -1667,13 +1722,13 @@ set_cpu_share(int required)
 {
   int cpu_share_already_set;
   int desired_sum_cpu_share; // a variable indicating a value when set_cpu_share() succeeds
-  const int MIN_CPU_SHARE = 1;
-  const int MAX_CPU_SHARE = 800;
   int is_new;
 
-  if (proc->tid != 0 || proc->num_of_threads != 0) {
-    cprintf("(set_cpu_share) set_cpu_share() is called in a thread. This is not yet implemented.\n");
-    return -1;
+  if (proc->tid == 0 && proc->num_of_threads != 0) {
+#ifdef STRIDE2
+    cprintf("(set_cpu_share) set_cpu_share() is called in a process which has threads. Implementing.\n");
+#endif
+    required = required / (proc->num_of_threads + 1);
   }
 
   // function argument is not valid
@@ -1708,6 +1763,23 @@ set_cpu_share(int required)
     // if a process is already in the stride queue,
     // do nothing.
   }
+
+
+  if (proc->tid == 0 && proc->num_of_threads != 0) {
+    struct proc *t;
+#ifdef STRIDE2
+    cprintf("(set_cpu_share) calling set_cpu_share_other_threads() to push the other threads to stride queue.\n");
+#endif
+    for (t = ptable.proc; t < &ptable.proc[NPROC]; ++t) {
+      if (t->pid == proc->pid && t->tid != 0) {
+        // threads found
+        if (set_cpu_share_other_threads(required, t)) {
+          panic("(set_cpu_share) inserting threads to stride queue is failed.\n");
+        }
+      }
+    }
+  }
+
   return 0;
 
 exception:
@@ -1732,8 +1804,6 @@ set_cpu_share_in_thread_create(int required, struct proc* proc, struct proc* mas
 {
   int cpu_share_already_set;
   /** int desired_sum_cpu_share; // a variable indicating a value when set_cpu_share() succeeds */
-  const int MIN_CPU_SHARE = 1;
-  const int MAX_CPU_SHARE = 800;
   int is_new;
 
   // function argument is not valid
