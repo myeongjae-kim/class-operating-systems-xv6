@@ -17,5 +17,5 @@
 // #define THREAD_DEBUGGING// just define. for debugging code
 // #define TEMP_BUG// just define. for debugging code
 #define NMLFQ         3  // the number of queues in MLFQ
-#define NSTRIDE   10000  // Design Document 1-2-2-1. It will be divided by required cpu share.
+#define NSTRIDE   100000  // Design Document 1-2-2-1. It will be divided by required cpu share.
 #define NSTRIDE_QUEUE ( (NPROC) + (1) )  // the stride_queue_size

@@ -1665,7 +1665,7 @@ set_cpu_share(int required)
   int cpu_share_already_set;
   int desired_sum_cpu_share; // a variable indicating a value when set_cpu_share() succeeds
   const int MIN_CPU_SHARE = 1;
-  const int MAX_CPU_SHARE = 80;
+  const int MAX_CPU_SHARE = 800;
   int is_new;
 
   if (proc->tid != 0 || proc->num_of_threads != 0) {
@@ -1720,6 +1720,7 @@ sys_set_cpu_share(void)
     return -1;
   }
 
+  required *= 10; // 스트라이드 안에서 스레드가 생겨 cpu_share를 0과 1사이의 퍼센트 값을 가질 때 대처하기 위한 것임.
   return set_cpu_share(required);
 }
 
@@ -1729,7 +1730,7 @@ set_cpu_share_in_thread_create(int required, struct proc* proc, struct proc* mas
   int cpu_share_already_set;
   /** int desired_sum_cpu_share; // a variable indicating a value when set_cpu_share() succeeds */
   const int MIN_CPU_SHARE = 1;
-  const int MAX_CPU_SHARE = 80;
+  const int MAX_CPU_SHARE = 800;
   int is_new;
 
   // function argument is not valid
