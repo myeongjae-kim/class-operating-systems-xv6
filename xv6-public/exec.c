@@ -25,11 +25,6 @@ exec(char *path, char **argv)
   struct proghdr ph;
   pde_t *pgdir, *oldpgdir;
 
-  if (proc->tid != 0) {
-    cprintf("(exec) exec() is called in a thread. This is not yet implemented.\n");
-    return -1;
-  }
-
   begin_op();
 
   if((ip = namei(path)) == 0){
