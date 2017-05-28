@@ -1,4 +1,4 @@
-cscope 15 $HOME/xv6/xv6-public -q 0000002084 0000275698
+cscope 15 $HOME/xv6/xv6-public -q 0000001832 0000260874
 	@asm.h
 
 5 
@@ -18568,15 +18568,15 @@ MAXOPBLOCKS
 
 	)
 
-18 
+19 
 	#NMLFQ
  3
 
-19 
+20 
 	#NSTRIDE
  10000
 
-20 
+21 
 	#NSTRIDE_QUEUE
  ( (
 NPROC
@@ -19890,13 +19890,29 @@ c
 	~"•ölock.h
 "
 
-11 
+10 #ifde‡
+TEMP_BUG
+
+
+11 
+	g°ride_queue_dñëe_is_execuã
+ = 0;
+
+12 
+	ga·î_f‹_lo›
+ = 0;
+
+13 
+	gö_föd_idx
+ = 0;
+
+17 
 •ölock
  
 	mlock
 ;
 
-14 
+20 
 ¥oc
  
 	m¥oc
@@ -19904,25 +19920,25 @@ c
 NPROC
 ];
 
-15 
+21 
 	mMLFQ_time_qu™tum
 [
 NMLFQ
 ];
 
-16 
+22 
 	mMLFQ_tick_u£d
 ;
 
-19 
+25 
 	mqueue_Àvñ_©_mo°
 ;
 
-20 
+26 
 	mmö_of_run_¥oc_Àvñ
 ;
 
-23 
+29 
 ¥oc
 * 
 	m°ride_queue
@@ -19930,83 +19946,89 @@ NMLFQ
 NSTRIDE_QUEUE
 ];
 
-24 
+30 
 	msum_˝u_sh¨e
 ;
 
-25 
+31 
 	m°ride_queue_size
 ;
 
-26 
+32 
 	m°ride_time_qu™tum
 ;
 
-27 
+33 
 	m°ride_tick_u£d
 ;
 
-29 } 
+35 } 
 	g±abÀ
 ;
 
-31 
+37 
 ¥oc
  *
 	göô¥oc
 ;
 
-33 
+39 
 	g√xçid
  = 1;
 
-35 
+41 
 f‹kªt
 ();
 
-36 
+42 
 å≠ªt
 ();
 
-38 
+44 
 wakeup1
 (*
 ch™
 );
 
-40 
+46 
+°ride_queue_push
+(
+¥oc
+*);
+
+47 
 °ride_queue_hópify_up
 (
 °ride_idx
 );
 
-41 
+48 
 °ride_queue_hópify_down
 (
 °ride_idx
 );
 
-44 
+51 
 	g√xt_thªad_id
  = 1;
 
-45 
+52 
 •ölock
  
 	gthªad_lock
 ;
 
-46 
+53 
 	gpgdú_ªf
 [
 NPROC
 ];
 
-47 
+54 
 	gpgdú_ªf_√xt_idx
  = 0;
 
-52 
+59 
 	$check_pgdú_cou¡î_™d_ˇŒ_‰ìvm
 (
 ¥oc
@@ -20014,11 +20036,11 @@ NPROC
 p
 ) {
 
-53 #ifde‡
+60 #ifde‡
 THREAD_DEBUGGING
 
 
-54 
+61 
 	`˝rötf
 ("(check_pgdú_cou¡...Ë**Ö->«me:%s,Ö->tid:%d,Ögdú_ªf[p->pgdú_ªf_idx]:%d\n", 
 p
@@ -20032,47 +20054,11 @@ pgdú_ªf
 pgdú_ªf_idx
 ]);
 
-56 i‡(
+63 i‡(
 p
 ->
 pgdú_ªf_idx
  == -1) {
-
-58 
-	`‰ìvm
-(
-p
-->
-pgdú
-);
-
-59 } i‡(
-pgdú_ªf
-[
-p
-->
-pgdú_ªf_idx
-] <= 1) {
-
-62 
-	`acquúe
-(&
-thªad_lock
-);
-
-63 
-pgdú_ªf
-[
-p
-->
-pgdú_ªf_idx
-] = 0;
-
-64 
-	`ªÀa£
-(&
-thªad_lock
-);
 
 65 
 	`‰ìvm
@@ -20082,13 +20068,49 @@ p
 pgdú
 );
 
-72 
+66 } i‡(
+pgdú_ªf
+[
+p
+->
+pgdú_ªf_idx
+] <= 1) {
+
+69 
 	`acquúe
 (&
 thªad_lock
 );
 
-73 
+70 
+pgdú_ªf
+[
+p
+->
+pgdú_ªf_idx
+] = 0;
+
+71 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+72 
+	`‰ìvm
+(
+p
+->
+pgdú
+);
+
+79 
+	`acquúe
+(&
+thªad_lock
+);
+
+80 
 pgdú_ªf
 [
 p
@@ -20096,17 +20118,17 @@ p
 pgdú_ªf_idx
 ]--;
 
-74 
+81 
 	`ªÀa£
 (&
 thªad_lock
 );
 
-76 
+83 
 	}
 }
 
-79 
+86 
 	$Æloˇã_√w_pgdú_idx
 (
 ¥oc
@@ -20114,29 +20136,29 @@ thªad_lock
 p
 ) {
 
-80 
+87 
 i
 ;
 
-81 
+88 
 	`acquúe
 (&
 thªad_lock
 );
 
-84 
+91 
 i
  = 0; i < 
 NPROC
 ; ++i) {
 
-85 i‡(
+92 i‡(
 pgdú_ªf
 [
 pgdú_ªf_√xt_idx
 ] == 0) {
 
-86 
+93 
 p
 ->
 pgdú_ªf_idx
@@ -20144,13 +20166,13 @@ pgdú_ªf_idx
 pgdú_ªf_√xt_idx
 ++;
 
-87 
+94 
 pgdú_ªf_√xt_idx
  %
 NPROC
 ;
 
-88 
+95 
 pgdú_ªf
 [
 p
@@ -20158,53 +20180,53 @@ p
 pgdú_ªf_idx
 ] = 1;
 
-91 
+98 
 pgdú_ªf_√xt_idx
 ++;
 
-92 
+99 
 pgdú_ªf_√xt_idx
  %
 NPROC
 ;
 
-97 i‡(
+104 i‡(
 i
  =
 NPROC
 ) {
 
-98 
+105 
 	`∑nic
 ("(allocate_new_pgdir_idx):ÖgdirÑeferencing counterállocation is failed.\n");
 
-101 
+108 
 	`ªÀa£
 (&
 thªad_lock
 );
 
-102 
+109 
 	}
 }
 
-107 
+114 
 	$gë_time_qu™tum
 ()
 
-109 if(
+116 if(
 ¥oc
  &&Öroc->
 ˝u_sh¨e
  != 0){
 
-110  
+117  
 ±abÀ
 .
 °ride_time_qu™tum
 ;
 
-112  
+119  
 ±abÀ
 .
 MLFQ_time_qu™tum
@@ -20214,39 +20236,39 @@ MLFQ_time_qu™tum
 Àvñ_of_MLFQ
 ];
 
-114 
+121 
 	}
 }
 
-118 
+125 
 	$gë_MLFQ_tick_u£d
 ()
 
-120  
+127  
 ±abÀ
 .
 MLFQ_tick_u£d
 ;
 
-121 
+128 
 	}
 }
 
-124 
+131 
 	$ö¸ó£_MLFQ_tick_u£d
 ()
 
-126 
+133 
 ±abÀ
 .
 MLFQ_tick_u£d
 ++;
 
-127 #ifde‡
+134 #ifde‡
 STRIRDE_DEBUGGING
 
 
-128 
+135 
 	`˝rötf
 ("\rMLFQ_tick_u£d: %d", 
 ±abÀ
@@ -20254,25 +20276,25 @@ STRIRDE_DEBUGGING
 MLFQ_tick_u£d
 );
 
-130 
+137 
 	}
 }
 
-133 
+140 
 	$ö¸ó£_°ride_tick_u£d
 ()
 
-135 
+142 
 ±abÀ
 .
 °ride_tick_u£d
 ++;
 
-136 #ifde‡
+143 #ifde‡
 STRIRDE_DEBUGGING
 
 
-137 
+144 
 	`˝rötf
 ("\r°ride_tick_u£d: %d", 
 ±abÀ
@@ -20280,23 +20302,23 @@ STRIRDE_DEBUGGING
 °ride_tick_u£d
 );
 
-139 
+146 
 	}
 }
 
-143 
+150 
 	$pöô
 ()
 
-146 
+153 
 queue_Àvñ
 ;
 
-147 
+154 
 deÁu…_ticks
  = 5;
 
-148 
+155 
 	`öôlock
 (&
 ±abÀ
@@ -20304,19 +20326,19 @@ deÁu…_ticks
 lock
 , "ptable");
 
-149 
+156 
 	`öôlock
 (&
 thªad_lock
 , "thread");
 
-154 
+161 
 queue_Àvñ
  = 0; queue_Àvñ < 
 NMLFQ
 ; ++queue_level){
 
-155 
+162 
 ±abÀ
 .
 MLFQ_time_qu™tum
@@ -20326,17 +20348,17 @@ queue_Àvñ
 deÁu…_ticks
 ;
 
-156 
+163 
 deÁu…_ticks
  *= 2;
 
-158 
+165 
 ±abÀ
 .
 MLFQ_tick_u£d
  = 0;
 
-160 
+167 
 ±abÀ
 .
 queue_Àvñ_©_mo°
@@ -20344,7 +20366,7 @@ queue_Àvñ_©_mo°
 NMLFQ
  - 1;
 
-161 
+168 
 ±abÀ
 .
 mö_of_run_¥oc_Àvñ
@@ -20352,7 +20374,7 @@ mö_of_run_¥oc_Àvñ
 NMLFQ
  - 1;
 
-163 
+170 
 	`mem£t
 (
 ±abÀ
@@ -20360,53 +20382,53 @@ NMLFQ
 °ride_queue
 , 0, (ptable.stride_queue));
 
-164 
+171 
 ±abÀ
 .
 sum_˝u_sh¨e
  = 0;
 
-165 
+172 
 ±abÀ
 .
 °ride_queue_size
  = 0;
 
-166 
+173 
 ±abÀ
 .
 °ride_time_qu™tum
  = 1;
 
-167 
+174 
 ±abÀ
 .
 °ride_tick_u£d
  = 0;
 
-169 
+176 
 	}
 }
 
-176 
+183 
 ¥oc
 *
 
-177 
+184 
 	$Ælo˝roc
 ()
 
-179 
+186 
 ¥oc
  *
 p
 ;
 
-180 *
+187 *
 •
 ;
 
-182 
+189 
 	`acquúe
 (&
 ±abÀ
@@ -20414,7 +20436,7 @@ p
 lock
 );
 
-184 
+191 
 p
  = 
 ±abÀ
@@ -20424,7 +20446,7 @@ p
 NPROC
 ];Ö++)
 
-185 if(
+192 if(
 p
 ->
 °©e
@@ -20432,11 +20454,11 @@ p
 UNUSED
 )
 
-186 
+193 
 found
 ;
 
-188 
+195 
 	`ªÀa£
 (&
 ±abÀ
@@ -20444,19 +20466,19 @@ found
 lock
 );
 
-190 #ifde‡
+197 #ifde‡
 THREAD_DEBUGGING
 
 
-191 
+198 
 	`˝rötf
 ("(allocproc)Érror: Proc queue is full!\n");
 
-197 
+204 
 found
 :
 
-198 
+205 
 p
 ->
 °©e
@@ -20464,7 +20486,7 @@ p
 EMBRYO
 ;
 
-199 
+206 
 p
 ->
 pid
@@ -20472,73 +20494,79 @@ pid
 √xçid
 ++;
 
-203 
+210 
 p
 ->
 tick_u£d
  = 0;
 
-204 
+211 
 p
 ->
 Àvñ_of_MLFQ
  = 0;
 
-205 
+212 
 p
 ->
 time_qu™tum_u£d
  = 0;
 
-209 
+216 
 p
 ->
 ˝u_sh¨e
  = 0;
 
-210 
+217 
 p
 ->
 °ride
  = 0;
 
-211 
+218 
 p
 ->
 °ride_cou¡
  = 0;
 
-215 
+222 
 p
 ->
 tid
  = 0;
 
-216 
+223 
 p
 ->
 pgdú_ªf_idx
  = -1;
 
-217 
+224 
 p
 ->
 thªad_ªtu∫
  = 0;
 
-221 
+228 
 p
 ->
 num_of_thªads
  = 0;
 
-222 
+229 
 p
 ->
 ¥oc_f‹ked_ö_thªad
  = 0;
 
-224 
+230 
+p
+->
+‹igöÆ_˝u_sh¨e
+ = 0;
+
+232 
 	`ªÀa£
 (&
 ±abÀ
@@ -20546,7 +20574,7 @@ p
 lock
 );
 
-227 if((
+235 if((
 p
 ->
 k°ack
@@ -20554,7 +20582,7 @@ k°ack
 	`kÆloc
 ()) == 0){
 
-228 
+236 
 p
 ->
 °©e
@@ -20562,15 +20590,15 @@ p
 UNUSED
 ;
 
-230 #ifde‡
+238 #ifde‡
 THREAD_DEBUGGING
 
 
-231 
+239 
 	`˝rötf
 ("(allocproc)Érror: kalloc() is failed.\n");
 
-235 
+243 
 •
  = 
 p
@@ -20580,7 +20608,7 @@ k°ack
 KSTACKSIZE
 ;
 
-238 
+246 
 •
  - *
 p
@@ -20588,7 +20616,7 @@ p
 tf
 ;
 
-239 
+247 
 p
 ->
 tf
@@ -20598,11 +20626,11 @@ tf
 •
 ;
 
-243 
+251 
 •
  -= 4;
 
-244 *(
+252 *(
 uöt
 *)
 •
@@ -20610,7 +20638,7 @@ uöt
 å≠ªt
 ;
 
-246 
+254 
 •
  - *
 p
@@ -20618,7 +20646,7 @@ p
 c⁄ãxt
 ;
 
-247 
+255 
 p
 ->
 c⁄ãxt
@@ -20626,7 +20654,7 @@ c⁄ãxt
 •
 ;
 
-248 
+256 
 	`mem£t
 (
 p
@@ -20634,7 +20662,7 @@ p
 c⁄ãxt
 , 0,  *p->context);
 
-249 
+257 
 p
 ->
 c⁄ãxt
@@ -20646,43 +20674,43 @@ uöt
 f‹kªt
 ;
 
-251  
+259  
 p
 ;
 
-252 
+260 
 	}
 }
 
-257 
+265 
 	$u£röô
 ()
 
-259 
+267 
 ¥oc
  *
 p
 ;
 
-260 
+268 
 _bö¨y_öôcode_°¨t
 [], 
 _bö¨y_öôcode_size
 [];
 
-262 
+270 
 p
  = 
 	`Ælo˝roc
 ();
 
-264 
+272 
 öô¥oc
  = 
 p
 ;
 
-265 if((
+273 if((
 p
 ->
 pgdú
@@ -20690,11 +20718,11 @@ pgdú
 	`£tupkvm
 ()) == 0)
 
-266 
+274 
 	`∑nic
 ("userinit: out of memory?");
 
-267 
+275 
 	`öôuvm
 (
 p
@@ -20706,7 +20734,7 @@ _bö¨y_öôcode_°¨t
 _bö¨y_öôcode_size
 );
 
-268 
+276 
 p
 ->
 sz
@@ -20714,7 +20742,7 @@ sz
 PGSIZE
 ;
 
-269 
+277 
 	`mem£t
 (
 p
@@ -20722,7 +20750,7 @@ p
 tf
 , 0, (*p->tf));
 
-270 
+278 
 p
 ->
 tf
@@ -20734,7 +20762,7 @@ SEG_UCODE
 DPL_USER
 ;
 
-271 
+279 
 p
 ->
 tf
@@ -20746,7 +20774,7 @@ SEG_UDATA
 DPL_USER
 ;
 
-272 
+280 
 p
 ->
 tf
@@ -20756,7 +20784,7 @@ es
 ds
 ;
 
-273 
+281 
 p
 ->
 tf
@@ -20766,7 +20794,7 @@ ss
 ds
 ;
 
-274 
+282 
 p
 ->
 tf
@@ -20776,7 +20804,7 @@ eÊags
 FL_IF
 ;
 
-275 
+283 
 p
 ->
 tf
@@ -20786,7 +20814,7 @@ e•
 PGSIZE
 ;
 
-276 
+284 
 p
 ->
 tf
@@ -20794,7 +20822,7 @@ tf
 eù
  = 0;
 
-278 
+286 
 	`ß„°r˝y
 (
 p
@@ -20802,7 +20830,7 @@ p
 «me
 , "initcode", (p->name));
 
-279 
+287 
 p
 ->
 cwd
@@ -20810,7 +20838,7 @@ cwd
 	`«mei
 ("/");
 
-285 
+293 
 	`acquúe
 (&
 ±abÀ
@@ -20818,7 +20846,7 @@ cwd
 lock
 );
 
-287 
+295 
 p
 ->
 °©e
@@ -20826,7 +20854,7 @@ p
 RUNNABLE
 ;
 
-289 
+297 
 	`ªÀa£
 (&
 ±abÀ
@@ -20834,33 +20862,51 @@ RUNNABLE
 lock
 );
 
-290 
+298 
 	}
 }
 
-295 
+303 
 	$grow¥oc
 (
 n
 )
 
-297 
+305 
 uöt
  
 sz
 ;
 
-298 
+307 #ifde‡
+THREAD_DEBUGGING
+
+
+308 
+	`˝rötf
+("(grow¥ocË≤ame:%s,Öid:%d,Åid:%dárg:%d\n", 
+¥oc
+->
+«me
+,Öroc->
+pid
+,Öroc->
+tid
+, 
+n
+);
+
+313 
 sz
  = 
 ¥oc
 ->sz;
 
-299 if(
+314 if(
 n
  > 0){
 
-300 if((
+315 if((
 sz
  = 
 	`Ælocuvm
@@ -20872,11 +20918,11 @@ pgdú
 n
 )) == 0)
 
-302 }if(
+317 }if(
 n
  < 0){
 
-303 if((
+318 if((
 sz
  = 
 	`dóŒocuvm
@@ -20888,23 +20934,23 @@ pgdú
 n
 )) == 0)
 
-306 
+321 
 ¥oc
 ->
 sz
  = sz;
 
-307 
+322 
 	`swôchuvm
 (
 ¥oc
 );
 
-309 
+324 
 	}
 }
 
-312 
+327 
 	$f‹k_ma°î_thªad
 (
 ¥oc
@@ -20912,19 +20958,19 @@ sz
 t
 ) {
 
-315 
+330 
 i
 , 
 pid
 ;
 
-316 
+331 
 ¥oc
  *
 ≈
 ;
 
-317 
+332 
 ¥oc
  *
 ﬁd_ma°î_thªad
@@ -20934,11 +20980,11 @@ t
 ∑ª¡
 ;
 
-319 #ifde‡
+334 #ifde‡
 THREAD_DEBUGGING
 
 
-320 
+335 
 	`˝rötf
 ("(f‹k_ma°î_thªadËﬁd_ma°î_thªadÖid:%d,Åid:%d\n", 
 ﬁd_ma°î_thªad
@@ -20948,13 +20994,13 @@ pid
 tid
 );
 
-324 if((
+339 if((
 ≈
  = 
 	`Ælo˝roc
 ()) == 0){
 
-329 
+344 
 ≈
 ->
 pid
@@ -20962,7 +21008,7 @@ pid
 t
 ->pid;
 
-332 
+347 
 ≈
 ->
 pgdú
@@ -20970,7 +21016,7 @@ pgdú
 ﬁd_ma°î_thªad
 ->pgdir;
 
-333 
+348 
 ≈
 ->
 sz
@@ -20978,7 +21024,7 @@ sz
 ﬁd_ma°î_thªad
 ->sz;
 
-336 
+351 
 ≈
 ->
 ∑ª¡
@@ -20986,7 +21032,7 @@ sz
 ﬁd_ma°î_thªad
 ;
 
-338 
+353 
 t
 ->
 ∑ª¡
@@ -20994,7 +21040,7 @@ t
 ≈
 ;
 
-340 
+355 
 ¥oc
 ->
 ¥oc_f‹ked_ö_thªad
@@ -21002,15 +21048,15 @@ t
 ≈
 ;
 
-342 #ifde‡
+357 #ifde‡
 THREAD_DEBUGGING
 
 
-343 
+358 
 	`˝rötf
 ("(fork_master_thread)áfter changingÖarnet.Çp isáÇewÖrocess.Å isáÇewÅhread.\n");
 
-344 
+359 
 	`˝rötf
 ("(f‹k_ma°î_thªadË≈:%p,Çp->pid:%d,Çp->tid:%d,Çp->∑ª¡:%p,Çp->∑ª¡->pid:%d,Çp->∑ª¡->tid:%d\n", 
 ≈
@@ -21022,7 +21068,7 @@ tid
 ∑ª¡
 ,Çp->parent->pid,Çp->parent->tid);
 
-345 
+360 
 	`˝rötf
 ("(f‹k_ma°î_thªadËt:%p,Å->pid:%d,Å->tid:%d,Å->∑ª¡:%p,Å->∑ª¡->pid:%d,Å->∑ª¡->tid:%d\n", 
 t
@@ -21034,7 +21080,7 @@ tid
 ∑ª¡
 ,Å->parent->pid,Å->parent->tid);
 
-348 *
+363 *
 ≈
 ->
 tf
@@ -21042,7 +21088,7 @@ tf
 ﬁd_ma°î_thªad
 ->tf;
 
-351 
+366 
 ≈
 ->
 pgdú_ªf_idx
@@ -21050,13 +21096,13 @@ pgdú_ªf_idx
 t
 ->pgdir_ref_idx;
 
-353 
+368 
 	`acquúe
 (&
 thªad_lock
 );
 
-354 
+369 
 pgdú_ªf
 [
 ≈
@@ -21064,19 +21110,19 @@ pgdú_ªf
 pgdú_ªf_idx
 ]++;
 
-355 
+370 
 ≈
 ->
 num_of_thªads
 ++;
 
-356 
+371 
 	`ªÀa£
 (&
 thªad_lock
 );
 
-359 
+374 
 ≈
 ->
 tf
@@ -21084,21 +21130,27 @@ tf
 óx
  = 0;
 
-361 
+376 
 i
  = 0; i < 
 NOFILE
 ; i++)
 
-362 if(
+377 if(
 t
 ->
 ofûe
 [
 i
-])
+]) {
 
-363 
+378 
+	`acquúe
+(&
+thªad_lock
+);
+
+379 
 t
 ->
 ofûe
@@ -21108,7 +21160,19 @@ i
 	`fûedup
 (t->ofile[i]);
 
-364 
+380 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+383 
+	`acquúe
+(&
+thªad_lock
+);
+
+384 
 ≈
 ->
 cwd
@@ -21118,7 +21182,13 @@ cwd
 t
 ->cwd);
 
-366 
+385 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+387 
 	`ß„°r˝y
 (
 ≈
@@ -21128,13 +21198,13 @@ t
 t
 ->name, (t->name));
 
-368 
+389 
 pid
  = 
 ≈
 ->pid;
 
-370 
+391 
 	`acquúe
 (&
 ±abÀ
@@ -21142,7 +21212,7 @@ pid
 lock
 );
 
-373 
+394 
 ≈
 ->
 °©e
@@ -21150,7 +21220,7 @@ lock
 ﬁd_ma°î_thªad
 ->state;
 
-375 
+396 
 	`ªÀa£
 (&
 ±abÀ
@@ -21158,47 +21228,47 @@ lock
 lock
 );
 
-377  
+398  
 pid
 ;
 
-379 
+400 
 	}
 }
 
-385 
+406 
 	$f‹k
 ()
 
-387 
+408 
 i
 , 
 pid
 ;
 
-388 
+409 
 ¥oc
  *
 ≈
 ;
 
-390 i‡(
+411 i‡(
 ¥oc
 ->
 tid
  != 0) {
 
-391 
+412 
 	`˝rötf
 ("(fork) fork() is called ináÅhread. This isÇot yet implemented.\n");
 
-396 if((
+417 if((
 ≈
  = 
 	`Ælo˝roc
 ()) == 0){
 
-401 if((
+422 if((
 ≈
 ->
 pgdú
@@ -21210,7 +21280,7 @@ pgdú
 sz
 )) == 0){
 
-402 
+423 
 	`k‰ì
 (
 ≈
@@ -21218,13 +21288,13 @@ sz
 k°ack
 );
 
-403 
+424 
 ≈
 ->
 k°ack
  = 0;
 
-404 
+425 
 ≈
 ->
 °©e
@@ -21232,7 +21302,7 @@ k°ack
 UNUSED
 ;
 
-407 
+428 
 ≈
 ->
 sz
@@ -21240,7 +21310,7 @@ sz
 ¥oc
 ->sz;
 
-408 
+429 
 ≈
 ->
 ∑ª¡
@@ -21248,7 +21318,7 @@ sz
 ¥oc
 ;
 
-409 *
+430 *
 ≈
 ->
 tf
@@ -21256,13 +21326,13 @@ tf
 ¥oc
 ->tf;
 
-412 
+433 
 	`Æloˇã_√w_pgdú_idx
 (
 ≈
 );
 
-415 
+436 
 ≈
 ->
 tf
@@ -21270,21 +21340,27 @@ tf
 óx
  = 0;
 
-417 
+438 
 i
  = 0; i < 
 NOFILE
 ; i++)
 
-418 if(
+439 if(
 ¥oc
 ->
 ofûe
 [
 i
-])
+]) {
 
-419 
+440 
+	`acquúe
+(&
+thªad_lock
+);
+
+441 
 ≈
 ->
 ofûe
@@ -21296,7 +21372,19 @@ i
 ¥oc
 ->ofile[i]);
 
-420 
+442 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+444 
+	`acquúe
+(&
+thªad_lock
+);
+
+445 
 ≈
 ->
 cwd
@@ -21306,7 +21394,13 @@ cwd
 ¥oc
 ->cwd);
 
-422 
+446 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+448 
 	`ß„°r˝y
 (
 ≈
@@ -21316,27 +21410,27 @@ cwd
 ¥oc
 ->name, (proc->name));
 
-424 
+450 
 pid
  = 
 ≈
 ->pid;
 
-428 i‡(
+454 i‡(
 ¥oc
 ->
 tid
  != 0) {
 
-429 #ifde‡
+455 #ifde‡
 THREAD_DEBUGGING
 
 
-430 
+456 
 	`˝rötf
 ("** (fork)áÅhread calls fork(). **\n");
 
-434 
+460 
 ≈
 ->
 tid
@@ -21344,7 +21438,7 @@ tid
 √xt_thªad_id
 ++;
 
-438 
+464 
 	`˝rötf
 ("** (f‹kË®thªad'†pid:%d,Åid:%d **\n", 
 ¥oc
@@ -21354,7 +21448,7 @@ pid
 tid
 );
 
-439 
+465 
 	`˝rötf
 ("** (f‹kË®thªad'†∑ª¡'†pid:%d,Åid:%d **\n", 
 ¥oc
@@ -21366,7 +21460,7 @@ pid
 tid
 );
 
-440 
+466 
 ≈
 ->
 ∑ª¡
@@ -21374,17 +21468,17 @@ tid
 ¥oc
 ->parent;
 
-442 if(
+468 if(
 	`f‹k_ma°î_thªad
 (
 ≈
 ) == -1) {
 
-443 
+469 
 	`∑nic
 ("creatingáÇew masterÅhread is failed.");
 
-448 
+474 
 	`acquúe
 (&
 ±abÀ
@@ -21392,7 +21486,7 @@ tid
 lock
 );
 
-450 
+476 
 ≈
 ->
 °©e
@@ -21400,7 +21494,7 @@ lock
 RUNNABLE
 ;
 
-454 
+480 
 	`ªÀa£
 (&
 ±abÀ
@@ -21408,35 +21502,39 @@ RUNNABLE
 lock
 );
 
-456  
+482  
 pid
 ;
 
-457 
+483 
 	}
 }
 
-459 
+485 
 	$°ride_queue_dñëe
-() {
+(
+¥oc
+* 
+p
+) {
 
-460 
+486 
 °ride_idx
 ;
 
-461 
+487 
 hópify_up
 ;
 
-463 #ifde‡
+489 #ifde‡
 MJ_DEBUGGING
 
 
-464 
+490 
 	`˝rötf
 ("stirde_queueÖrocessÉxit()\n");
 
-468 
+494 
 ±abÀ
 .
 sum_˝u_sh¨e
@@ -21446,13 +21544,13 @@ sum_˝u_sh¨e
 ˝u_sh¨e
 ;
 
-471 
+497 
 °ride_idx
  = 1; såide_idx < 
 NSTRIDE_QUEUE
 ; ++stride_idx){
 
-472 if(
+498 if(
 ±abÀ
 .
 °ride_queue
@@ -21462,17 +21560,157 @@ NSTRIDE_QUEUE
 ¥oc
 ){
 
-477 if(
+503 if(
 °ride_idx
  =
 NSTRIDE_QUEUE
 ){
 
-478 
+504 
 	`∑nic
 ("exit():áÖrocess isÇot inÅhe stride scheduler");
 
-482 
+507 #ifde‡
+TEMP_BUG
+
+
+508 
+i
+;
+
+509 
+¥oc
+* 
+¥
+;
+
+510 
+¥öt_hód
+ = 1;
+
+511 
+	`˝rötf
+("(TEMP_BUG) in stride_queue_delete. beforeÑemoving\n");
+
+512 
+i
+ = 1; i <
+±abÀ
+.
+°ride_queue_size
+ + 10; ++i) {
+
+513 
+	`˝rötf
+("(TEMP_BUGË°ride_queue[%d]:%p\n", 
+i
+, 
+±abÀ
+.
+°ride_queue
+[i]);
+
+516 
+¥
+ = 
+±abÀ
+.
+¥oc
+;Ö∏< &±abÀ.¥oc[
+NPROC
+]; ++pr) {
+
+517 i‡(
+¥
+->
+˝u_sh¨e
+ > 0) {
+
+518 i‡(
+¥öt_hód
+) {
+
+519 
+	`˝rötf
+("** ThisÖrocess orÅhread is in stride **\n");
+
+520 
+¥öt_hód
+ = 0;
+
+522 
+	`˝rötf
+("(TEMP_BUGË¥oc_«me:%s, ", 
+¥
+->
+«me
+);
+
+523 
+	`˝rötf
+("¥oc_id:%d, ", 
+¥
+->
+pid
+);
+
+524 
+	`˝rötf
+("¥oc_tid:%d, ", 
+¥
+->
+tid
+);
+
+525 
+	`˝rötf
+("¥oc_°©e:%d, ", 
+¥
+->
+°©e
+);
+
+526 
+	`˝rötf
+("‹igöÆ_˝u_sh¨e:%d, ", 
+¥
+->
+‹igöÆ_˝u_sh¨e
+);
+
+527 
+	`˝rötf
+("˝u_sh¨e:%d, ", 
+¥
+->
+˝u_sh¨e
+);
+
+528 
+	`˝rötf
+("sum_˝u_sh¨e: %d, ", 
+±abÀ
+.
+sum_˝u_sh¨e
+);
+
+529 
+	`˝rötf
+("°ride:%d, ", 
+¥
+->
+°ride
+);
+
+530 
+	`˝rötf
+("°ride_cou¡:%d\n", 
+¥
+->
+°ride_cou¡
+);
+
+537 
 ±abÀ
 .
 °ride_queue
@@ -21482,7 +21720,7 @@ NSTRIDE_QUEUE
 °ride_queue_size
 ];
 
-483 
+538 
 ±abÀ
 .
 °ride_queue
@@ -21490,15 +21728,163 @@ NSTRIDE_QUEUE
 °ride_queue_size
 --] = 0;
 
-486 if(
+540 #ifde‡
+TEMP_BUG
+
+
+542 
+i
+;
+
+543 
+¥oc
+* 
+¥
+;
+
+544 
+¥öt_hód
+ = 1;
+
+545 
+	`˝rötf
+("(TEMP_BUG) in stride_queue_delete.áfterÑemoving, before heapifying\n");
+
+546 
+i
+ = 1; i <
+±abÀ
+.
+°ride_queue_size
+ + 10; ++i) {
+
+547 
+	`˝rötf
+("(TEMP_BUGË°ride_queue[%d]:%p\n", 
+i
+, 
+±abÀ
+.
+°ride_queue
+[i]);
+
+550 
+¥
+ = 
+±abÀ
+.
+¥oc
+;Ö∏< &±abÀ.¥oc[
+NPROC
+]; ++pr) {
+
+551 i‡(
+¥
+->
+˝u_sh¨e
+ > 0) {
+
+552 i‡(
+¥öt_hód
+) {
+
+553 
+	`˝rötf
+("** ThisÖrocess orÅhread is in stride **\n");
+
+554 
+¥öt_hód
+ = 0;
+
+556 
+	`˝rötf
+("(TEMP_BUGË¥oc_«me:%s, ", 
+¥
+->
+«me
+);
+
+557 
+	`˝rötf
+("¥oc_id:%d, ", 
+¥
+->
+pid
+);
+
+558 
+	`˝rötf
+("¥oc_tid:%d, ", 
+¥
+->
+tid
+);
+
+559 
+	`˝rötf
+("¥oc_°©e:%d, ", 
+¥
+->
+°©e
+);
+
+560 
+	`˝rötf
+("‹igöÆ_˝u_sh¨e:%d, ", 
+¥
+->
+‹igöÆ_˝u_sh¨e
+);
+
+561 
+	`˝rötf
+("˝u_sh¨e:%d, ", 
+¥
+->
+˝u_sh¨e
+);
+
+562 
+	`˝rötf
+("sum_˝u_sh¨e: %d, ", 
+±abÀ
+.
+sum_˝u_sh¨e
+);
+
+563 
+	`˝rötf
+("°ride:%d, ", 
+¥
+->
+°ride
+);
+
+564 
+	`˝rötf
+("°ride_cou¡:%d\n", 
+¥
+->
+°ride_cou¡
+);
+
+571 if(
 °ride_idx
  == 1){
 
-488 
+573 
 hópify_up
  = 0;
 
-491 
+580 i‡(
+°ride_idx
+ <
+±abÀ
+.
+°ride_queue_size
+ && stride_idx != 1) {
+
+581 
 hópify_up
  = 
 ±abÀ
@@ -21510,7 +21896,7 @@ hópify_up
 °ride_cou¡
 
 
-492 < 
+582 < 
 ±abÀ
 .
 °ride_queue
@@ -21520,55 +21906,195 @@ hópify_up
 °ride_cou¡
 
 
-496 if(
+590 if(
 ±abÀ
 .
 °ride_queue_size
  == 0 ||Ötable.stride_queue_size == 1){
 
-500 if(
+594 if(
 hópify_up
 ){
 
-501 
+595 
 	`°ride_queue_hópify_down
 (
 °ride_idx
 );
 
-503 
+597 
 	`°ride_queue_hópify_up
 (
 °ride_idx
 );
 
-507 
+602 #ifde‡
+TEMP_BUG
+
+
+604 
+i
+;
+
+605 
+¥oc
+* 
+¥
+;
+
+606 
+¥öt_hód
+ = 1;
+
+607 
+	`˝rötf
+("(TEMP_BUG) in stride_queue_delete.áfter heapifying\n");
+
+608 
+i
+ = 1; i <
+±abÀ
+.
+°ride_queue_size
+ + 10; ++i) {
+
+609 
+	`˝rötf
+("(TEMP_BUGË°ride_queue[%d]:%p\n", 
+i
+, 
+±abÀ
+.
+°ride_queue
+[i]);
+
+612 
+¥
+ = 
+±abÀ
+.
+¥oc
+;Ö∏< &±abÀ.¥oc[
+NPROC
+]; ++pr) {
+
+613 i‡(
+¥
+->
+˝u_sh¨e
+ > 0) {
+
+614 i‡(
+¥öt_hód
+) {
+
+615 
+	`˝rötf
+("** ThisÖrocess orÅhread is in stride **\n");
+
+616 
+¥öt_hód
+ = 0;
+
+618 
+	`˝rötf
+("(TEMP_BUGË¥oc_«me:%s, ", 
+¥
+->
+«me
+);
+
+619 
+	`˝rötf
+("¥oc_id:%d, ", 
+¥
+->
+pid
+);
+
+620 
+	`˝rötf
+("¥oc_tid:%d, ", 
+¥
+->
+tid
+);
+
+621 
+	`˝rötf
+("¥oc_°©e:%d, ", 
+¥
+->
+°©e
+);
+
+622 
+	`˝rötf
+("‹igöÆ_˝u_sh¨e:%d, ", 
+¥
+->
+‹igöÆ_˝u_sh¨e
+);
+
+623 
+	`˝rötf
+("˝u_sh¨e:%d, ", 
+¥
+->
+˝u_sh¨e
+);
+
+624 
+	`˝rötf
+("sum_˝u_sh¨e: %d, ", 
+±abÀ
+.
+sum_˝u_sh¨e
+);
+
+625 
+	`˝rötf
+("°ride:%d, ", 
+¥
+->
+°ride
+);
+
+626 
+	`˝rötf
+("°ride_cou¡:%d\n", 
+¥
+->
+°ride_cou¡
+);
+
+633 
 	}
 }
 
-511 
+637 
 	$comm⁄_exô
 (
 ¥oc
 *Öroc)
 
-513 
+639 
 ¥oc
  *
 p
 ;
 
-514 
+640 
 fd
 ;
 
-517 
+643 
 fd
  = 0; fd < 
 NOFILE
 ; fd++){
 
-518 if(
+644 if(
 ¥oc
 ->
 ofûe
@@ -21576,7 +22102,13 @@ ofûe
 fd
 ]){
 
-519 
+645 
+	`acquúe
+(&
+thªad_lock
+);
+
+646 
 	`fûe˛o£
 (
 ¥oc
@@ -21586,7 +22118,13 @@ ofûe
 fd
 ]);
 
-520 
+647 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+648 
 ¥oc
 ->
 ofûe
@@ -21594,11 +22132,11 @@ ofûe
 fd
 ] = 0;
 
-524 
+652 
 	`begö_›
 ();
 
-525 
+653 
 	`ùut
 (
 ¥oc
@@ -21606,17 +22144,17 @@ fd
 cwd
 );
 
-526 
+654 
 	`íd_›
 ();
 
-527 
+655 
 ¥oc
 ->
 cwd
  = 0;
 
-529 
+657 
 	`acquúe
 (&
 ±abÀ
@@ -21624,21 +22162,35 @@ cwd
 lock
 );
 
-532 if(
+660 if(
 ¥oc
 ->
 ˝u_sh¨e
  != 0){
 
-533 
-	`°ride_queue_dñëe
-();
+661 
+	`acquúe
+(&
+thªad_lock
+);
 
-537 #ifde‡
+662 
+	`°ride_queue_dñëe
+(
+¥oc
+);
+
+663 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+667 #ifde‡
 THREAD_DEBUGGING
 
 
-538 
+668 
 	`˝rötf
 ("(comm⁄_exôËwakeup1Ö«me:%s, ch™:%p,Öid:%d,Åid:%d\n", 
 ¥oc
@@ -21652,7 +22204,7 @@ pid
 tid
 );
 
-540 
+670 
 	`wakeup1
 (
 ¥oc
@@ -21660,11 +22212,11 @@ tid
 ∑ª¡
 );
 
-541 #ifde‡
+671 #ifde‡
 THREAD_DEBUGGING
 
 
-542 
+672 
 	`˝rötf
 ("(comm⁄_exôË¥oc->∑ª¡->°©e:%d\n", 
 ¥oc
@@ -21674,7 +22226,7 @@ THREAD_DEBUGGING
 °©e
 );
 
-546 
+676 
 p
  = 
 ±abÀ
@@ -21684,7 +22236,7 @@ p
 NPROC
 ];Ö++){
 
-547 if(
+677 if(
 p
 ->
 ∑ª¡
@@ -21692,7 +22244,7 @@ p
 ¥oc
 ){
 
-548 
+678 
 p
 ->
 ∑ª¡
@@ -21700,7 +22252,7 @@ p
 öô¥oc
 ;
 
-549 if(
+679 if(
 p
 ->
 °©e
@@ -21708,13 +22260,13 @@ p
 ZOMBIE
 )
 
-550 
+680 
 	`wakeup1
 (
 öô¥oc
 );
 
-553 
+683 
 ¥oc
 ->
 °©e
@@ -21722,43 +22274,43 @@ ZOMBIE
 ZOMBIE
 ;
 
-554 
+684 
 	}
 }
 
-557 
+687 
 thªad_joö
 (
 thªad_t
  , **);
 
-558 
+688 
 ˛ór_¥oc
 (
 ¥oc
  *);
 
-559 
+689 
 ªmove_thªad_°ack
 (
 ¥oc
  *);
 
-565 
+695 
 	$exô
 ()
 
-567 if(
+697 if(
 ¥oc
  =
 öô¥oc
 )
 
-568 
+698 
 	`∑nic
 ("initÉxiting");
 
-571 i‡(
+701 i‡(
 ¥oc
 ->
 tid
@@ -21766,15 +22318,15 @@ tid
 num_of_thªads
  == 0) {
 
-572 #ifde‡
+702 #ifde‡
 THREAD_DEBUGGING
 
 
-573 
+703 
 	`˝rötf
 (" ** AÖrocess withoutÅhreads callsÉxit() **\n");
 
-574 
+704 
 	`˝rötf
 (" **Ö«me:%s,Öid:%d,Åid:%d **\n", 
 ¥oc
@@ -21786,21 +22338,21 @@ pid
 tid
 );
 
-576 
+706 
 	`comm⁄_exô
 (
 ¥oc
 );
 
-579 
+709 
 	`sched
 ();
 
-580 
+710 
 	`∑nic
 ("zombieÉxit");
 
-583 } i‡(
+713 } i‡(
 ¥oc
 ->
 tid
@@ -21808,21 +22360,21 @@ tid
 num_of_thªads
  != 0) {
 
-584 
+714 
 ¥oc
  *
 p
 ;
 
-585 #ifde‡
+715 #ifde‡
 THREAD_DEBUGGING
 
 
-586 
+716 
 	`˝rötf
 (" ** AÖrocess withÅhreads callsÉxit() **\n");
 
-587 
+717 
 	`˝rötf
 (" **Ö«me:%s,Öid:%d,Åid:%d **\n", 
 ¥oc
@@ -21834,7 +22386,7 @@ pid
 tid
 );
 
-590 
+720 
 p
  = 
 ±abÀ
@@ -21844,11 +22396,11 @@ p
 NPROC
 ];Ö++){
 
-591 
+721 
 tid
 ;
 
-592 i‡(
+722 i‡(
 p
 ->
 pid
@@ -21858,17 +22410,17 @@ pid
 tid
  != 0) {
 
-593 
+723 
 tid
  = 
 p
 ->tid;
 
-594 #ifde‡
+724 #ifde‡
 THREAD_DEBUGGING
 
 
-595 
+725 
 	`˝rötf
 (" **Öid: %d,Åid:%d **\n", 
 p
@@ -21878,13 +22430,13 @@ pid
 tid
 );
 
-597 
+727 
 	`comm⁄_exô
 (
 p
 );
 
-598 
+728 
 	`ªÀa£
 (&
 ±abÀ
@@ -21892,27 +22444,27 @@ p
 lock
 );
 
-601 
+731 
 	`thªad_joö
 (
 tid
 , (**)0);
 
-605 
+735 
 	`comm⁄_exô
 (
 ¥oc
 );
 
-608 
+738 
 	`sched
 ();
 
-609 
+739 
 	`∑nic
 ("zombieÉxit");
 
-613 } i‡(
+743 } i‡(
 ¥oc
 ->
 tid
@@ -21920,7 +22472,7 @@ tid
 num_of_thªads
  == 0) {
 
-614 
+744 
 ¥oc
 * 
 ma°î_thªad
@@ -21928,21 +22480,21 @@ ma°î_thªad
 ∑ª¡
 ;
 
-615 
+745 
 ¥oc
  *
 p
 ;
 
-616 #ifde‡
+746 #ifde‡
 THREAD_DEBUGGING
 
 
-617 
+747 
 	`˝rötf
 (" ** AÅhread(not masterÅhread) callsÉxit() **\n");
 
-618 
+748 
 	`˝rötf
 (" **Ö«me:%s,Öid:%d,Åid:%d **\n", 
 ¥oc
@@ -21954,7 +22506,7 @@ pid
 tid
 );
 
-626 
+756 
 p
  = 
 ±abÀ
@@ -21964,7 +22516,7 @@ p
 NPROC
 ];Ö++){
 
-627 i‡(
+757 i‡(
 p
 ->
 pid
@@ -21974,11 +22526,11 @@ pid
 tid
  != 0 &&Ö !=Öroc) {
 
-628 #ifde‡
+758 #ifde‡
 THREAD_DEBUGGING
 
 
-629 
+759 
 	`˝rötf
 (" **Öid: %d,Åid:%d **\n", 
 p
@@ -21988,7 +22540,7 @@ pid
 tid
 );
 
-632 
+762 
 	`acquúe
 (&
 ±abÀ
@@ -21996,13 +22548,13 @@ tid
 lock
 );
 
-634 
+764 
 	`ªmove_thªad_°ack
 (
 p
 );
 
-635 
+765 
 	`ªÀa£
 (&
 ±abÀ
@@ -22010,19 +22562,19 @@ p
 lock
 );
 
-637 
+767 
 	`comm⁄_exô
 (
 p
 );
 
-638 
+768 
 	`˛ór_¥oc
 (
 p
 );
 
-639 
+769 
 	`ªÀa£
 (&
 ±abÀ
@@ -22030,17 +22582,11 @@ p
 lock
 );
 
-645 #ifde‡
+775 #ifde‡
 THREAD_DEBUGGING
 
 
-646 
-	`˝rötf
-("”xô,áÅhªadËch™_backup:%p\n", 
-ch™_backup
-);
-
-647 
+776 
 	`˝rötf
 ("”xô,áÅhªadËma°îÅhªad'†∑ª¡ádr:%p,Öid:%d,Åid:%d\n", 
 ma°î_thªad
@@ -22052,13 +22598,13 @@ pid
 tid
 );
 
-649 
+778 
 	`comm⁄_exô
 (
 ma°î_thªad
 );
 
-650 
+779 
 	`ªÀa£
 (&
 ±abÀ
@@ -22066,7 +22612,7 @@ ma°î_thªad
 lock
 );
 
-655 
+784 
 	`acquúe
 (&
 ±abÀ
@@ -22074,13 +22620,13 @@ lock
 lock
 );
 
-656 
+785 
 	`ªmove_thªad_°ack
 (
 ¥oc
 );
 
-657 
+786 
 	`ªÀa£
 (&
 ±abÀ
@@ -22088,15 +22634,15 @@ lock
 lock
 );
 
-659 #ifde‡
+788 #ifde‡
 THREAD_DEBUGGING
 
 
-660 
+789 
 	`˝rötf
 ("(exit,áÅhread)Éxit() callingÅhreadÅriesÅoÉxit.\n");
 
-661 
+790 
 	`˝rötf
 ("”xô,áÅhªadËô†ch™:%p, ch™'†pid:%d, ch™'†tid:%d.\n", 
 ¥oc
@@ -22108,11 +22654,11 @@ pid
 tid
 );
 
-664 #ifde‡
+793 #ifde‡
 THREAD_DEBUGGING
 
 
-665 
+794 
 	`˝rötf
 ("”xô,áÅhªadËch™_ªsŸªd.Öroc->∑ª¡:%p\n", 
 ¥oc
@@ -22120,13 +22666,13 @@ THREAD_DEBUGGING
 ∑ª¡
 );
 
-667 
+796 
 	`comm⁄_exô
 (
 ¥oc
 );
 
-671 
+800 
 ¥oc
 ->
 °©e
@@ -22134,27 +22680,27 @@ THREAD_DEBUGGING
 UNUSED
 ;
 
-673 
+802 
 	`sched
 ();
 
-674 
+803 
 	`∑nic
 ("zombieÉxit");
 
-681 
+810 
 	`∑nic
 ("panic inÉxit().Åid != 0 &&Çum_of_threads != 0. Wrong case.");
 
-686 #ifde‡
+815 #ifde‡
 THREAD_DEBUGGING
 
 
-687 
+816 
 	`˝rötf
 (" ** TheÉxit() case isÇot handled. Do defaultÉxit() **\n");
 
-688 
+817 
 	`˝rötf
 (" **Ö«me:%s,Öid:%d,Åid:%d **\n", 
 ¥oc
@@ -22166,25 +22712,25 @@ pid
 tid
 );
 
-690 
+819 
 	`comm⁄_exô
 (
 ¥oc
 );
 
-693 
+822 
 	`sched
 ();
 
-694 
+823 
 	`∑nic
 ("zombieÉxit");
 
-695 
+824 
 	}
 }
 
-699 
+828 
 	$˛ór_¥oc
 (
 ¥oc
@@ -22192,17 +22738,17 @@ tid
 p
 ) {
 
-700 
+829 
 pid
 ;
 
-702 
+831 
 pid
  = 
 p
 ->pid;
 
-703 
+832 
 	`k‰ì
 (
 p
@@ -22210,109 +22756,115 @@ p
 k°ack
 );
 
-704 
+833 
 p
 ->
 k°ack
  = 0;
 
-707 
+836 
 	`check_pgdú_cou¡î_™d_ˇŒ_‰ìvm
 (
 p
 );
 
-709 
+838 
 p
 ->
 pid
  = 0;
 
-710 
+839 
 p
 ->
 ∑ª¡
  = 0;
 
-711 
+840 
 p
 ->
 «me
 [0] = 0;
 
-712 
+841 
 p
 ->
 kûÀd
  = 0;
 
-715 
+844 
 p
 ->
 tick_u£d
  = 0;
 
-716 
+845 
 p
 ->
 time_qu™tum_u£d
 = 0;
 
-717 
+846 
 p
 ->
 Àvñ_of_MLFQ
  = 0;
 
-718 
+847 
 p
 ->
 ˝u_sh¨e
  = 0;
 
-719 
+848 
 p
 ->
 °ride
  = 0;
 
-720 
+849 
 p
 ->
 °ride_cou¡
 = 0;
 
-723 
+852 
 p
 ->
 tid
  = 0;
 
-724 
+853 
 p
 ->
 pgdú_ªf_idx
  = -1;
 
-725 
+854 
 p
 ->
 thªad_ªtu∫
  = 0;
 
-726 
+855 
 p
 ->
 num_of_thªads
  = 0;
 
-727 
+856 
 p
 ->
 ¥oc_f‹ked_ö_thªad
  = 0;
 
-729 
+857 
+p
+->
+‹igöÆ_˝u_sh¨e
+ = 0;
+
+859 
 p
 ->
 °©e
@@ -22320,31 +22872,31 @@ p
 UNUSED
 ;
 
-730  
+860  
 pid
 ;
 
-731 
+861 
 	}
 }
 
-734 
+864 
 	$waô_n‹mÆ
 () {
 
-735 
+865 
 ¥oc
  *
 p
 ;
 
-736 
+866 
 havekids
 , 
 pid
 ;
 
-738 
+868 
 	`acquúe
 (&
 ±abÀ
@@ -22352,11 +22904,11 @@ pid
 lock
 );
 
-741 
+871 
 havekids
  = 0;
 
-742 
+872 
 p
  = 
 ±abÀ
@@ -22366,7 +22918,7 @@ p
 NPROC
 ];Ö++){
 
-744 if(
+874 if(
 p
 ->
 ∑ª¡
@@ -22376,25 +22928,25 @@ p
 tid
  != 0)
 
-748 #ifde‡
+878 #ifde‡
 THREAD_DEBUGGING
 
 
-749 i‡(
+879 i‡(
 p
 ->
 tid
  != 0) {
 
-750 
+880 
 	`˝rötf
 ("Thread is cleared in wait(),Çot inÅhread_join()\n");
 
-751 
+881 
 	`˝rötf
 ("**Örint debugging information **\n");
 
-752 
+882 
 	`˝rötf
 ("≤ame:%s,Öid:%d,Åid:%d,Ögidr_ªf_idx:%d\n", 
 p
@@ -22408,11 +22960,11 @@ tid
 pgdú_ªf_idx
 );
 
-756 
+886 
 havekids
  = 1;
 
-757 if(
+887 if(
 p
 ->
 °©e
@@ -22420,7 +22972,7 @@ p
 ZOMBIE
 ){
 
-758 
+888 
 pid
  = 
 	`˛ór_¥oc
@@ -22428,7 +22980,7 @@ pid
 p
 );
 
-759 
+889 
 	`ªÀa£
 (&
 ±abÀ
@@ -22436,11 +22988,11 @@ p
 lock
 );
 
-760  
+890  
 pid
 ;
 
-765 if(!
+895 if(!
 havekids
  || 
 ¥oc
@@ -22448,7 +23000,7 @@ havekids
 kûÀd
 ){
 
-766 
+896 
 	`ªÀa£
 (&
 ±abÀ
@@ -22456,7 +23008,7 @@ kûÀd
 lock
 );
 
-771 
+901 
 	`¶ìp
 (
 ¥oc
@@ -22466,31 +23018,31 @@ lock
 lock
 );
 
-775 
+905 
 	}
 }
 
-778 
+908 
 	$waô_thªad
 () {
 
-779 
+909 
 ¥oc
  *
 p
 ;
 
-780 
+910 
 havekids
 , 
 pid
 ;
 
-782 #ifde‡
+912 #ifde‡
 THREAD_DEBUGGING
 
 
-783 
+913 
 	`˝rötf
 ("(waô_thªadËwaô(Ëi†ˇŒed i¿®thªad.Öid o‡waôögÅhªad:%d\n", 
 ¥oc
@@ -22500,7 +23052,7 @@ THREAD_DEBUGGING
 pid
 );
 
-786 
+916 
 	`acquúe
 (&
 ±abÀ
@@ -22508,11 +23060,11 @@ pid
 lock
 );
 
-789 
+919 
 havekids
  = 0;
 
-790 
+920 
 p
  = 
 ±abÀ
@@ -22522,7 +23074,7 @@ p
 NPROC
 ];Ö++){
 
-792 if(
+922 if(
 p
 ->
 ∑ª¡
@@ -22532,11 +23084,11 @@ p
 ¥oc_f‹ked_ö_thªad
 )
 
-796 
+926 
 havekids
  = 1;
 
-798 if(
+928 if(
 p
 ->
 °©e
@@ -22544,15 +23096,15 @@ p
 ZOMBIE
 ){
 
-799 #ifde‡
+929 #ifde‡
 THREAD_DEBUGGING
 
 
-800 
+930 
 	`˝rötf
 ("(wait_thread)á forkedÅhread isÑemoved\n.");
 
-802 
+932 
 pid
  = 
 	`˛ór_¥oc
@@ -22560,7 +23112,7 @@ pid
 p
 );
 
-803 
+933 
 	`ªÀa£
 (&
 ±abÀ
@@ -22568,11 +23120,11 @@ p
 lock
 );
 
-804  
+934  
 pid
 ;
 
-809 if(!
+939 if(!
 havekids
  || 
 ¥oc
@@ -22580,7 +23132,7 @@ havekids
 kûÀd
 ){
 
-810 
+940 
 	`ªÀa£
 (&
 ±abÀ
@@ -22588,11 +23140,11 @@ kûÀd
 lock
 );
 
-811 #ifde‡
+941 #ifde‡
 THREAD_DEBUGGING
 
 
-812 
+942 
 	`˝rötf
 ("(waô_thªadËªtu∫ -1. havekids:%d,Öroc->kûÀd:%d,Ö™em:%s,Öid:%d,Åid:%d\n", 
 havekids
@@ -22608,11 +23160,11 @@ pid
 tid
 );
 
-818 #ifde‡
+948 #ifde‡
 THREAD_DEBUGGING
 
 
-819 
+949 
 	`˝rötf
 ("(waô_thªadËgÿtÿ¶ìp.Öroc->«me:%s,Öroc->pid:%d,Öroc->tid:%d i†waôög. ch™’roc_f‹ked_ö_thªad):%p\n", 
 ¥oc
@@ -22626,7 +23178,7 @@ tid
 ¥oc_f‹ked_ö_thªad
 );
 
-821 
+951 
 	`¶ìp
 (
 ¥oc
@@ -22638,11 +23190,11 @@ tid
 lock
 );
 
-823 #ifde‡
+953 #ifde‡
 THREAD_DEBUGGING
 
 
-824 
+954 
 	`˝rötf
 ("(waô_thªadËI wakêup!.Öroc->«me:%s,Öroc->pid:%d,Öroc->tid:%d i†waôög. ch™:%p\n", 
 ¥oc
@@ -22654,39 +23206,39 @@ pid
 tid
 ,Öroc);
 
-828 
+958 
 	}
 }
 
-833 
+963 
 	$waô
 ()
 
-835 i‡(
+965 i‡(
 ¥oc
 ->
 tid
  == 0) {
 
-837  
+967  
 	`waô_n‹mÆ
 ();
 
-840  
+970  
 	`waô_thªad
 ();
 
-842 
+972 
 	}
 }
 
-844 
+974 
 	$°ride_queue_hópify_up
 (
 °ride_idx
 )
 
-846 
+976 
 ¥oc
 * 
 èrgë_¥oc
@@ -22698,11 +23250,11 @@ tid
 °ride_idx
 ];
 
-847 
+977 
 °ride_idx
  != 1){
 
-849 if(
+979 if(
 ±abÀ
 .
 °ride_queue
@@ -22710,7 +23262,7 @@ tid
 °ride_idx
 ] <Ötable.stride_queue[stride_idx / 2]){
 
-850 
+980 
 ±abÀ
 .
 °ride_queue
@@ -22718,11 +23270,11 @@ tid
 °ride_idx
 ] =Ötable.stride_queue[stride_idx / 2];
 
-851 
+981 
 °ride_idx
  /= 2;
 
-859 
+989 
 ±abÀ
 .
 °ride_queue
@@ -22732,17 +23284,17 @@ tid
 èrgë_¥oc
 ;
 
-861 
+990 
 	}
 }
 
-864 
+993 
 	$°ride_queue_hópify_down
 (
 °ride_idx
 )
 
-866 
+995 
 ¥oc
 * 
 p
@@ -22754,13 +23306,13 @@ p
 °ride_idx
 ];
 
-868 
+997 
 °ride_idx
  * 2 < 
 NPROC
 
 
-869 && 
+998 && 
 °ride_idx
  <
 ±abÀ
@@ -22768,7 +23320,7 @@ NPROC
 °ride_queue_size
 ){
 
-870 if(
+999 if(
 ±abÀ
 .
 °ride_queue
@@ -22776,7 +23328,7 @@ NPROC
 °ride_idx
  * 2]
 
-871 && 
+1000 && 
 ±abÀ
 .
 °ride_queue
@@ -22784,7 +23336,7 @@ NPROC
 °ride_idx
  * 2 + 1]){
 
-875 
+1004 
 °ride_idx
  = 
 ±abÀ
@@ -22794,7 +23346,7 @@ NPROC
 °ride_cou¡
 
 
-876 < 
+1005 < 
 ±abÀ
 .
 °ride_queue
@@ -22804,11 +23356,11 @@ NPROC
 °ride_cou¡
 
 
-877 ? 
+1006 ? 
 °ride_idx
  * 2 : stride_idx * 2 + 1;
 
-880 if(
+1009 if(
 ±abÀ
 .
 °ride_queue
@@ -22820,7 +23372,7 @@ NPROC
 p
 ->stride_count){
 
-881 
+1010 
 ±abÀ
 .
 °ride_queue
@@ -22828,11 +23380,11 @@ p
 °ride_idx
  / 2] =Ötable.stride_queue[stride_idx];
 
-883 
+1012 
 °ride_idx
  /= 2;
 
-888 }if(
+1017 }if(
 ±abÀ
 .
 °ride_queue
@@ -22840,11 +23392,11 @@ p
 °ride_idx
  * 2]){
 
-890 
+1019 
 °ride_idx
  *= 2;
 
-892 if(
+1021 if(
 ±abÀ
 .
 °ride_queue
@@ -22856,7 +23408,7 @@ p
 p
 ->stride_count){
 
-893 
+1022 
 ±abÀ
 .
 °ride_queue
@@ -22864,11 +23416,11 @@ p
 °ride_idx
  / 2] =Ötable.stride_queue[stride_idx];
 
-895 
+1024 
 °ride_idx
  /= 2;
 
-906 
+1035 
 ±abÀ
 .
 °ride_queue
@@ -22878,29 +23430,29 @@ p
 p
 ;
 
-908 
+1036 
 	}
 }
 
-911 
+1039 
 	$föd_idx_of_°ride_to_run
 ()
 
-913 
+1041 
 ¥oc
 * 
 ¥oc_to_be_run
 ;
 
-914 
+1042 
 i
 ;
 
-917 
+1045 
 °ride_föd_idx
  = 1;
 
-918 
+1046 
 °ride_föd_idx
  <
 ±abÀ
@@ -22908,7 +23460,7 @@ i
 °ride_queue_size
 ){
 
-919 if(
+1047 if(
 ±abÀ
 .
 °ride_queue
@@ -22920,7 +23472,7 @@ i
 RUNNABLE
 ){
 
-922 
+1050 
 ¥oc_to_be_run
  = 
 ±abÀ
@@ -22930,7 +23482,7 @@ RUNNABLE
 °ride_föd_idx
 ];
 
-923 
+1051 
 ¥oc_to_be_run
 ->
 °ride_cou¡
@@ -22938,25 +23490,25 @@ RUNNABLE
 °ride
 ;
 
-924 
+1052 
 	`°ride_queue_hópify_down
 (
 °ride_föd_idx
 );
 
-931 
+1059 
 À·_chûd
  = 
 °ride_föd_idx
  * 2;
 
-932 
+1060 
 right_chûd
  = 
 °ride_föd_idx
  * 2 + 1;
 
-933 íum {
+1061 íum {
 NO_CHILD
 , 
 LEFT_ONLY
@@ -22966,7 +23518,7 @@ BOTH
 chûd_°©us
 ;
 
-935 if(
+1063 if(
 right_chûd
  <
 ±abÀ
@@ -22974,13 +23526,13 @@ right_chûd
 °ride_queue_size
 ){
 
-936 
+1064 
 chûd_°©us
  = 
 BOTH
 ;
 
-937 }if(
+1065 }if(
 À·_chûd
  > 
 ±abÀ
@@ -22988,27 +23540,185 @@ BOTH
 °ride_queue_size
 ){
 
-938 
+1066 
 chûd_°©us
  = 
 NO_CHILD
 ;
 
-940 
+1068 
 chûd_°©us
  = 
 LEFT_ONLY
 ;
 
-944 
+1072 
 chûd_°©us
 ){
 
-945 
+1073 
 BOTH
 :
 
-947 if(
+1074 #ifde‡
+TEMP_BUG
+
+
+1075 i‡(
+ö_föd_idx
+) {
+
+1076 
+i
+;
+
+1077 
+¥oc
+* 
+p
+;
+
+1078 
+¥öt_hód
+ = 1;
+
+1079 
+	`˝rötf
+("(TEMP_BUGËö föd idx. såidêi†£À˘ed. BOTH. whîêi†thê∑ni¯poöt? chûd_°©us:%d\n", 
+chûd_°©us
+);
+
+1080 
+	`˝rötf
+("(TEMP_BUGËÀ·_chûd:%p,Ñight_chûd:%p\n", 
+±abÀ
+.
+°ride_queue
+[
+À·_chûd
+],ÖèbÀ.°ride_queue[
+right_chûd
+]);
+
+1081 
+i
+ = 1; i <
+±abÀ
+.
+°ride_queue_size
+ + 10; ++i) {
+
+1082 
+	`˝rötf
+("(TEMP_BUGË°ride_queue[%d]:%p\n", 
+i
+, 
+±abÀ
+.
+°ride_queue
+[i]);
+
+1085 
+p
+ = 
+±abÀ
+.
+¥oc
+;Ö < &±abÀ.¥oc[
+NPROC
+]; ++p) {
+
+1086 i‡(
+p
+->
+˝u_sh¨e
+ > 0) {
+
+1087 i‡(
+¥öt_hód
+) {
+
+1088 
+	`˝rötf
+("** ThisÖrocess orÅhread is in stride **\n");
+
+1089 
+¥öt_hód
+ = 0;
+
+1091 
+	`˝rötf
+("(TEMP_BUGË¥oc_«me:%s, ", 
+p
+->
+«me
+);
+
+1092 
+	`˝rötf
+("¥oc_id:%d, ", 
+p
+->
+pid
+);
+
+1093 
+	`˝rötf
+("¥oc_tid:%d, ", 
+p
+->
+tid
+);
+
+1094 
+	`˝rötf
+("¥oc_°©e:%d, ", 
+p
+->
+°©e
+);
+
+1095 
+	`˝rötf
+("‹igöÆ_˝u_sh¨e:%d, ", 
+p
+->
+‹igöÆ_˝u_sh¨e
+);
+
+1096 
+	`˝rötf
+("˝u_sh¨e:%d, ", 
+p
+->
+˝u_sh¨e
+);
+
+1097 
+	`˝rötf
+("sum_˝u_sh¨e: %d, ", 
+±abÀ
+.
+sum_˝u_sh¨e
+);
+
+1098 
+	`˝rötf
+("°ride:%d, ", 
+p
+->
+°ride
+);
+
+1099 
+	`˝rötf
+("°ride_cou¡:%d\n", 
+p
+->
+°ride_cou¡
+);
+
+1106 if(
 ±abÀ
 .
 °ride_queue
@@ -23018,7 +23728,7 @@ BOTH
 °ride_cou¡
 
 
-948 < 
+1107 < 
 ±abÀ
 .
 °ride_queue
@@ -23028,33 +23738,33 @@ right_chûd
 °ride_cou¡
 ){
 
-950 
+1109 
 °ride_föd_idx
  = 
 À·_chûd
 ;
 
-953 
+1112 
 °ride_föd_idx
  = 
 right_chûd
 ;
 
-957 
+1116 
 LEFT_ONLY
 :
 
-959 
+1118 
 °ride_föd_idx
  = 
 À·_chûd
 ;
 
-962 
+1121 
 NO_CHILD
 :
 
-965 
+1124 
 °ride_föd_idx
  = 
 ±abÀ
@@ -23062,11 +23772,11 @@ NO_CHILD
 °ride_queue_size
  + 1;
 
-968 
+1127 
 	`∑nic
 ("error in find_idx_of_stride_to_run().");
 
-975 if(
+1136 if(
 °ride_föd_idx
  >
 ±abÀ
@@ -23074,7 +23784,7 @@ NO_CHILD
 °ride_queue_size
  + 1){
 
-976 
+1137 
 i
  = 1; i <
 ±abÀ
@@ -23082,7 +23792,7 @@ i
 °ride_queue_size
 ; ++i){
 
-977 if(
+1138 if(
 ±abÀ
 .
 °ride_queue
@@ -23094,43 +23804,49 @@ i
 RUNNABLE
 ){
 
-978 
+1139 
 °ride_föd_idx
  = 
 i
 ;
 
-988  
+1150  
 °ride_föd_idx
 ;
 
-989 
+1151 
 	}
 }
 
-992 
+1154 
 	$£À˘_°ride_‹_MLFQ
 ()
 
-994 
-ønd°©e
- = 1;
-
-995 
+1156 
 queue_£À˘‹
-;
+ = -1;
 
-996 
-ønd°©e
- =Ñandstate * 1664525 + 1013904223;
+1157 
+	`acquúe
+(&
+thªad_lock
+);
 
-997 
+1158 
 queue_£À˘‹
- = 
-ønd°©e
- % 100;
+++;
 
-999 if(
+1159 
+queue_£À˘‹
+ %= 100;
+
+1160 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+1162 if(
 queue_£À˘‹
  < 
 ±abÀ
@@ -23138,33 +23854,33 @@ queue_£À˘‹
 sum_˝u_sh¨e
 ){
 
-1006 
+1182 
 	}
 }
 
-1017 
+1193 
 	$scheduÀr
 ()
 
-1019 
+1195 
 ¥oc
  *
 p
 ;
 
-1022 
+1198 
 choosög_°ride_‹_MLFQ
 ;
 
-1023 
+1199 
 °ride_is_£À˘ed
  = 0;
 
-1027 
+1203 
 	`°i
 ();
 
-1030 
+1206 
 	`acquúe
 (&
 ±abÀ
@@ -23172,11 +23888,11 @@ choosög_°ride_‹_MLFQ
 lock
 );
 
-1033 
+1209 
 choosög_°ride_‹_MLFQ
  = 1;
 
-1036 
+1212 
 ±abÀ
 .
 queue_Àvñ_©_mo°
@@ -23184,7 +23900,7 @@ queue_Àvñ_©_mo°
 NMLFQ
  - 1;
 
-1037 
+1213 
 ±abÀ
 .
 queue_Àvñ_©_mo°
@@ -23192,7 +23908,7 @@ queue_Àvñ_©_mo°
 NMLFQ
 ){
 
-1040 
+1216 
 ±abÀ
 .
 mö_of_run_¥oc_Àvñ
@@ -23200,7 +23916,7 @@ mö_of_run_¥oc_Àvñ
 NMLFQ
  - 1;
 
-1042 
+1218 
 p
  = 
 ±abÀ
@@ -23210,45 +23926,65 @@ p
 NPROC
 ];Ö++){
 
-1044 if(
+1220 if(
 ±abÀ
 .
 sum_˝u_sh¨e
  == 0){
 
-1046 
+1222 
 °ride_is_£À˘ed
  = 0;
 
-1047 
+1223 
 choosög_°ride_‹_MLFQ
  = 0;
 
-1048 }if(
+1224 }if(
 choosög_°ride_‹_MLFQ
 ){
 
-1051 
+1227 
 °ride_is_£À˘ed
  = 
 	`£À˘_°ride_‹_MLFQ
 ();
 
-1058 if(
+1235 if(
 °ride_is_£À˘ed
 ){
 
-1061 
+1238 #ifde‡
+TEMP_BUG
+
+
+1239 i‡(
+a·î_f‹_lo›
+) {
+
+1240 
+	`˝rötf
+("(TEMP_BUG) ináfter sched()áfter forÜoop. stride is selected. where isÅheÖanicÖoint?\n");
+
+1241 
+a·î_f‹_lo›
+ = 0;
+
+1242 
+ö_föd_idx
+ = 1;
+
+1245 
 °ride_idx_to_be_run
 ;
 
-1063 
+1247 
 °ride_idx_to_be_run
  = 
 	`föd_idx_of_°ride_to_run
 ();
 
-1066 if(
+1250 if(
 °ride_idx_to_be_run
  <
 ±abÀ
@@ -23256,7 +23992,7 @@ choosög_°ride_‹_MLFQ
 °ride_queue_size
 ){
 
-1068 
+1252 
 p
  = 
 ±abÀ
@@ -23266,15 +24002,31 @@ p
 °ride_idx_to_be_run
 ];
 
-1071 
+1255 
 °ride_is_£À˘ed
  = 0;
 
-1072 
+1256 
 choosög_°ride_‹_MLFQ
  = 0;
 
-1081 if(
+1260 #ifde‡
+TEMP_BUG
+
+
+1261 i‡(
+a·î_f‹_lo›
+) {
+
+1262 
+	`˝rötf
+("(TEMP_BUG) ináfter sched()áfter forÜoop. MLFQ is selected. where isÅheÖanicÖoint?\n");
+
+1263 
+a·î_f‹_lo›
+ = 0;
+
+1271 if(
 p
 ->
 °©e
@@ -23282,13 +24034,13 @@ p
 RUNNABLE
 
 
-1082 && 
+1272 && 
 p
 ->
 ˝u_sh¨e
  == 0
 
-1083 && 
+1273 && 
 p
 ->
 Àvñ_of_MLFQ
@@ -23298,7 +24050,7 @@ p
 queue_Àvñ_©_mo°
 ){
 
-1086 
+1276 
 ±abÀ
 .
 queue_Àvñ_©_mo°
@@ -23308,7 +24060,7 @@ p
 Àvñ_of_MLFQ
  <Ötable.queue_level_at_most ?Ö->level_of_MLFQ :Ötable.queue_level_at_most;
 
-1087 
+1277 
 ±abÀ
 .
 mö_of_run_¥oc_Àvñ
@@ -23316,11 +24068,11 @@ mö_of_run_¥oc_Àvñ
 queue_Àvñ_©_mo°
 ;
 
-1091 
+1281 
 choosög_°ride_‹_MLFQ
  = 0;
 
-1099 
+1289 
 ¥oc
 * 
 p_mlfq
@@ -23328,25 +24080,25 @@ p_mlfq
 p
 ;
 
-1102 
+1292 
 bef‹e_MLFQ_u£d_tick
 ;
 
-1108 #ifde‡
+1298 #ifde‡
 STRIDE_DEBUGGING
 
 
-1110 
+1300 
 	`˝rötf
 ("ContChange. ");
 
-1111 
+1301 
 	`˝rötf
 ("°ride_is_£À˘ed:%d, ", 
 °ride_is_£À˘ed
 );
 
-1112 
+1302 
 	`˝rötf
 ("¥oc_«me:%s, ", 
 p
@@ -23354,7 +24106,7 @@ p
 «me
 );
 
-1113 
+1303 
 	`˝rötf
 ("¥oc_id:%d, ", 
 p
@@ -23362,7 +24114,7 @@ p
 pid
 );
 
-1114 
+1304 
 	`˝rötf
 ("MLFQ_tick:%d, ", 
 ±abÀ
@@ -23374,7 +24126,7 @@ p
 Àvñ_of_MLFQ
 );
 
-1115 
+1305 
 	`˝rötf
 ("Àvñ:%d, ", 
 p
@@ -23382,7 +24134,7 @@ p
 Àvñ_of_MLFQ
 );
 
-1116 
+1306 
 	`˝rötf
 ("°ride_tick:%d, ", 
 ±abÀ
@@ -23390,7 +24142,7 @@ p
 °ride_tick_u£d
 );
 
-1117 
+1307 
 	`˝rötf
 ("˝u_sh¨e:%d, ", 
 p
@@ -23398,7 +24150,7 @@ p
 ˝u_sh¨e
 );
 
-1118 
+1308 
 	`˝rötf
 ("sum_˝u_sh¨e: %d, ", 
 ±abÀ
@@ -23406,7 +24158,7 @@ p
 sum_˝u_sh¨e
 );
 
-1119 
+1309 
 	`˝rötf
 ("°ride:%d, ", 
 p
@@ -23414,7 +24166,7 @@ p
 °ride
 );
 
-1120 
+1310 
 	`˝rötf
 ("°ride_cou¡:%d\n", 
 p
@@ -23422,75 +24174,137 @@ p
 °ride_cou¡
 );
 
-1123 #ifde‡
+1313 #ifde‡
 THREAD_DEBUGGING
 
 
-1134 #ifde‡
+1340 #ifde‡
 THREAD_DEBUGGING
 
 
-1136 
-i
+1342 
+¥oc
+* 
+p
 ;
 
-1137 
+1343 
 ¥öt_hód
  = 1;
 
-1138 
-i
- = 0; i < 
-NPROC
-; ++i) {
-
-1139 i‡(
+1344 
+p
+ = 
 ±abÀ
 .
 ¥oc
-[
-i
-].
-num_of_thªads
- >= 1) {
+;Ö < &±abÀ.¥oc[
+NPROC
+]; ++p) {
 
-1140 i‡(
+1345 i‡(
+p
+->
+˝u_sh¨e
+ > 0) {
+
+1346 i‡(
 ¥öt_hód
 ) {
 
-1141 
+1347 
 	`˝rötf
-("**Çum_of_threads status **\n");
+("** ThisÖrocess orÅhread is in stride **\n");
 
-1142 
+1348 
 ¥öt_hód
  = 0;
 
-1144 
+1350 
 	`˝rötf
-("±abÀ.¥oc[%d],Çum_of_thªad†:%d\n", 
-i
-, 
-±abÀ
-.
-¥oc
-[i].
-num_of_thªads
+("¥oc_«me:%s, ", 
+p
+->
+«me
 );
 
-1149 
+1351 
+	`˝rötf
+("¥oc_id:%d, ", 
+p
+->
+pid
+);
+
+1352 
+	`˝rötf
+("¥oc_tid:%d, ", 
+p
+->
+tid
+);
+
+1353 
+	`˝rötf
+("¥oc_°©e:%d, ", 
+p
+->
+°©e
+);
+
+1354 
+	`˝rötf
+("‹igöÆ_˝u_sh¨e:%d, ", 
+p
+->
+‹igöÆ_˝u_sh¨e
+);
+
+1355 
+	`˝rötf
+("˝u_sh¨e:%d, ", 
+p
+->
+˝u_sh¨e
+);
+
+1356 
+	`˝rötf
+("sum_˝u_sh¨e: %d, ", 
+±abÀ
+.
+sum_˝u_sh¨e
+);
+
+1357 
+	`˝rötf
+("°ride:%d, ", 
+p
+->
+°ride
+);
+
+1358 
+	`˝rötf
+("°ride_cou¡:%d\n", 
+p
+->
+°ride_cou¡
+);
+
+1366 
 ¥oc
  = 
 p
 ;
 
-1150 
+1367 
 	`swôchuvm
 (
 p
 );
 
-1151 
+1368 
 p
 ->
 °©e
@@ -23498,7 +24312,7 @@ p
 RUNNING
 ;
 
-1155 
+1372 
 bef‹e_MLFQ_u£d_tick
  = 
 ±abÀ
@@ -23506,7 +24320,7 @@ bef‹e_MLFQ_u£d_tick
 MLFQ_tick_u£d
 ;
 
-1157 
+1374 
 	`swtch
 (&
 ˝u
@@ -23518,21 +24332,21 @@ p
 c⁄ãxt
 );
 
-1158 
+1375 
 	`swôchkvm
 ();
 
-1167 if(
+1384 if(
 °ride_is_£À˘ed
  == 0
 
-1168 && 
+1385 && 
 ±abÀ
 .
 sum_˝u_sh¨e
  != 0
 
-1169 && 
+1386 && 
 p
 ->
 °©e
@@ -23540,13 +24354,13 @@ p
 RUNNABLE
 
 
-1170 && 
+1387 && 
 p
 ->
 ˝u_sh¨e
  == 0
 
-1171 && 
+1388 && 
 ±abÀ
 .
 MLFQ_tick_u£d
@@ -23554,37 +24368,53 @@ MLFQ_tick_u£d
 bef‹e_MLFQ_u£d_tick
 )
 
-1178 
+1395 
 choosög_°ride_‹_MLFQ
  = 0;
 
-1182 
+1399 
 p
 --;
 
-1184 
+1401 
 choosög_°ride_‹_MLFQ
  = 1;
 
-1187 
+1404 
 ¥oc
  = 0;
 
-1189 if(
+1406 if(
 °ride_is_£À˘ed
 ){
 
-1192 
+1409 
 p
  = 
 p_mlfq
 ;
 
-1193 
+1410 
 p
 --;
 
-1197 if(
+1413 #ifde‡
+TEMP_BUG
+
+
+1414 i‡(
+°ride_queue_dñëe_is_execuã
+) {
+
+1415 
+	`˝rötf
+("(TEMP_BUG) ináfter sched(). where isÅheÖanicÖoint?\n");
+
+1416 
+a·î_f‹_lo›
+ = 1;
+
+1421 if(
 ±abÀ
 .
 mö_of_run_¥oc_Àvñ
@@ -23592,13 +24422,13 @@ mö_of_run_¥oc_Àvñ
 NMLFQ
  - 1) {
 
-1200 
+1424 
 ±abÀ
 .
 queue_Àvñ_©_mo°
 ++;
 
-1205 
+1429 
 	`ªÀa£
 (&
 ±abÀ
@@ -23606,19 +24436,19 @@ queue_Àvñ_©_mo°
 lock
 );
 
-1207 
+1431 
 	}
 }
 
-1217 
+1441 
 	$sched
 ()
 
-1219 
+1443 
 öã«
 ;
 
-1221 if(!
+1445 if(!
 	`hﬁdög
 (&
 ±abÀ
@@ -23626,21 +24456,21 @@ lock
 lock
 ))
 
-1222 
+1446 
 	`∑nic
 ("schedÖtable.lock");
 
-1223 if(
+1447 if(
 ˝u
 ->
 n˛i
  != 1)
 
-1224 
+1448 
 	`∑nic
 ("schedÜocks");
 
-1225 if(
+1449 if(
 ¥oc
 ->
 °©e
@@ -23648,27 +24478,27 @@ n˛i
 RUNNING
 )
 
-1226 
+1450 
 	`∑nic
 ("schedÑunning");
 
-1227 if(
+1451 if(
 	`ªadeÊags
 ()&
 FL_IF
 )
 
-1228 
+1452 
 	`∑nic
 ("sched interruptible");
 
-1230 
+1454 
 öã«
  = 
 ˝u
 ->intena;
 
-1231 
+1455 
 	`swtch
 (&
 ¥oc
@@ -23680,31 +24510,31 @@ c⁄ãxt
 scheduÀr
 );
 
-1235 if(
+1459 if(
 ¥oc
 ){
 
-1236 
+1460 
 ¥oc
 ->
 time_qu™tum_u£d
  = 0;
 
-1239 
+1463 
 ˝u
 ->
 öã«
  = intena;
 
-1240 
+1464 
 	}
 }
 
-1244 
+1468 
 	$yõld
 ()
 
-1246 
+1470 
 	`acquúe
 (&
 ±abÀ
@@ -23712,7 +24542,7 @@ time_qu™tum_u£d
 lock
 );
 
-1247 
+1471 
 ¥oc
 ->
 °©e
@@ -23720,11 +24550,11 @@ lock
 RUNNABLE
 ;
 
-1248 
+1472 
 	`sched
 ();
 
-1249 
+1473 
 	`ªÀa£
 (&
 ±abÀ
@@ -23732,31 +24562,31 @@ RUNNABLE
 lock
 );
 
-1250 
+1474 
 	}
 }
 
-1253 
+1477 
 	$sys_yõld
 (){
 
-1254 
+1478 
 	`yõld
 ();
 
-1256 
+1480 
 	}
 }
 
-1261 
+1485 
 	$f‹kªt
 ()
 
-1263 
+1487 
 fú°
  = 1;
 
-1265 
+1489 
 	`ªÀa£
 (&
 ±abÀ
@@ -23764,31 +24594,31 @@ fú°
 lock
 );
 
-1267 if(
+1491 if(
 fú°
 ){
 
-1271 
+1495 
 fú°
  = 0;
 
-1272 
+1496 
 	`iöô
 (
 ROOTDEV
 );
 
-1273 
+1497 
 	`öôlog
 (
 ROOTDEV
 );
 
-1277 
+1501 
 	}
 }
 
-1282 
+1506 
 	$¶ìp
 (*
 ch™
@@ -23798,23 +24628,23 @@ ch™
 lk
 )
 
-1284 if(
+1508 if(
 ¥oc
  == 0)
 
-1285 
+1509 
 	`∑nic
 ("sleep");
 
-1287 if(
+1511 if(
 lk
  == 0)
 
-1288 
+1512 
 	`∑nic
 ("sleep withoutÜk");
 
-1296 if(
+1520 if(
 lk
  !&
 ±abÀ
@@ -23822,7 +24652,7 @@ lk
 lock
 ){
 
-1297 
+1521 
 	`acquúe
 (&
 ±abÀ
@@ -23830,19 +24660,19 @@ lock
 lock
 );
 
-1298 
+1522 
 	`ªÀa£
 (
 lk
 );
 
-1302 
+1526 
 ¥oc
 ->
 ch™
  = chan;
 
-1303 
+1527 
 ¥oc
 ->
 °©e
@@ -23850,17 +24680,17 @@ ch™
 SLEEPING
 ;
 
-1304 
+1528 
 	`sched
 ();
 
-1307 
+1531 
 ¥oc
 ->
 ch™
  = 0;
 
-1310 if(
+1534 if(
 lk
  !&
 ±abÀ
@@ -23868,7 +24698,7 @@ lk
 lock
 ){
 
-1311 
+1535 
 	`ªÀa£
 (&
 ±abÀ
@@ -23876,29 +24706,29 @@ lock
 lock
 );
 
-1312 
+1536 
 	`acquúe
 (
 lk
 );
 
-1314 
+1538 
 	}
 }
 
-1320 
+1544 
 	$wakeup1
 (*
 ch™
 )
 
-1322 
+1546 
 ¥oc
  *
 p
 ;
 
-1324 
+1548 
 p
  = 
 ±abÀ
@@ -23908,7 +24738,7 @@ p
 NPROC
 ];Ö++)
 
-1325 if(
+1549 if(
 p
 ->
 °©e
@@ -23918,7 +24748,7 @@ SLEEPING
 ch™
  == chan)
 
-1326 
+1550 
 p
 ->
 °©e
@@ -23926,17 +24756,17 @@ p
 RUNNABLE
 ;
 
-1327 
+1551 
 	}
 }
 
-1331 
+1555 
 	$wakeup
 (*
 ch™
 )
 
-1333 
+1557 
 	`acquúe
 (&
 ±abÀ
@@ -23944,13 +24774,13 @@ ch™
 lock
 );
 
-1334 
+1558 
 	`wakeup1
 (
 ch™
 );
 
-1335 
+1559 
 	`ªÀa£
 (&
 ±abÀ
@@ -23958,23 +24788,23 @@ ch™
 lock
 );
 
-1336 
+1560 
 	}
 }
 
-1342 
+1566 
 	$kûl
 (
 pid
 )
 
-1344 
+1568 
 ¥oc
  *
 p
 ;
 
-1346 
+1570 
 	`acquúe
 (&
 ±abÀ
@@ -23982,7 +24812,7 @@ p
 lock
 );
 
-1347 
+1571 
 p
  = 
 ±abÀ
@@ -23992,19 +24822,19 @@ p
 NPROC
 ];Ö++){
 
-1348 if(
+1572 if(
 p
 ->
 pid
  ==Öid){
 
-1349 
+1573 
 p
 ->
 kûÀd
  = 1;
 
-1351 if(
+1575 if(
 p
 ->
 °©e
@@ -24012,7 +24842,7 @@ p
 SLEEPING
 )
 
-1352 
+1576 
 p
 ->
 °©e
@@ -24020,7 +24850,7 @@ p
 RUNNABLE
 ;
 
-1353 
+1577 
 	`ªÀa£
 (&
 ±abÀ
@@ -24028,7 +24858,7 @@ RUNNABLE
 lock
 );
 
-1357 
+1581 
 	`ªÀa£
 (&
 ±abÀ
@@ -24036,63 +24866,63 @@ lock
 lock
 );
 
-1359 
+1583 
 	}
 }
 
-1366 
+1590 
 	$¥ocdump
 ()
 
-1368 *
+1592 *
 °©es
 [] = {
 
-1369 [
+1593 [
 UNUSED
 ] "unused",
 
-1370 [
+1594 [
 EMBRYO
 ] "embryo",
 
-1371 [
+1595 [
 SLEEPING
 ] "sleep ",
 
-1372 [
+1596 [
 RUNNABLE
 ] "runble",
 
-1373 [
+1597 [
 RUNNING
 ] "run ",
 
-1374 [
+1598 [
 ZOMBIE
 ] "zombie"
 
-1376 
+1600 
 i
 ;
 
-1377 
+1601 
 ¥oc
  *
 p
 ;
 
-1378 *
+1602 *
 °©e
 ;
 
-1379 
+1603 
 uöt
  
 pc
 [10];
 
-1381 
+1605 
 p
  = 
 ±abÀ
@@ -24102,7 +24932,7 @@ p
 NPROC
 ];Ö++){
 
-1382 if(
+1606 if(
 p
 ->
 °©e
@@ -24110,7 +24940,7 @@ p
 UNUSED
 )
 
-1384 if(
+1608 if(
 p
 ->
 °©e
@@ -24120,7 +24950,7 @@ p
 °©es
 ) && states[p->state])
 
-1385 
+1609 
 °©e
  = 
 °©es
@@ -24128,11 +24958,11 @@ p
 p
 ->state];
 
-1387 
+1611 
 °©e
  = "???";
 
-1388 
+1612 
 	`˝rötf
 ("%d %†%s", 
 p
@@ -24144,7 +24974,7 @@ pid
 «me
 );
 
-1389 if(
+1613 if(
 p
 ->
 °©e
@@ -24152,7 +24982,7 @@ p
 SLEEPING
 ){
 
-1390 
+1614 
 	`gëˇŒîpcs
 ((
 uöt
@@ -24166,13 +24996,13 @@ ebp
 pc
 );
 
-1391 
+1615 
 i
 =0; i<10 && 
 pc
 [i] != 0; i++)
 
-1392 
+1616 
 	`˝rötf
 (" %p", 
 pc
@@ -24180,25 +25010,25 @@ pc
 i
 ]);
 
-1394 
+1618 
 	`˝rötf
 ("\n");
 
-1396 
+1620 
 	}
 }
 
-1400 
+1624 
 	$¥i‹ôy_boo°
 (){
 
-1401 
+1625 
 ¥oc
  *
 p
 ;
 
-1405 
+1629 
 p
  = 
 ±abÀ
@@ -24208,65 +25038,125 @@ p
 NPROC
 ];Ö++){
 
-1406 
+1630 
 p
 ->
 Àvñ_of_MLFQ
  = 0;
 
-1407 
+1631 
 p
 ->
 tick_u£d
  = 0;
 
-1410 
+1634 
 p
 ->
 time_qu™tum_u£d
  = 0;
 
-1413 
+1637 
 ±abÀ
 .
 MLFQ_tick_u£d
  = 0;
 
-1415 
+1639 
 	}
 }
 
-1419 
+1643 
+	$°ride_queue_push
+(
+¥oc
+*Öroc) {
+
+1644 
+idx
+;
+
+1646 if(
+±abÀ
+.
+°ride_queue
+[1]){
+
+1647 
+¥oc
+->
+°ride_cou¡
+ = 
+±abÀ
+.
+°ride_queue
+[1]->stride_count;
+
+1651 
+idx
+ = ++
+±abÀ
+.
+°ride_queue_size
+;
+
+1652 
+idx
+ != 1){
+
+1653 
+±abÀ
+.
+°ride_queue
+[
+idx
+] =Ötable.stride_queue[idx/2];
+
+1654 
+idx
+ /= 2;
+
+1656 
+±abÀ
+.
+°ride_queue
+[
+idx
+] = 
+¥oc
+;
+
+1658 
+	}
+}
+
+1663 
 	$£t_˝u_sh¨e
 (
 ªquúed
 )
 
-1421 
+1665 
 ˝u_sh¨e_Æªady_£t
 ;
 
-1422 
+1666 
 desúed_sum_˝u_sh¨e
 ;
 
-1423 c⁄° 
+1667 c⁄° 
 MIN_CPU_SHARE
  = 1;
 
-1424 c⁄° 
+1668 c⁄° 
 MAX_CPU_SHARE
  = 80;
 
-1425 
+1669 
 is_√w
 ;
 
-1426 
-idx
-;
-
-1428 i‡(
+1671 i‡(
 ¥oc
 ->
 tid
@@ -24274,11 +25164,11 @@ tid
 num_of_thªads
  != 0) {
 
-1429 
+1672 
 	`˝rötf
 ("(set_cpu_share) set_cpu_share() is called ináÅhread. This isÇot yet implemented.\n");
 
-1434 if–! (
+1677 if–! (
 MIN_CPU_SHARE
  <
 ªquúed
@@ -24286,11 +25176,11 @@ MIN_CPU_SHARE
 MAX_CPU_SHARE
 ) )
 
-1435 
+1678 
 ex˚±i⁄
 ;
 
-1438 
+1681 
 ˝u_sh¨e_Æªady_£t
  = 
 ¥oc
@@ -24298,19 +25188,19 @@ ex˚±i⁄
 ˝u_sh¨e
 ;
 
-1439 if(
+1682 if(
 ˝u_sh¨e_Æªady_£t
  == 0){
 
-1440 
+1683 
 is_√w
  = 1;
 
-1442 
+1685 
 is_√w
  = 0;
 
-1445 
+1688 
 desúed_sum_˝u_sh¨e
  = 
 ±abÀ
@@ -24322,17 +25212,17 @@ sum_˝u_sh¨e
 ªquúed
 ;
 
-1447 if(
+1690 if(
 desúed_sum_˝u_sh¨e
  > 
 MAX_CPU_SHARE
  )
 
-1448 
+1691 
 ex˚±i⁄
 ;
 
-1451 
+1694 
 ±abÀ
 .
 sum_˝u_sh¨e
@@ -24340,7 +25230,7 @@ sum_˝u_sh¨e
 desúed_sum_˝u_sh¨e
 ;
 
-1452 
+1695 
 ¥oc
 ->
 ˝u_sh¨e
@@ -24348,103 +25238,169 @@ desúed_sum_˝u_sh¨e
 ªquúed
 ;
 
-1453 
+1696 
+¥oc
+->
+‹igöÆ_˝u_sh¨e
+ =Öroc->
+˝u_sh¨e
+;
+
+1697 
 ¥oc
 ->
 °ride
  = 
 NSTRIDE
- / 
-ªquúed
+ /Öroc->
+˝u_sh¨e
 ;
 
-1455 if(
+1700 if(
 is_√w
 ){
 
-1460 if(
-±abÀ
-.
-°ride_queue
-[1]){
-
-1461 
+1703 
+	`°ride_queue_push
+(
 ¥oc
-->
-°ride_cou¡
- = 
-±abÀ
-.
-°ride_queue
-[1]->stride_count;
+);
 
-1465 
-idx
- = ++
-±abÀ
-.
-°ride_queue_size
-;
-
-1466 
-idx
- != 1){
-
-1467 
-±abÀ
-.
-°ride_queue
-[
-idx
-] =Ötable.stride_queue[idx/2];
-
-1468 
-idx
- /= 2;
-
-1470 
-±abÀ
-.
-°ride_queue
-[
-idx
-] = 
-¥oc
-;
-
-1477 
+1710 
 ex˚±i⁄
 :
 
-1479 
+1712 
 	}
 }
 
-1482 
+1715 
 	$sys_£t_˝u_sh¨e
 ()
 
-1484 
+1717 
 ªquúed
 ;
 
-1486 if(
+1719 if(
 	`¨göt
 (0, &
 ªquúed
 ) < 0){
 
-1490  
+1723  
 	`£t_˝u_sh¨e
 (
 ªquúed
 );
 
-1491 
+1724 
 	}
 }
 
-1494 
+1727 
+	$£t_˝u_sh¨e_ö_thªad_¸óã
+(
+ªquúed
+, 
+¥oc
+*Öroc, ¥oc* 
+ma°î_thªad
+)
+
+1729 
+˝u_sh¨e_Æªady_£t
+;
+
+1731 c⁄° 
+MIN_CPU_SHARE
+ = 1;
+
+1732 c⁄° 
+MAX_CPU_SHARE
+ = 80;
+
+1733 
+is_√w
+;
+
+1736 if–! (
+MIN_CPU_SHARE
+ <
+ªquúed
+ &&Ñequúed <
+MAX_CPU_SHARE
+) )
+
+1737 
+ex˚±i⁄
+;
+
+1740 
+˝u_sh¨e_Æªady_£t
+ = 
+¥oc
+->
+˝u_sh¨e
+;
+
+1741 if(
+˝u_sh¨e_Æªady_£t
+ == 0){
+
+1742 
+is_√w
+ = 1;
+
+1744 
+is_√w
+ = 0;
+
+1755 
+¥oc
+->
+˝u_sh¨e
+ = 
+ªquúed
+;
+
+1756 
+¥oc
+->
+‹igöÆ_˝u_sh¨e
+ = 
+ma°î_thªad
+->original_cpu_share;
+
+1757 
+¥oc
+->
+°ride
+ = 
+NSTRIDE
+ /Öroc->
+˝u_sh¨e
+;
+
+1759 if(
+is_√w
+){
+
+1762 
+	`°ride_queue_push
+(
+¥oc
+);
+
+1769 
+ex˚±i⁄
+:
+
+1771 
+	}
+}
+
+1776 
 thªad_¸óã
 (
 thªad_t
@@ -24456,35 +25412,35 @@ thªad
 ¨g
 )
 
-1497 
+1779 
 	gi
 ;
 
-1498 
+1780 
 ¥oc
  *
 	g≈
 ;
 
-1499 ** 
+1781 ** 
 	g¨g_±r
 ;
 
-1503 if((
+1785 if((
 	g≈
  = 
 Ælo˝roc
 ()) == 0){
 
-1504 #ifde‡
+1786 #ifde‡
 THREAD_DEBUGGING
 
 
-1505 
+1787 
 ˝rötf
 ("(thread_create)Érror:állocproc()\n");
 
-1511 
+1793 
 	g≈
 ->
 	gpid
@@ -24494,7 +25450,7 @@ THREAD_DEBUGGING
 pid
 ;
 
-1512 
+1794 
 	g≈
 ->
 	gtid
@@ -24502,7 +25458,7 @@ pid
 √xt_thªad_id
 ++;
 
-1513 *
+1795 *
 	gthªad
  = 
 ≈
@@ -24510,7 +25466,7 @@ pid
 tid
 ;
 
-1516 
+1798 
 	g≈
 ->
 	gpgdú
@@ -24520,7 +25476,7 @@ tid
 pgdú
 ;
 
-1517 
+1799 
 	g≈
 ->
 	gsz
@@ -24530,7 +25486,7 @@ pgdú
 sz
 ;
 
-1518 
+1800 
 	g≈
 ->
 	g∑ª¡
@@ -24538,7 +25494,7 @@ sz
 ¥oc
 ;
 
-1519 *
+1801 *
 	g≈
 ->
 	gtf
@@ -24548,7 +25504,7 @@ sz
 tf
 ;
 
-1522 
+1804 
 	g≈
 ->
 	gpgdú_ªf_idx
@@ -24558,13 +25514,13 @@ tf
 pgdú_ªf_idx
 ;
 
-1523 
+1805 
 acquúe
 (&
 thªad_lock
 );
 
-1524 
+1806 
 	gpgdú_ªf
 [
 ≈
@@ -24572,13 +25528,13 @@ thªad_lock
 pgdú_ªf_idx
 ]++;
 
-1525 
+1807 
 ªÀa£
 (&
 thªad_lock
 );
 
-1528 
+1810 
 	g≈
 ->
 	gtf
@@ -24586,21 +25542,27 @@ thªad_lock
 	góx
  = 0;
 
-1530 
+1812 
 	gi
  = 0; i < 
 	gNOFILE
 ; i++)
 
-1531 if(
+1813 if(
 	g¥oc
 ->
 	gofûe
 [
 i
-])
+]) {
 
-1532 
+1814 
+acquúe
+(&
+thªad_lock
+);
+
+1815 
 	g≈
 ->
 	gofûe
@@ -24614,7 +25576,19 @@ fûedup
 ofûe
 [i]);
 
-1533 
+1816 
+ªÀa£
+(&
+thªad_lock
+);
+
+1818 
+acquúe
+(&
+thªad_lock
+);
+
+1819 
 	g≈
 ->
 	gcwd
@@ -24626,7 +25600,13 @@ idup
 cwd
 );
 
-1535 
+1820 
+ªÀa£
+(&
+thªad_lock
+);
+
+1822 
 ß„°r˝y
 (
 ≈
@@ -24636,7 +25616,23 @@ cwd
 ¥oc
 ->name, (proc->name));
 
-1538 
+1825 
+acquúe
+(&
+thªad_lock
+);
+
+1826 
+	g≈
+->
+	gsz
+ = 
+¥oc
+->
+sz
+;
+
+1827 
 	g≈
 ->
 	gsz
@@ -24648,7 +25644,7 @@ PGROUNDUP
 sz
 );
 
-1539 if((
+1828 if((
 	g≈
 ->
 	gsz
@@ -24664,19 +25660,19 @@ sz
 PGSIZE
 )) == 0) {
 
-1540 #ifde‡
+1829 #ifde‡
 THREAD_DEBUGGING
 
 
-1541 
+1830 
 ˝rötf
 ("(thread_create)Érror:állocuvm()\n");
 
-1542 
+1831 
 ˝rötf
 ("** debugging information **\n");
 
-1543 
+1832 
 ˝rötf
 ("Öroc->sz:%d\n", 
 ¥oc
@@ -24684,7 +25680,7 @@ THREAD_DEBUGGING
 sz
 );
 
-1548 
+1837 
 ˛óΩãu
 (
 ≈
@@ -24696,13 +25692,27 @@ sz
 PGSIZE
 ));
 
-1550 
-acquúe
-(&
-thªad_lock
-);
+1839 #ifde‡
+THREAD_DEBUGGING
 
-1551 
+
+1840 
+˝rötf
+("—hªad_¸óãË≤ame:%s,Öid:%d,Åid:%d,Öroc->sz:%d,Çp->sz:%d\n", 
+¥oc
+->
+«me
+,Öroc->
+pid
+,Öroc->
+tid
+,Öroc->
+sz
+, 
+≈
+->sz);
+
+1845 
 	g¥oc
 ->
 	gsz
@@ -24710,21 +25720,23 @@ thªad_lock
 ≈
 ->
 sz
-;
+ + 
+PGSIZE
+ * (1024 - 2);
 
-1554 i‡(
+1848 i‡(
 	g¥oc
 ->
 	gtid
  == 0) {
 
-1555 
+1849 
 ¥oc
 ->
 num_of_thªads
 ++;
 
-1557 
+1851 
 	g¥oc
 ->
 	g∑ª¡
@@ -24732,13 +25744,13 @@ num_of_thªads
 	gnum_of_thªads
 ++;
 
-1559 
+1853 
 ªÀa£
 (&
 thªad_lock
 );
 
-1562 
+1856 
 	g≈
 ->
 	gtf
@@ -24750,7 +25762,7 @@ uöt
 °¨t_routöe
 ;
 
-1563 
+1857 
 	g≈
 ->
 	gtf
@@ -24762,7 +25774,7 @@ uöt
 sz
  - 8;
 
-1565 
+1859 
 	g¨g_±r
  = (**)(
 ≈
@@ -24772,11 +25784,11 @@ tf
 e•
 );
 
-1566 *
+1860 *
 	g¨g_±r
  = (*)0xDEADDEAD;
 
-1568 
+1862 
 	g¨g_±r
  = (**)(
 ≈
@@ -24786,13 +25798,13 @@ tf
 e•
  + 4);
 
-1569 *
+1863 *
 	g¨g_±r
  = 
 ¨g
 ;
 
-1571 
+1865 
 acquúe
 (&
 ±abÀ
@@ -24800,7 +25812,7 @@ acquúe
 lock
 );
 
-1573 
+1867 
 	g≈
 ->
 	g°©e
@@ -24808,7 +25820,7 @@ lock
 RUNNABLE
 ;
 
-1577 
+1871 
 ªÀa£
 (&
 ±abÀ
@@ -24816,43 +25828,131 @@ RUNNABLE
 lock
 );
 
-1584 
+1873 i‡(
+	g¥oc
+->
+	g˝u_sh¨e
+ != 0) {
+
+1874 #ifde‡
+THREAD_DEBUGGING
+
+
+1875 
+˝rötf
+(" **Åhread_create is called byáÖrocess iná stride queue\n");
+
+1877 
+	gsh¨e_≥r_thªad
+ = 
+¥oc
+->
+‹igöÆ_˝u_sh¨e
+ / (¥oc->
+num_of_thªads
+ + 1);
+
+1878 
+¥oc
+* 
+	gp
+;
+
+1880 i‡(
+£t_˝u_sh¨e_ö_thªad_¸óã
+(
+sh¨e_≥r_thªad
+, 
+≈
+, 
+¥oc
+)) {
+
+1881 
+∑nic
+("(thread_create) makingáÇewÅhread in stride is failed.\n ");
+
+1885 
+	gp
+ = 
+±abÀ
+.
+¥oc
+;Ö < &
+	g±abÀ
+.
+	g¥oc
+[
+NPROC
+];Ö++){
+
+1886 i‡(
+	gp
+->
+	gpid
+ =
+¥oc
+->
+pid
+) {
+
+1887 
+p
+->
+˝u_sh¨e
+ = 
+sh¨e_≥r_thªad
+;
+
+1888 
+	gp
+->
+	g°ride
+ = 
+NSTRIDE
+ / 
+p
+->
+˝u_sh¨e
+;
+
+1899 
 	$sys_thªad_¸óã
 ()
 
-1586 
+1901 
 thªad_t
  * 
 thªad
 ;
 
-1587 * (*
+1902 * (*
 °¨t_routöe
 )(*);
 
-1588 * 
+1903 * 
 ¨g
 ;
 
-1590 if(
+1905 if(
 	`¨g±r
 (0, (**)&
 thªad
 , (thread)) < 0){
 
-1593 if(
+1908 if(
 	`¨g±r
 (1, (**)&
 °¨t_routöe
 , (start_routine)) < 0){
 
-1596 if(
+1911 if(
 	`¨g±r
 (2, (**)&
 ¨g
 , (arg)) < 0){
 
-1600  
+1915  
 	`thªad_¸óã
 (
 thªad
@@ -24862,43 +25962,43 @@ thªad
 ¨g
 );
 
-1601 
+1916 
 	}
 }
 
-1604 
+1919 
 	$thªad_exô
 (*
 ªtvÆ
 )
 
-1606 
+1921 
 ¥oc
  *
 p
 ;
 
-1607 
+1922 
 fd
 ;
 
-1609 if(
+1924 if(
 ¥oc
  =
 öô¥oc
 )
 
-1610 
+1925 
 	`∑nic
 ("initÉxiting");
 
-1613 
+1928 
 fd
  = 0; fd < 
 NOFILE
 ; fd++){
 
-1614 if(
+1929 if(
 ¥oc
 ->
 ofûe
@@ -24906,7 +26006,13 @@ ofûe
 fd
 ]){
 
-1615 
+1930 
+	`acquúe
+(&
+thªad_lock
+);
+
+1931 
 	`fûe˛o£
 (
 ¥oc
@@ -24916,7 +26022,13 @@ ofûe
 fd
 ]);
 
-1616 
+1932 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+1933 
 ¥oc
 ->
 ofûe
@@ -24924,11 +26036,11 @@ ofûe
 fd
 ] = 0;
 
-1620 
+1937 
 	`begö_›
 ();
 
-1621 
+1938 
 	`ùut
 (
 ¥oc
@@ -24936,17 +26048,17 @@ fd
 cwd
 );
 
-1622 
+1939 
 	`íd_›
 ();
 
-1623 
+1940 
 ¥oc
 ->
 cwd
  = 0;
 
-1625 
+1942 
 	`acquúe
 (&
 ±abÀ
@@ -24954,7 +26066,7 @@ cwd
 lock
 );
 
-1627 
+1944 
 ¥oc
 ->
 thªad_ªtu∫
@@ -24962,17 +26074,31 @@ thªad_ªtu∫
 ªtvÆ
 ;
 
-1630 if(
+1947 if(
 ¥oc
 ->
 ˝u_sh¨e
  != 0){
 
-1631 
-	`°ride_queue_dñëe
-();
+1948 
+	`acquúe
+(&
+thªad_lock
+);
 
-1635 
+1949 
+	`°ride_queue_dñëe
+(
+¥oc
+);
+
+1950 
+	`ªÀa£
+(&
+thªad_lock
+);
+
+1954 
 	`wakeup1
 (
 ¥oc
@@ -24980,7 +26106,7 @@ thªad_ªtu∫
 ∑ª¡
 );
 
-1638 
+1957 
 p
  = 
 ±abÀ
@@ -24990,7 +26116,7 @@ p
 NPROC
 ];Ö++){
 
-1639 if(
+1958 if(
 p
 ->
 ∑ª¡
@@ -24998,7 +26124,7 @@ p
 ¥oc
 ){
 
-1640 
+1959 
 p
 ->
 ∑ª¡
@@ -25006,7 +26132,7 @@ p
 öô¥oc
 ;
 
-1641 if(
+1960 if(
 p
 ->
 °©e
@@ -25014,13 +26140,13 @@ p
 ZOMBIE
 )
 
-1642 
+1961 
 	`wakeup1
 (
 öô¥oc
 );
 
-1647 
+1967 
 ¥oc
 ->
 °©e
@@ -25028,43 +26154,55 @@ ZOMBIE
 ZOMBIE
 ;
 
-1648 
+1969 #ifde‡
+TEMP_BUG
+
+
+1970 
+	`˝rötf
+("(TEMP_BUG) in stride_queue_delete. where isÅheÖanicÖoint?\n");
+
+1971 
+°ride_queue_dñëe_is_execuã
+ = 1;
+
+1974 
 	`sched
 ();
 
-1649 
+1975 
 	`∑nic
 ("zombieÉxit");
 
-1652 
+1978 
 	}
 }
 
-1655 
+1981 
 	$sys_thªad_exô
 ()
 
-1657 *
+1983 *
 ªtvÆ
 ;
 
-1658 if(
+1984 if(
 	`¨g±r
 (0, (**)&
 ªtvÆ
 , (retval)) < 0){
 
-1662 
+1988 
 	`thªad_exô
 (
 ªtvÆ
 );
 
-1664 
+1990 
 	}
 }
 
-1667 
+1993 
 	$ªmove_thªad_°ack
 (
 ¥oc
@@ -25072,15 +26210,15 @@ ZOMBIE
 p
 ) {
 
-1668 i‡(
+1994 i‡(
 p
  == 0) {
 
-1669 
+1995 
 	`∑nic
 ("p shouldÇot beá zero.\n");
 
-1672 i‡(
+1998 i‡(
 pgdú_ªf
 [
 p
@@ -25088,15 +26226,15 @@ p
 pgdú_ªf_idx
 ] > 1) {
 
-1673 
+1999 
 √wsz
 ;
 
-1674 #ifde‡
+2000 #ifde‡
 THREAD_DEBUGGING
 
 
-1683 
+2009 
 √wsz
  = 
 	`dóŒocuvm
@@ -25110,7 +26248,7 @@ sz
 PGSIZE
 );
 
-1684 
+2010 
 p
 ->
 ∑ª¡
@@ -25120,13 +26258,13 @@ sz
 √wsz
  <Ö->parent->sz ?Çewsz :Ö->parent->sz;
 
-1686 
+2012 
 	`acquúe
 (&
 thªad_lock
 );
 
-1688 
+2014 
 p
 ->
 ∑ª¡
@@ -25134,17 +26272,17 @@ p
 num_of_thªads
 --;
 
-1689 
+2015 
 	`ªÀa£
 (&
 thªad_lock
 );
 
-1690 
+2016 
 	}
 }
 
-1693 
+2019 
 	$thªad_joö
 (
 thªad_t
@@ -25154,17 +26292,17 @@ thªad
 ªtvÆ
 )
 
-1695 
+2021 
 ¥oc
  *
 p
 ;
 
-1696 
+2022 
 havekids
 ;
 
-1698 
+2024 
 	`acquúe
 (&
 ±abÀ
@@ -25172,11 +26310,11 @@ havekids
 lock
 );
 
-1701 
+2027 
 havekids
  = 0;
 
-1702 
+2028 
 p
  = 
 ±abÀ
@@ -25186,7 +26324,7 @@ p
 NPROC
 ];Ö++){
 
-1703 if(
+2029 if(
 p
 ->
 ∑ª¡
@@ -25198,11 +26336,11 @@ tid
 thªad
 )
 
-1705 
+2031 
 havekids
  = 1;
 
-1706 if(
+2032 if(
 p
 ->
 °©e
@@ -25210,7 +26348,7 @@ p
 ZOMBIE
 ){
 
-1707 *
+2033 *
 ªtvÆ
  = 
 p
@@ -25218,19 +26356,19 @@ p
 thªad_ªtu∫
 ;
 
-1710 
+2036 
 	`ªmove_thªad_°ack
 (
 p
 );
 
-1711 
+2037 
 	`˛ór_¥oc
 (
 p
 );
 
-1714 
+2040 
 	`ªÀa£
 (&
 ±abÀ
@@ -25238,7 +26376,7 @@ p
 lock
 );
 
-1720 if(!
+2046 if(!
 havekids
  || 
 ¥oc
@@ -25246,15 +26384,15 @@ havekids
 kûÀd
 ){
 
-1721 #ifde‡
+2047 #ifde‡
 THREAD_DEBUGGING
 
 
-1722 
+2048 
 	`˝rötf
 ("(thread_join)ÅhreadÑesources isÇot cleared.\n");
 
-1724 
+2050 
 	`ªÀa£
 (&
 ±abÀ
@@ -25262,7 +26400,7 @@ THREAD_DEBUGGING
 lock
 );
 
-1729 
+2055 
 	`¶ìp
 (
 ¥oc
@@ -25272,37 +26410,37 @@ lock
 lock
 );
 
-1733 
+2059 
 	}
 }
 
-1736 
+2062 
 	$sys_thªad_joö
 ()
 
-1738 
+2064 
 thªad_t
  
 thªad
 ;
 
-1739 **
+2065 **
 ªtvÆ
 ;
 
-1741 if(
+2067 if(
 	`¨göt
 (0, (*)&
 thªad
 ) < 0){
 
-1744 if(
+2070 if(
 	`¨g±r
 (1, (**)&
 ªtvÆ
 , (retval)) < 0){
 
-1748  
+2074  
 	`thªad_joö
 (
 thªad
@@ -25310,7 +26448,7 @@ thªad
 ªtvÆ
 );
 
-1749 
+2075 
 	}
 }
 
@@ -25568,4269 +26706,9 @@ thªad_t
 	m¥oc_f‹ked_ö_thªad
 ;
 
-	@proc_temp.c
-
-1 
-	~"ty≥s.h
-"
-
-2 
-	~"defs.h
-"
-
-3 
-	~"∑øm.h
-"
-
-4 
-	~"memœyout.h
-"
-
-5 
-	~"mmu.h
-"
-
-6 
-	~"x86.h
-"
-
-7 
-	~"¥oc.h
-"
-
-8 
-	~"•ölock.h
-"
-
-11 
-•ölock
- 
-	mlock
+90 
+	m‹igöÆ_˝u_sh¨e
 ;
-
-14 
-¥oc
- 
-	m¥oc
-[
-NPROC
-];
-
-15 
-	mMLFQ_time_qu™tum
-[
-NMLFQ
-];
-
-16 
-	mMLFQ_tick_u£d
-;
-
-19 
-	mqueue_Àvñ_©_mo°
-;
-
-20 
-	mmö_of_run_¥oc_Àvñ
-;
-
-23 
-¥oc
-* 
-	m°ride_queue
-[
-NSTRIDE_QUEUE
-];
-
-24 
-	msum_˝u_sh¨e
-;
-
-25 
-	m°ride_queue_size
-;
-
-26 
-	m°ride_time_qu™tum
-;
-
-27 
-	m°ride_tick_u£d
-;
-
-30 } 
-	g±abÀ
-;
-
-34 
-•ölock
- 
-	gthªad_lock
-;
-
-35 
-	gpgdú_cou¡
-[
-NPROC
-];
-
-36 
-	gpgdú_cou¡_idx
-;
-
-39 
-¥oc
- *
-	göô¥oc
-;
-
-41 
-	g√xçid
- = 1;
-
-42 
-f‹kªt
-();
-
-43 
-å≠ªt
-();
-
-45 
-wakeup1
-(*
-ch™
-);
-
-47 
-°ride_queue_hópify_up
-(
-°ride_idx
-);
-
-48 
-°ride_queue_hópify_down
-(
-°ride_idx
-);
-
-50 
-	g√xt_thªad_id
- = 1;
-
-54 
-	$gë_time_qu™tum
-()
-
-56 if(
-¥oc
- &&Öroc->
-˝u_sh¨e
- != 0){
-
-57  
-±abÀ
-.
-°ride_time_qu™tum
-;
-
-59  
-±abÀ
-.
-MLFQ_time_qu™tum
-[
-¥oc
-->
-Àvñ_of_MLFQ
-];
-
-61 
-	}
-}
-
-65 
-	$gë_MLFQ_tick_u£d
-()
-
-67  
-±abÀ
-.
-MLFQ_tick_u£d
-;
-
-68 
-	}
-}
-
-71 
-	$ö¸ó£_MLFQ_tick_u£d
-()
-
-73 
-±abÀ
-.
-MLFQ_tick_u£d
-++;
-
-74 #ifde‡
-STRIRDE_DEBUGGING
-
-
-75 
-	`˝rötf
-("\rMLFQ_tick_u£d: %d", 
-±abÀ
-.
-MLFQ_tick_u£d
-);
-
-77 
-	}
-}
-
-80 
-	$ö¸ó£_°ride_tick_u£d
-()
-
-82 
-±abÀ
-.
-°ride_tick_u£d
-++;
-
-83 #ifde‡
-STRIRDE_DEBUGGING
-
-
-84 
-	`˝rötf
-("\r°ride_tick_u£d: %d", 
-±abÀ
-.
-°ride_tick_u£d
-);
-
-86 
-	}
-}
-
-90 
-	$pöô
-()
-
-93 
-queue_Àvñ
-;
-
-94 
-deÁu…_ticks
- = 5;
-
-95 
-	`öôlock
-(&
-±abÀ
-.
-lock
-, "ptable");
-
-96 
-	`öôlock
-(&
-thªad_lock
-, "thread");
-
-101 
-queue_Àvñ
- = 0; queue_Àvñ < 
-NMLFQ
-; ++queue_level){
-
-102 
-±abÀ
-.
-MLFQ_time_qu™tum
-[
-queue_Àvñ
-] = 
-deÁu…_ticks
-;
-
-103 
-deÁu…_ticks
- *= 2;
-
-105 
-±abÀ
-.
-MLFQ_tick_u£d
- = 0;
-
-107 
-±abÀ
-.
-queue_Àvñ_©_mo°
- = 
-NMLFQ
- - 1;
-
-108 
-±abÀ
-.
-mö_of_run_¥oc_Àvñ
- = 
-NMLFQ
- - 1;
-
-110 
-	`mem£t
-(
-±abÀ
-.
-°ride_queue
-, 0, (ptable.stride_queue));
-
-111 
-±abÀ
-.
-sum_˝u_sh¨e
- = 0;
-
-112 
-±abÀ
-.
-°ride_queue_size
- = 0;
-
-113 
-±abÀ
-.
-°ride_time_qu™tum
- = 1;
-
-114 
-±abÀ
-.
-°ride_tick_u£d
- = 0;
-
-116 
-pgdú_cou¡_idx
- = -1;
-
-117 
-	`mem£t
-(
-pgdú_cou¡
-, 0, (pgdir_count));
-
-119 
-	}
-}
-
-126 
-¥oc
-*
-
-127 
-	$Ælo˝roc
-()
-
-129 
-¥oc
- *
-p
-;
-
-130 *
-•
-;
-
-132 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-134 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++)
-
-135 if(
-p
-->
-°©e
- =
-UNUSED
-)
-
-136 
-found
-;
-
-138 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-141 
-found
-:
-
-142 
-p
-->
-°©e
- = 
-EMBRYO
-;
-
-143 
-p
-->
-pid
- = 
-√xçid
-++;
-
-147 
-p
-->
-tick_u£d
- = 0;
-
-148 
-p
-->
-Àvñ_of_MLFQ
- = 0;
-
-149 
-p
-->
-time_qu™tum_u£d
- = 0;
-
-153 
-p
-->
-˝u_sh¨e
- = 0;
-
-154 
-p
-->
-°ride
- = 0;
-
-155 
-p
-->
-°ride_cou¡
- = 0;
-
-158 
-p
-->
-tid
- = 0;
-
-159 
-p
-->
-thªad_cou¡
- = 0;
-
-160 
-p
-->
-pgdú_cou¡_idx
- = -1;
-
-163 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-166 if((
-p
-->
-k°ack
- = 
-	`kÆloc
-()) == 0){
-
-167 
-p
-->
-°©e
- = 
-UNUSED
-;
-
-170 
-•
- = 
-p
-->
-k°ack
- + 
-KSTACKSIZE
-;
-
-173 
-•
- - *
-p
-->
-tf
-;
-
-174 
-p
-->
-tf
- = (
-å≠‰ame
-*)
-•
-;
-
-178 
-•
- -= 4;
-
-179 *(
-uöt
-*)
-•
- = (uöt)
-å≠ªt
-;
-
-181 
-•
- - *
-p
-->
-c⁄ãxt
-;
-
-182 
-p
-->
-c⁄ãxt
- = (c⁄ãxt*)
-•
-;
-
-183 
-	`mem£t
-(
-p
-->
-c⁄ãxt
-, 0,  *p->context);
-
-184 
-p
-->
-c⁄ãxt
-->
-eù
- = (
-uöt
-)
-f‹kªt
-;
-
-186  
-p
-;
-
-187 
-	}
-}
-
-192 
-	$u£röô
-()
-
-194 
-¥oc
- *
-p
-;
-
-195 
-_bö¨y_öôcode_°¨t
-[], 
-_bö¨y_öôcode_size
-[];
-
-197 
-p
- = 
-	`Ælo˝roc
-();
-
-199 
-öô¥oc
- = 
-p
-;
-
-200 if((
-p
-->
-pgdú
- = 
-	`£tupkvm
-()) == 0)
-
-201 
-	`∑nic
-("userinit: out of memory?");
-
-202 
-	`öôuvm
-(
-p
-->
-pgdú
-, 
-_bö¨y_öôcode_°¨t
-, ()
-_bö¨y_öôcode_size
-);
-
-203 
-p
-->
-sz
- = 
-PGSIZE
-;
-
-204 
-	`mem£t
-(
-p
-->
-tf
-, 0, (*p->tf));
-
-205 
-p
-->
-tf
-->
-cs
- = (
-SEG_UCODE
- << 3Ë| 
-DPL_USER
-;
-
-206 
-p
-->
-tf
-->
-ds
- = (
-SEG_UDATA
- << 3Ë| 
-DPL_USER
-;
-
-207 
-p
-->
-tf
-->
-es
- =Ö->tf->
-ds
-;
-
-208 
-p
-->
-tf
-->
-ss
- =Ö->tf->
-ds
-;
-
-209 
-p
-->
-tf
-->
-eÊags
- = 
-FL_IF
-;
-
-210 
-p
-->
-tf
-->
-e•
- = 
-PGSIZE
-;
-
-211 
-p
-->
-tf
-->
-eù
- = 0;
-
-213 
-	`ß„°r˝y
-(
-p
-->
-«me
-, "initcode", (p->name));
-
-214 
-p
-->
-cwd
- = 
-	`«mei
-("/");
-
-220 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-222 
-p
-->
-°©e
- = 
-RUNNABLE
-;
-
-224 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-225 
-	}
-}
-
-230 
-	$grow¥oc
-(
-n
-)
-
-232 
-uöt
- 
-sz
-;
-
-234 
-sz
- = 
-¥oc
-->sz;
-
-235 if(
-n
- > 0){
-
-236 if((
-sz
- = 
-	`Ælocuvm
-(
-¥oc
-->
-pgdú
-, sz, sz + 
-n
-)) == 0)
-
-238 }if(
-n
- < 0){
-
-239 if((
-sz
- = 
-	`dóŒocuvm
-(
-¥oc
-->
-pgdú
-, sz, sz + 
-n
-)) == 0)
-
-242 
-¥oc
-->
-sz
- = sz;
-
-243 
-	`swôchuvm
-(
-¥oc
-);
-
-245 
-	}
-}
-
-251 
-	$f‹k
-()
-
-253 
-i
-, 
-pid
-;
-
-254 
-¥oc
- *
-≈
-;
-
-257 if((
-≈
- = 
-	`Ælo˝roc
-()) == 0){
-
-262 if((
-≈
-->
-pgdú
- = 
-	`c›yuvm
-(
-¥oc
-->pgdú,Öroc->
-sz
-)) == 0){
-
-263 
-	`k‰ì
-(
-≈
-->
-k°ack
-);
-
-264 
-≈
-->
-k°ack
- = 0;
-
-265 
-≈
-->
-°©e
- = 
-UNUSED
-;
-
-268 
-≈
-->
-sz
- = 
-¥oc
-->sz;
-
-269 
-≈
-->
-∑ª¡
- = 
-¥oc
-;
-
-270 *
-≈
-->
-tf
- = *
-¥oc
-->tf;
-
-273 
-i
- = 0; i < 
-NPROC
-; ++i) {
-
-274 
-pgdú_cou¡_idx
-++;
-
-275 
-pgdú_cou¡_idx
- %
-NPROC
-;
-
-277 i‡(
-pgdú_cou¡
-[
-pgdú_cou¡_idx
-] == 0) {
-
-278 
-≈
-->
-pgdú_cou¡_idx
- =Ögdir_count_idx;
-
-280 
-	`acquúe
-(&
-thªad_lock
-);
-
-281 
-pgdú_cou¡
-[
-≈
-->
-pgdú_cou¡_idx
-]++;
-
-282 
-	`ªÀa£
-(&
-thªad_lock
-);
-
-288 
-≈
-->
-tf
-->
-óx
- = 0;
-
-290 
-i
- = 0; i < 
-NOFILE
-; i++)
-
-291 if(
-¥oc
-->
-ofûe
-[
-i
-])
-
-292 
-≈
-->
-ofûe
-[
-i
-] = 
-	`fûedup
-(
-¥oc
-->ofile[i]);
-
-293 
-≈
-->
-cwd
- = 
-	`idup
-(
-¥oc
-->cwd);
-
-295 
-	`ß„°r˝y
-(
-≈
-->
-«me
-, 
-¥oc
-->name, (proc->name));
-
-297 
-pid
- = 
-≈
-->pid;
-
-299 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-301 
-≈
-->
-°©e
- = 
-RUNNABLE
-;
-
-305 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-307  
-pid
-;
-
-308 
-	}
-}
-
-314 
-	$exô
-()
-
-316 
-¥oc
- *
-p
-;
-
-317 
-fd
-;
-
-318 
-°ride_idx
-;
-
-320 if(
-¥oc
- =
-öô¥oc
-)
-
-321 
-	`∑nic
-("initÉxiting");
-
-324 
-fd
- = 0; fd < 
-NOFILE
-; fd++){
-
-325 if(
-¥oc
-->
-ofûe
-[
-fd
-]){
-
-326 
-	`fûe˛o£
-(
-¥oc
-->
-ofûe
-[
-fd
-]);
-
-327 
-¥oc
-->
-ofûe
-[
-fd
-] = 0;
-
-331 
-	`begö_›
-();
-
-332 
-	`ùut
-(
-¥oc
-->
-cwd
-);
-
-333 
-	`íd_›
-();
-
-334 
-¥oc
-->
-cwd
- = 0;
-
-336 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-339 if(
-¥oc
-->
-˝u_sh¨e
- != 0){
-
-340 
-hópify_up
-;
-
-342 #ifde‡
-MJ_DEBUGGING
-
-
-343 
-	`˝rötf
-("stirde_queueÖrocessÉxit()\n");
-
-347 
-±abÀ
-.
-sum_˝u_sh¨e
- -
-¥oc
-->
-˝u_sh¨e
-;
-
-350 
-°ride_idx
- = 1; såide_idx < 
-NSTRIDE_QUEUE
-; ++stride_idx){
-
-351 if(
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] =
-¥oc
-){
-
-356 if(
-°ride_idx
- =
-NSTRIDE_QUEUE
-){
-
-357 
-	`∑nic
-("exit():áÖrocess isÇot inÅhe stride scheduler");
-
-361 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] =ÖèbÀ.°ride_queue[±abÀ.
-°ride_queue_size
-];
-
-362 
-±abÀ
-.
-°ride_queue
-[±abÀ.
-°ride_queue_size
---] = 0;
-
-365 if(
-°ride_idx
- == 1){
-
-367 
-hópify_up
- = 0;
-
-370 
-hópify_up
- = 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-]->
-°ride_cou¡
-
-
-371 < 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- / 2]->
-°ride_cou¡
-
-
-375 if(
-±abÀ
-.
-°ride_queue_size
- == 0 ||Ötable.stride_queue_size == 1){
-
-379 if(
-hópify_up
-){
-
-380 
-	`°ride_queue_hópify_down
-(
-°ride_idx
-);
-
-382 
-	`°ride_queue_hópify_up
-(
-°ride_idx
-);
-
-388 
-	`wakeup1
-(
-¥oc
-->
-∑ª¡
-);
-
-391 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++){
-
-392 if(
-p
-->
-∑ª¡
- =
-¥oc
-){
-
-393 
-p
-->
-∑ª¡
- = 
-öô¥oc
-;
-
-394 if(
-p
-->
-°©e
- =
-ZOMBIE
-) {
-
-395 
-	`wakeup1
-(
-öô¥oc
-);
-
-401 
-¥oc
-->
-°©e
- = 
-ZOMBIE
-;
-
-402 
-	`sched
-();
-
-403 
-	`∑nic
-("zombieÉxit");
-
-404 
-	}
-}
-
-409 
-	$waô
-()
-
-411 
-¥oc
- *
-p
-;
-
-412 
-havekids
-, 
-pid
-;
-
-414 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-417 
-havekids
- = 0;
-
-418 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++){
-
-419 if(
-p
-->
-∑ª¡
- !
-¥oc
-)
-
-421 
-havekids
- = 1;
-
-422 if(
-p
-->
-°©e
- =
-ZOMBIE
-){
-
-424 
-pid
- = 
-p
-->pid;
-
-425 
-	`k‰ì
-(
-p
-->
-k°ack
-);
-
-426 
-p
-->
-k°ack
- = 0;
-
-428 i‡(
-p
-->
-thªad_cou¡
- == 0) {
-
-429 
-	`‰ìvm
-(
-p
-->
-pgdú
-);
-
-432 
-p
-->
-pid
- = 0;
-
-433 
-p
-->
-∑ª¡
- = 0;
-
-434 
-p
-->
-«me
-[0] = 0;
-
-435 
-p
-->
-kûÀd
- = 0;
-
-438 
-p
-->
-tick_u£d
- = 0;
-
-439 
-p
-->
-time_qu™tum_u£d
-= 0;
-
-440 
-p
-->
-Àvñ_of_MLFQ
- = 0;
-
-441 
-p
-->
-˝u_sh¨e
- = 0;
-
-442 
-p
-->
-°ride
- = 0;
-
-443 
-p
-->
-°ride_cou¡
-= 0;
-
-445 i‡(
-p
-->
-pgdú_cou¡_idx
- !-1 && 
-pgdú_cou¡
-[p->pgdir_count_idx] != 0) {
-
-446 
-	`acquúe
-(&
-thªad_lock
-);
-
-447 
-pgdú_cou¡
-[
-p
-->
-pgdú_cou¡_idx
-]--;
-
-448 
-	`ªÀa£
-(&
-thªad_lock
-);
-
-451 
-p
-->
-tid
- = 0;
-
-452 
-p
-->
-thªad_cou¡
- = 0;
-
-453 
-p
-->
-pgdú_cou¡_idx
- = -1;
-
-455 
-p
-->
-°©e
- = 
-UNUSED
-;
-
-456 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-457  
-pid
-;
-
-462 if(!
-havekids
- || 
-¥oc
-->
-kûÀd
-){
-
-463 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-468 
-	`¶ìp
-(
-¥oc
-, &
-±abÀ
-.
-lock
-);
-
-470 
-	}
-}
-
-472 
-	$°ride_queue_hópify_up
-(
-°ride_idx
-)
-
-474 
-¥oc
-* 
-èrgë_¥oc
- = 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-];
-
-475 
-°ride_idx
- != 1){
-
-477 if(
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] <Ötable.stride_queue[stride_idx / 2]){
-
-478 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] =Ötable.stride_queue[stride_idx / 2];
-
-479 
-°ride_idx
- /= 2;
-
-487 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] = 
-èrgë_¥oc
-;
-
-489 
-	}
-}
-
-492 
-	$°ride_queue_hópify_down
-(
-°ride_idx
-)
-
-494 
-¥oc
-* 
-p
- = 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-];
-
-496 
-°ride_idx
- * 2 < 
-NPROC
-
-
-497 && 
-°ride_idx
- <
-±abÀ
-.
-°ride_queue_size
-){
-
-498 if(
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- * 2]
-
-499 && 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- * 2 + 1]){
-
-503 
-°ride_idx
- = 
-±abÀ
-.
-°ride_queue
-[°ride_idx * 2]->
-°ride_cou¡
-
-
-504 < 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- * 2 + 1]->
-°ride_cou¡
-
-
-505 ? 
-°ride_idx
- * 2 : stride_idx * 2 + 1;
-
-508 if(
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-]->
-°ride_cou¡
- < 
-p
-->stride_count){
-
-509 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- / 2] =Ötable.stride_queue[stride_idx];
-
-511 
-°ride_idx
- /= 2;
-
-516 }if(
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- * 2]){
-
-518 
-°ride_idx
- *= 2;
-
-520 if(
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-]->
-°ride_cou¡
- < 
-p
-->stride_count){
-
-521 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- / 2] =Ötable.stride_queue[stride_idx];
-
-523 
-°ride_idx
- /= 2;
-
-534 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] = 
-p
-;
-
-536 
-	}
-}
-
-539 
-	$föd_idx_of_°ride_to_run
-()
-
-541 
-¥oc
-* 
-¥oc_to_be_run
-;
-
-542 
-i
-;
-
-545 
-°ride_föd_idx
- = 1;
-
-546 
-°ride_föd_idx
- <
-±abÀ
-.
-°ride_queue_size
-){
-
-547 if(
-±abÀ
-.
-°ride_queue
-[
-°ride_föd_idx
-]->
-°©e
- =
-RUNNABLE
-){
-
-550 
-¥oc_to_be_run
- = 
-±abÀ
-.
-°ride_queue
-[
-°ride_föd_idx
-];
-
-551 
-¥oc_to_be_run
-->
-°ride_cou¡
- +¥oc_to_be_run->
-°ride
-;
-
-552 
-	`°ride_queue_hópify_down
-(
-°ride_föd_idx
-);
-
-559 
-À·_chûd
- = 
-°ride_föd_idx
- * 2;
-
-560 
-right_chûd
- = 
-°ride_föd_idx
- * 2 + 1;
-
-561 íum {
-NO_CHILD
-, 
-LEFT_ONLY
-, 
-BOTH
-} 
-chûd_°©us
-;
-
-563 if(
-right_chûd
- <
-±abÀ
-.
-°ride_queue_size
-){
-
-564 
-chûd_°©us
- = 
-BOTH
-;
-
-565 }if(
-À·_chûd
- > 
-±abÀ
-.
-°ride_queue_size
-){
-
-566 
-chûd_°©us
- = 
-NO_CHILD
-;
-
-568 
-chûd_°©us
- = 
-LEFT_ONLY
-;
-
-572 
-chûd_°©us
-){
-
-573 
-BOTH
-:
-
-575 if(
-±abÀ
-.
-°ride_queue
-[
-À·_chûd
-]->
-°ride_cou¡
-
-
-576 < 
-±abÀ
-.
-°ride_queue
-[
-right_chûd
-]->
-°ride_cou¡
-){
-
-578 
-°ride_föd_idx
- = 
-À·_chûd
-;
-
-581 
-°ride_föd_idx
- = 
-right_chûd
-;
-
-585 
-LEFT_ONLY
-:
-
-587 
-°ride_föd_idx
- = 
-À·_chûd
-;
-
-590 
-NO_CHILD
-:
-
-593 
-°ride_föd_idx
- = 
-±abÀ
-.
-°ride_queue_size
- + 1;
-
-596 
-	`∑nic
-("error in find_idx_of_stride_to_run().");
-
-603 if(
-°ride_föd_idx
- >
-±abÀ
-.
-°ride_queue_size
- + 1){
-
-604 
-i
- = 1; i <
-±abÀ
-.
-°ride_queue_size
-; ++i){
-
-605 if(
-±abÀ
-.
-°ride_queue
-[
-i
-]->
-°©e
- =
-RUNNABLE
-){
-
-606 
-°ride_föd_idx
- = 
-i
-;
-
-616  
-°ride_föd_idx
-;
-
-617 
-	}
-}
-
-620 
-	$£À˘_°ride_‹_MLFQ
-()
-
-622 
-ønd°©e
- = 1;
-
-623 
-queue_£À˘‹
-;
-
-624 
-ønd°©e
- =Ñandstate * 1664525 + 1013904223;
-
-625 
-queue_£À˘‹
- = 
-ønd°©e
- % 100;
-
-627 if(
-queue_£À˘‹
- < 
-±abÀ
-.
-sum_˝u_sh¨e
-){
-
-634 
-	}
-}
-
-645 
-	$scheduÀr
-()
-
-647 
-¥oc
- *
-p
-;
-
-650 
-choosög_°ride_‹_MLFQ
-;
-
-651 
-°ride_is_£À˘ed
- = 0;
-
-655 
-	`°i
-();
-
-658 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-661 
-choosög_°ride_‹_MLFQ
- = 1;
-
-664 
-±abÀ
-.
-queue_Àvñ_©_mo°
- = 
-NMLFQ
- - 1;
-
-665 
-±abÀ
-.
-queue_Àvñ_©_mo°
- < 
-NMLFQ
-){
-
-668 
-±abÀ
-.
-mö_of_run_¥oc_Àvñ
- = 
-NMLFQ
- - 1;
-
-670 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++){
-
-672 if(
-±abÀ
-.
-sum_˝u_sh¨e
- == 0){
-
-674 
-°ride_is_£À˘ed
- = 0;
-
-675 
-choosög_°ride_‹_MLFQ
- = 0;
-
-676 }if(
-choosög_°ride_‹_MLFQ
-){
-
-679 
-°ride_is_£À˘ed
- = 
-	`£À˘_°ride_‹_MLFQ
-();
-
-686 if(
-°ride_is_£À˘ed
-){
-
-689 
-°ride_idx_to_be_run
-;
-
-691 
-°ride_idx_to_be_run
- = 
-	`föd_idx_of_°ride_to_run
-();
-
-694 if(
-°ride_idx_to_be_run
- <
-±abÀ
-.
-°ride_queue_size
-){
-
-696 
-p
- = 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx_to_be_run
-];
-
-699 
-°ride_is_£À˘ed
- = 0;
-
-700 
-choosög_°ride_‹_MLFQ
- = 0;
-
-709 if(
-p
-->
-°©e
- =
-RUNNABLE
-
-
-710 && 
-p
-->
-˝u_sh¨e
- == 0
-
-711 && 
-p
-->
-Àvñ_of_MLFQ
- <
-±abÀ
-.
-queue_Àvñ_©_mo°
-){
-
-714 
-±abÀ
-.
-queue_Àvñ_©_mo°
- = 
-p
-->
-Àvñ_of_MLFQ
- <Ötable.queue_level_at_most ?Ö->level_of_MLFQ :Ötable.queue_level_at_most;
-
-715 
-±abÀ
-.
-mö_of_run_¥oc_Àvñ
- =ÖèbÀ.
-queue_Àvñ_©_mo°
-;
-
-719 
-choosög_°ride_‹_MLFQ
- = 0;
-
-727 
-¥oc
-* 
-p_mlfq
- = 
-p
-;
-
-730 
-bef‹e_MLFQ_u£d_tick
-;
-
-736 #ifde‡
-STRIDE_DEBUGGING
-
-
-738 
-	`˝rötf
-("ContChange. ");
-
-739 
-	`˝rötf
-("°ride_is_£À˘ed:%d, ", 
-°ride_is_£À˘ed
-);
-
-740 
-	`˝rötf
-("¥oc_«me:%s, ", 
-p
-->
-«me
-);
-
-741 
-	`˝rötf
-("¥oc_id:%d, ", 
-p
-->
-pid
-);
-
-742 
-	`˝rötf
-("thªad_id:%d, ", 
-p
-->
-tid
-);
-
-743 
-	`˝rötf
-("MLFQ_tick:%d, ", 
-±abÀ
-.
-MLFQ_tick_u£d
-,
-p
-->
-Àvñ_of_MLFQ
-);
-
-744 
-	`˝rötf
-("Àvñ:%d, ", 
-p
-->
-Àvñ_of_MLFQ
-);
-
-745 
-	`˝rötf
-("°ride_tick:%d, ", 
-±abÀ
-.
-°ride_tick_u£d
-);
-
-746 
-	`˝rötf
-("˝u_sh¨e:%d, ", 
-p
-->
-˝u_sh¨e
-);
-
-747 
-	`˝rötf
-("sum_˝u_sh¨e: %d, ", 
-±abÀ
-.
-sum_˝u_sh¨e
-);
-
-748 
-	`˝rötf
-("°ride:%d, ", 
-p
-->
-°ride
-);
-
-749 
-	`˝rötf
-("°ride_cou¡:%d\n", 
-p
-->
-°ride_cou¡
-);
-
-752 
-¥oc
- = 
-p
-;
-
-753 
-	`swôchuvm
-(
-p
-);
-
-754 
-p
-->
-°©e
- = 
-RUNNING
-;
-
-758 
-bef‹e_MLFQ_u£d_tick
- = 
-±abÀ
-.
-MLFQ_tick_u£d
-;
-
-760 
-	`swtch
-(&
-˝u
-->
-scheduÀr
-, 
-p
-->
-c⁄ãxt
-);
-
-761 
-	`swôchkvm
-();
-
-770 if(
-°ride_is_£À˘ed
- == 0
-
-771 && 
-±abÀ
-.
-sum_˝u_sh¨e
- != 0
-
-772 && 
-p
-->
-°©e
- =
-RUNNABLE
-
-
-773 && 
-p
-->
-˝u_sh¨e
- == 0
-
-774 && 
-±abÀ
-.
-MLFQ_tick_u£d
- =
-bef‹e_MLFQ_u£d_tick
-)
-
-781 
-choosög_°ride_‹_MLFQ
- = 0;
-
-785 
-p
---;
-
-787 
-choosög_°ride_‹_MLFQ
- = 1;
-
-791 i‡(
-¥oc
-->
-tid
- &&Öroc->
-°©e
- =
-ZOMBIE
-) {
-
-792 
-	`k‰ì
-(
-¥oc
-->
-k°ack
-);
-
-793 
-¥oc
-->
-k°ack
- = 0;
-
-795 
-¥oc
-->
-pid
- = 0;
-
-796 
-¥oc
-->
-∑ª¡
- = 0;
-
-797 
-¥oc
-->
-«me
-[0] = 0;
-
-798 
-¥oc
-->
-kûÀd
- = 0;
-
-801 
-¥oc
-->
-tick_u£d
- = 0;
-
-802 
-¥oc
-->
-time_qu™tum_u£d
-= 0;
-
-803 
-¥oc
-->
-Àvñ_of_MLFQ
- = 0;
-
-804 
-¥oc
-->
-˝u_sh¨e
- = 0;
-
-805 
-¥oc
-->
-°ride
- = 0;
-
-806 
-¥oc
-->
-°ride_cou¡
-= 0;
-
-808 i‡(
-¥oc
-->
-pgdú_cou¡_idx
- !-1 && 
-pgdú_cou¡
-[proc->pgdir_count_idx] != 0) {
-
-809 
-	`acquúe
-(&
-thªad_lock
-);
-
-810 
-pgdú_cou¡
-[
-¥oc
-->
-pgdú_cou¡_idx
-]--;
-
-811 
-	`ªÀa£
-(&
-thªad_lock
-);
-
-814 
-¥oc
-->
-tid
- = 0;
-
-815 
-¥oc
-->
-thªad_cou¡
- = 0;
-
-816 
-¥oc
-->
-pgdú_cou¡_idx
- = -1;
-
-818 
-¥oc
-->
-°©e
- = 
-UNUSED
-;
-
-820 
-¥oc
- = 0;
-
-822 if(
-°ride_is_£À˘ed
-){
-
-825 
-p
- = 
-p_mlfq
-;
-
-826 
-p
---;
-
-830 if(
-±abÀ
-.
-mö_of_run_¥oc_Àvñ
- =
-NMLFQ
- - 1) {
-
-833 
-±abÀ
-.
-queue_Àvñ_©_mo°
-++;
-
-838 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-840 
-	}
-}
-
-850 
-	$sched
-()
-
-852 
-öã«
-;
-
-854 if(!
-	`hﬁdög
-(&
-±abÀ
-.
-lock
-))
-
-855 
-	`∑nic
-("schedÖtable.lock");
-
-856 if(
-˝u
-->
-n˛i
- != 1)
-
-857 
-	`∑nic
-("schedÜocks");
-
-858 if(
-¥oc
-->
-°©e
- =
-RUNNING
-)
-
-859 
-	`∑nic
-("schedÑunning");
-
-860 if(
-	`ªadeÊags
-()&
-FL_IF
-)
-
-861 
-	`∑nic
-("sched interruptible");
-
-863 
-öã«
- = 
-˝u
-->intena;
-
-864 
-	`swtch
-(&
-¥oc
-->
-c⁄ãxt
-, 
-˝u
-->
-scheduÀr
-);
-
-868 if(
-¥oc
-){
-
-869 
-¥oc
-->
-time_qu™tum_u£d
- = 0;
-
-872 
-˝u
-->
-öã«
- = intena;
-
-873 
-	}
-}
-
-877 
-	$yõld
-()
-
-879 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-880 
-¥oc
-->
-°©e
- = 
-RUNNABLE
-;
-
-881 
-	`sched
-();
-
-882 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-883 
-	}
-}
-
-886 
-	$sys_yõld
-(){
-
-887 
-	`yõld
-();
-
-889 
-	}
-}
-
-894 
-	$f‹kªt
-()
-
-896 
-fú°
- = 1;
-
-898 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-900 if(
-fú°
-){
-
-904 
-fú°
- = 0;
-
-905 
-	`iöô
-(
-ROOTDEV
-);
-
-906 
-	`öôlog
-(
-ROOTDEV
-);
-
-910 
-	}
-}
-
-915 
-	$¶ìp
-(*
-ch™
-, 
-•ölock
- *
-lk
-)
-
-917 if(
-¥oc
- == 0)
-
-918 
-	`∑nic
-("sleep");
-
-920 if(
-lk
- == 0)
-
-921 
-	`∑nic
-("sleep withoutÜk");
-
-929 if(
-lk
- !&
-±abÀ
-.
-lock
-){
-
-930 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-931 
-	`ªÀa£
-(
-lk
-);
-
-935 
-¥oc
-->
-ch™
- = chan;
-
-936 
-¥oc
-->
-°©e
- = 
-SLEEPING
-;
-
-937 
-	`sched
-();
-
-940 
-¥oc
-->
-ch™
- = 0;
-
-943 if(
-lk
- !&
-±abÀ
-.
-lock
-){
-
-944 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-945 
-	`acquúe
-(
-lk
-);
-
-947 
-	}
-}
-
-953 
-	$wakeup1
-(*
-ch™
-)
-
-955 
-¥oc
- *
-p
-;
-
-957 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++)
-
-958 if(
-p
-->
-°©e
- =
-SLEEPING
- &&Ö->
-ch™
- == chan)
-
-959 
-p
-->
-°©e
- = 
-RUNNABLE
-;
-
-960 
-	}
-}
-
-964 
-	$wakeup
-(*
-ch™
-)
-
-966 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-967 
-	`wakeup1
-(
-ch™
-);
-
-968 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-969 
-	}
-}
-
-975 
-	$kûl
-(
-pid
-)
-
-977 
-¥oc
- *
-p
-;
-
-979 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-980 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++){
-
-981 if(
-p
-->
-pid
- ==Öid){
-
-982 
-p
-->
-kûÀd
- = 1;
-
-984 if(
-p
-->
-°©e
- =
-SLEEPING
-)
-
-985 
-p
-->
-°©e
- = 
-RUNNABLE
-;
-
-986 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-990 
-	`ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-992 
-	}
-}
-
-999 
-	$¥ocdump
-()
-
-1001 *
-°©es
-[] = {
-
-1002 [
-UNUSED
-] "unused",
-
-1003 [
-EMBRYO
-] "embryo",
-
-1004 [
-SLEEPING
-] "sleep ",
-
-1005 [
-RUNNABLE
-] "runble",
-
-1006 [
-RUNNING
-] "run ",
-
-1007 [
-ZOMBIE
-] "zombie"
-
-1009 
-i
-;
-
-1010 
-¥oc
- *
-p
-;
-
-1011 *
-°©e
-;
-
-1012 
-uöt
- 
-pc
-[10];
-
-1014 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++){
-
-1015 if(
-p
-->
-°©e
- =
-UNUSED
-)
-
-1017 if(
-p
-->
-°©e
- >0 &&Ö->°©ê< 
-	`NELEM
-(
-°©es
-) && states[p->state])
-
-1018 
-°©e
- = 
-°©es
-[
-p
-->state];
-
-1020 
-°©e
- = "???";
-
-1021 
-	`˝rötf
-("%d %†%s", 
-p
-->
-pid
-, 
-°©e
-,Ö->
-«me
-);
-
-1022 if(
-p
-->
-°©e
- =
-SLEEPING
-){
-
-1023 
-	`gëˇŒîpcs
-((
-uöt
-*)
-p
-->
-c⁄ãxt
-->
-ebp
-+2, 
-pc
-);
-
-1024 
-i
-=0; i<10 && 
-pc
-[i] != 0; i++)
-
-1025 
-	`˝rötf
-(" %p", 
-pc
-[
-i
-]);
-
-1027 
-	`˝rötf
-("\n");
-
-1029 
-	}
-}
-
-1033 
-	$¥i‹ôy_boo°
-(){
-
-1034 
-¥oc
- *
-p
-;
-
-1036 
-	`˝rötf
-("[do boosting!]\n");
-
-1038 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++){
-
-1039 
-p
-->
-Àvñ_of_MLFQ
- = 0;
-
-1040 
-p
-->
-tick_u£d
- = 0;
-
-1043 
-p
-->
-time_qu™tum_u£d
- = 0;
-
-1046 
-±abÀ
-.
-MLFQ_tick_u£d
- = 0;
-
-1048 
-	}
-}
-
-1052 
-	$£t_˝u_sh¨e
-(
-ªquúed
-)
-
-1054 
-˝u_sh¨e_Æªady_£t
-;
-
-1055 
-desúed_sum_˝u_sh¨e
-;
-
-1056 c⁄° 
-MIN_CPU_SHARE
- = 1;
-
-1057 c⁄° 
-MAX_CPU_SHARE
- = 80;
-
-1058 
-is_√w
-;
-
-1059 
-idx
-;
-
-1062 if–! (
-MIN_CPU_SHARE
- <
-ªquúed
- &&Ñequúed <
-MAX_CPU_SHARE
-) )
-
-1063 
-ex˚±i⁄
-;
-
-1066 
-˝u_sh¨e_Æªady_£t
- = 
-¥oc
-->
-˝u_sh¨e
-;
-
-1067 if(
-˝u_sh¨e_Æªady_£t
- == 0){
-
-1068 
-is_√w
- = 1;
-
-1070 
-is_√w
- = 0;
-
-1073 
-desúed_sum_˝u_sh¨e
- = 
-±abÀ
-.
-sum_˝u_sh¨e
- - 
-˝u_sh¨e_Æªady_£t
- + 
-ªquúed
-;
-
-1075 if(
-desúed_sum_˝u_sh¨e
- > 
-MAX_CPU_SHARE
- )
-
-1076 
-ex˚±i⁄
-;
-
-1079 
-±abÀ
-.
-sum_˝u_sh¨e
- = 
-desúed_sum_˝u_sh¨e
-;
-
-1080 
-¥oc
-->
-˝u_sh¨e
- = 
-ªquúed
-;
-
-1081 
-¥oc
-->
-°ride
- = 
-NSTRIDE
- / 
-ªquúed
-;
-
-1083 if(
-is_√w
-){
-
-1088 if(
-±abÀ
-.
-°ride_queue
-[1]){
-
-1089 
-¥oc
-->
-°ride_cou¡
- = 
-±abÀ
-.
-°ride_queue
-[1]->stride_count;
-
-1093 
-idx
- = ++
-±abÀ
-.
-°ride_queue_size
-;
-
-1094 
-idx
- != 1){
-
-1095 
-±abÀ
-.
-°ride_queue
-[
-idx
-] =Ötable.stride_queue[idx/2];
-
-1096 
-idx
- /= 2;
-
-1098 
-±abÀ
-.
-°ride_queue
-[
-idx
-] = 
-¥oc
-;
-
-1105 
-ex˚±i⁄
-:
-
-1107 
-	}
-}
-
-1110 
-	$sys_£t_˝u_sh¨e
-()
-
-1112 
-ªquúed
-;
-
-1115 if(
-	`¨göt
-(0, &
-ªquúed
-) < 0){
-
-1119  
-	`£t_˝u_sh¨e
-(
-ªquúed
-);
-
-1120 
-	}
-}
-
-1123 
-thªad_¸óã
-(
-thªad_t
- * 
-thªad
-, * (*
-°¨t_routöe
-)(*), *
-¨g
-)
-
-1125 
-	gi
-, 
-	gpid
-;
-
-1126 
-¥oc
- *
-	g≈
-;
-
-1127 ** 
-	g¨g_±r
-;
-
-1128 
-	gsz
-;
-
-1130 
-	gpid
- = 0;
-
-1131 
-	gpid
-++;
-
-1136 if((
-	g≈
- = 
-Ælo˝roc
-()) == 0){
-
-1141 
-	g≈
-->
-	gpgdú
- = 
-¥oc
-->
-pgdú
-;
-
-1142 
-	g≈
-->
-	gpgdú_cou¡_idx
- = 
-¥oc
-->
-pgdú_cou¡_idx
-;
-
-1143 
-acquúe
-(&
-thªad_lock
-);
-
-1144 
-	gpgdú_cou¡
-[
-≈
-->
-pgdú_cou¡_idx
-]++;
-
-1145 
-ªÀa£
-(&
-thªad_lock
-);
-
-1148 
-	g≈
-->
-	gsz
- = 
-¥oc
-->
-sz
-;
-
-1149 
-	g≈
-->
-	g∑ª¡
- = 
-¥oc
-;
-
-1150 *
-	g≈
-->
-	gtf
- = *
-¥oc
-->
-tf
-;
-
-1151 
-	g≈
-->
-	gtf
-->
-	geù
- = (
-uöt
-)
-°¨t_routöe
-;
-
-1154 #ifde‡
-THREAD_DEBUGGING
-
-
-1155 
-˝rötf
-("k°ackádr: %x\n", 
-≈
-->
-k°ack
-);
-
-1162 
-	gsz
- = 
-≈
-->
-sz
-;
-
-1163 
-	gsz
- = 
-PGROUNDUP
-(
-sz
-);
-
-1164 if((
-	gsz
- = 
-Ælocuvm
-(
-≈
-->
-pgdú
-, 
-sz
-, sz + 2*
-PGSIZE
-)) == 0) {
-
-1167 
-˛óΩãu
-(
-≈
-->
-pgdú
-, (*)(
-sz
- - 2*
-PGSIZE
-));
-
-1170 
-	g≈
-->
-	gsz
- = 
-sz
-;
-
-1171 
-acquúe
-(&
-thªad_lock
-);
-
-1172 
-	g¥oc
-->
-	gsz
- = 
-sz
-;
-
-1173 
-ªÀa£
-(&
-thªad_lock
-);
-
-1180 
-	g≈
-->
-	gtf
-->
-	ge•
- = 
-sz
- - 8;
-
-1182 
-	g¨g_±r
- = (**)(
-≈
-->
-tf
-->
-e•
-);
-
-1183 *
-	g¨g_±r
- = (*)0xFFFFFFFF;
-
-1185 
-	g¨g_±r
- = (**)(
-≈
-->
-tf
-->
-e•
- + 4);
-
-1186 *
-	g¨g_±r
- = 
-¨g
-;
-
-1190 
-	g≈
-->
-	gtf
-->
-	góx
- = 0;
-
-1192 
-	gi
- = 0; i < 
-	gNOFILE
-; i++)
-
-1193 if(
-	g¥oc
-->
-	gofûe
-[
-i
-])
-
-1194 
-	g≈
-->
-	gofûe
-[
-i
-] = 
-fûedup
-(
-¥oc
-->
-ofûe
-[i]);
-
-1195 
-	g≈
-->
-	gcwd
- = 
-idup
-(
-¥oc
-->
-cwd
-);
-
-1197 
-ß„°r˝y
-(
-≈
-->
-«me
-, 
-¥oc
-->name, (proc->name));
-
-1199 
-	g≈
-->
-	gpid
- = 
-¥oc
-->
-pid
-;
-
-1200 
-	gpid
- = 
-≈
-->
-pid
-;
-
-1202 
-	g≈
-->
-	gtid
- = 
-√xt_thªad_id
-++;
-
-1203 *
-	gthªad
- = 
-≈
-->
-tid
-;
-
-1205 
-acquúe
-(&
-±abÀ
-.
-lock
-);
-
-1207 
-	g¥oc
-->
-	gthªad_cou¡
-++;
-
-1208 
-	g≈
-->
-	g°©e
- = 
-RUNNABLE
-;
-
-1212 
-ªÀa£
-(&
-±abÀ
-.
-lock
-);
-
-1214 #ifde‡
-THREAD_DEBUGGING
-
-
-1215 
-˝rötf
-("pgdú_cou¡_idx: %d,Ögdú_cou¡[]: %d,Åhªad_cou¡:%d\n", 
-≈
-->
-pgdú_cou¡_idx
-, 
-pgdú_cou¡
-[≈->pgdú_cou¡_idx], 
-¥oc
-->
-thªad_cou¡
-);
-
-1223 
-	$sys_thªad_¸óã
-()
-
-1225 
-thªad_t
- * 
-thªad
-;
-
-1226 * (*
-°¨t_routöe
-)(*);
-
-1227 * 
-¨g
-;
-
-1229 if(
-	`¨g±r
-(0, (**)&
-thªad
-, (thread)) < 0){
-
-1232 if(
-	`¨g±r
-(1, (**)&
-°¨t_routöe
-, (start_routine)) < 0){
-
-1235 if(
-	`¨g±r
-(2, (**)&
-¨g
-, (arg)) < 0){
-
-1239  
-	`thªad_¸óã
-(
-thªad
-, 
-°¨t_routöe
-, 
-¨g
-);
-
-1240 
-	}
-}
-
-1245 
-	$thªad_exô
-(*
-ªtvÆ
-)
-
-1248 
-°ride_idx
-;
-
-1250 if(
-¥oc
- =
-öô¥oc
-)
-
-1251 
-	`∑nic
-("initÅhread_exiting");
-
-1253 
-¥oc
-->
-cwd
- = 0;
-
-1255 
-	`acquúe
-(&
-±abÀ
-.
-lock
-);
-
-1258 if(
-¥oc
-->
-˝u_sh¨e
- != 0){
-
-1259 
-hópify_up
-;
-
-1261 #ifde‡
-MJ_DEBUGGING
-
-
-1262 
-	`˝rötf
-("stirde_queueÖrocessÅhread_exit()\n");
-
-1266 
-±abÀ
-.
-sum_˝u_sh¨e
- -
-¥oc
-->
-˝u_sh¨e
-;
-
-1269 
-°ride_idx
- = 1; såide_idx < 
-NSTRIDE_QUEUE
-; ++stride_idx){
-
-1270 if(
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] =
-¥oc
-){
-
-1275 if(
-°ride_idx
- =
-NSTRIDE_QUEUE
-){
-
-1276 
-	`∑nic
-("thread_exit():áÖrocess isÇot inÅhe stride scheduler");
-
-1280 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-] =ÖèbÀ.°ride_queue[±abÀ.
-°ride_queue_size
-];
-
-1281 
-±abÀ
-.
-°ride_queue
-[±abÀ.
-°ride_queue_size
---] = 0;
-
-1284 if(
-°ride_idx
- == 1){
-
-1286 
-hópify_up
- = 0;
-
-1289 
-hópify_up
- = 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
-]->
-°ride_cou¡
-
-
-1290 < 
-±abÀ
-.
-°ride_queue
-[
-°ride_idx
- / 2]->
-°ride_cou¡
-
-
-1294 if(
-±abÀ
-.
-°ride_queue_size
- == 0 ||Ötable.stride_queue_size == 1){
-
-1298 if(
-hópify_up
-){
-
-1299 
-	`°ride_queue_hópify_down
-(
-°ride_idx
-);
-
-1301 
-	`°ride_queue_hópify_up
-(
-°ride_idx
-);
-
-1307 
-	`wakeup1
-(
-¥oc
-->
-∑ª¡
-);
-
-1320 
-¥oc
-->
-°©e
- = 
-ZOMBIE
-;
-
-1325 
-¥oc
-->
-thªad_ªtu∫
- = ()
-ªtvÆ
-;
-
-1327 
-	`sched
-();
-
-1328 
-	`∑nic
-("zombieÉxit");
-
-1329 
-	}
-}
-
-1332 
-	$sys_thªad_exô
-()
-
-1334 *
-ªtvÆ
-;
-
-1335 if(
-	`¨g±r
-(0, (**)&
-ªtvÆ
-, (retval)) < 0){
-
-1339 
-	`thªad_exô
-(
-ªtvÆ
-);
-
-1341 
-	}
-}
-
-1344 
-	$thªad_joö
-(
-thªad_t
- 
-thªad
-, **
-ªtvÆ
-)
-
-1346 
-⁄e_is_îr‹
- = 1;
-
-1347 
-¥oc
- *
-p
-;
-
-1348 
-¥oc
- *
-¥oc_found
-;
-
-1349 
-¥oc_found
- = 0;
-
-1351 #ifde‡
-THREAD_DEBUGGING
-
-
-1352 
-	`˝rötf
-("—hªad_joöÈid:%d\n", 
-thªad
-);
-
-1355 
-p
- = 
-±abÀ
-.
-¥oc
-;Ö < &±abÀ.¥oc[
-NPROC
-];Ö++){
-
-1356 i‡(
-p
-->
-tid
- =
-thªad
-) {
-
-1357 
-¥oc_found
- = 
-p
-;
-
-1358 
-⁄e_is_îr‹
- = 0;
-
-1359 
-p
- = 
-±abÀ
-.
-¥oc
-;
-
-1360 
-p
---;
-
-1365 i‡(
-⁄e_is_îr‹
- == 0) {
-
-1366 #ifde‡
-THREAD_DEBUGGING
-
-
-1367 
-	`˝rötf
-("pid:%d,Åid:%d,Åhªad_addªss:%p,Åhªad_ªtu∫:%d\n",
-¥oc_found
-->
-pid
-,Öroc_found->
-tid
-,Öroc_found,Öroc_found->
-thªad_ªtu∫
-);
-
-1370 *
-ªtvÆ
- = (*)
-¥oc_found
-->
-thªad_ªtu∫
-;
-
-1371 
-¥oc_found
-->
-thªad_ªtu∫
- = 0;
-
-1373 *
-ªtvÆ
- = (*)-1;
-
-1376  
-⁄e_is_îr‹
-;
-
-1377 
-	}
-}
-
-1380 
-	$sys_thªad_joö
-()
-
-1382 
-thªad_t
- 
-thªad
-;
-
-1383 **
-ªtvÆ
-;
-
-1385 if(
-	`¨göt
-(0, (*)&
-thªad
-) < 0){
-
-1388 if(
-	`¨g±r
-(1, (**)&
-ªtvÆ
-, (retval)) < 0){
-
-1392  
-	`thªad_joö
-(
-thªad
-, 
-ªtvÆ
-);
-
-1393 
-	}
-}
 
 	@rm.c
 
@@ -35758,16 +32636,6 @@ addr
 n
 ;
 
-60 i‡(
-¥oc
-->
-tid
- != 0) {
-
-61 
-	`˝rötf
-("(sbrk) sbrk() is called ináÅhread. This isÇot yet implemented.\n");
-
 65 if(
 	`¨göt
 (0, &
@@ -40688,15 +37556,25 @@ eù
 	`r¸2
 ());
 
-113 
+114 
+	`˝rötf
+("ˇu£.Öroc:%∞—f->cs&3):%d\n", 
+¥oc
+, 
+tf
+->
+cs
+&3);
+
+117 
 	`∑nic
 ("trap");
 
-116 
+120 
 	`˝rötf
 ("pid %d %s:Årap %dÉrr %d on cpu %d "
 
-118 
+122 
 ¥oc
 ->
 pid
@@ -40714,17 +37592,17 @@ tf
 eù
 ,
 
-119 
+123 
 	`r¸2
 ());
 
-120 
+124 
 ¥oc
 ->
 kûÀd
  = 1;
 
-126 if(
+130 if(
 ¥oc
  &&Öroc->
 kûÀd
@@ -40736,27 +37614,27 @@ cs
 DPL_USER
 )
 
-127 
+131 
 	`exô
 ();
 
-135 if(
+139 if(
 	`gë_MLFQ_tick_u£d
 () >= 100){
 
-136 #ifde‡
+140 #ifde‡
 MJ_DEBUGGING
 
 
-137 
+141 
 	`˝rötf
 ("\n\n*** Priority Boost ***\n\n");
 
-139 
+143 
 	`¥i‹ôy_boo°
 ();
 
-143 if(
+147 if(
 ¥oc
  &&Öroc->
 °©e
@@ -40772,37 +37650,37 @@ T_IRQ0
 IRQ_TIMER
 ){
 
-145 
+149 
 ¥oc
 ->
 tick_u£d
 ++;
 
-146 
+150 
 ¥oc
 ->
 time_qu™tum_u£d
 ++;
 
-148 if(
+152 if(
 ¥oc
 ->
 ˝u_sh¨e
  == 0){
 
-149 
+153 
 	`ö¸ó£_MLFQ_tick_u£d
 ();
 
-151 
+155 
 	`ö¸ó£_°ride_tick_u£d
 ();
 
-154 #ifde‡
+158 #ifde‡
 MJ_DEBUGGING
 
 
-155 
+159 
 	`˝rötf
 ("\n\
  i¡îru± ha†bì¿occuªd. 'ticks' i†ö¸ó£d.\n\
@@ -40829,7 +37707,7 @@ tick_u£d
 time_qu™tum_u£d
 );
 
-166 if(
+170 if(
 ¥oc
 ->
 time_qu™tum_u£d
@@ -40837,27 +37715,27 @@ time_qu™tum_u£d
 	`gë_time_qu™tum
 ()){
 
-168 #ifde‡
+172 #ifde‡
 MJ_DEBUGGING
 
 
-169 
+173 
 	`˝rötf
 ("**********************************\n");
 
-170 
+174 
 	`˝rötf
 (" Full ofÅheÅime quantum\n");
 
-171 
+175 
 	`˝rötf
 (" Yield!\n");
 
-172 
+176 
 	`˝rötf
 ("**********************************\n");
 
-177 if(
+181 if(
 ¥oc
 ->
 Àvñ_of_MLFQ
@@ -40865,23 +37743,23 @@ MJ_DEBUGGING
 NMLFQ
  - 1){
 
-178 
+182 
 ¥oc
 ->
 Àvñ_of_MLFQ
 ++;
 
-182 
+186 
 ¥oc
 ->
 time_qu™tum_u£d
  = 0;
 
-183 
+187 
 	`yõld
 ();
 
-188 if(
+192 if(
 ¥oc
  &&Öroc->
 kûÀd
@@ -40893,11 +37771,11 @@ cs
 DPL_USER
 )
 
-189 
+193 
 	`exô
 ();
 
-190 
+194 
 	}
 }
 
@@ -57837,7 +54715,7 @@ mem
 PGSIZE
 );
 
-247 if(
+253 if(
 	`m≠∑ges
 (
 pgdú
@@ -57855,11 +54733,11 @@ PTE_W
 PTE_U
 ) < 0){
 
-248 
+254 
 	`˝rötf
 ("allocuvm out of memory (2)\n");
 
-249 
+255 
 	`dóŒocuvm
 (
 pgdú
@@ -57869,21 +54747,21 @@ pgdú
 ﬁdsz
 );
 
-250 
+256 
 	`k‰ì
 (
 mem
 );
 
-254  
+260  
 √wsz
 ;
 
-255 
+261 
 	}
 }
 
-262 
+268 
 	$dóŒocuvm
 (
 pde_t
@@ -57897,13 +54775,13 @@ uöt
 √wsz
 )
 
-264 
+270 
 ±e_t
  *
 ±e
 ;
 
-265 
+271 
 uöt
  
 a
@@ -57911,17 +54789,17 @@ a
 ∑
 ;
 
-267 if(
+273 if(
 √wsz
  >
 ﬁdsz
 )
 
-268  
+274  
 ﬁdsz
 ;
 
-270 
+276 
 a
  = 
 	`PGROUNDUP
@@ -57929,7 +54807,7 @@ a
 √wsz
 );
 
-271 ; 
+277 ; 
 a
  < 
 ﬁdsz
@@ -57937,7 +54815,7 @@ a
 PGSIZE
 ){
 
-272 
+278 
 ±e
  = 
 	`wÆkpgdú
@@ -57947,11 +54825,11 @@ pgdú
 a
 , 0);
 
-273 if(!
+279 if(!
 ±e
 )
 
-274 
+280 
 a
  = 
 	`PGADDR
@@ -57961,13 +54839,13 @@ a
 PGSIZE
 ;
 
-275 if((*
+281 if((*
 ±e
  & 
 PTE_P
 ) != 0){
 
-276 
+282 
 ∑
  = 
 	`PTE_ADDR
@@ -57975,15 +54853,15 @@ PTE_P
 ±e
 );
 
-277 if(
+283 if(
 ∑
  == 0)
 
-278 
+284 
 	`∑nic
 ("kfree");
 
-279 *
+285 *
 v
  = 
 	`P2V
@@ -57991,25 +54869,25 @@ v
 ∑
 );
 
-280 
+286 
 	`k‰ì
 (
 v
 );
 
-281 *
+287 *
 ±e
  = 0;
 
-284  
+290  
 √wsz
 ;
 
-285 
+291 
 	}
 }
 
-290 
+296 
 	$‰ìvm
 (
 pde_t
@@ -58017,21 +54895,21 @@ pde_t
 pgdú
 )
 
-292 
+298 
 uöt
  
 i
 ;
 
-294 if(
+300 if(
 pgdú
  == 0)
 
-295 
+301 
 	`∑nic
 ("freevm:ÇoÖgdir");
 
-296 
+302 
 	`dóŒocuvm
 (
 pgdú
@@ -58039,13 +54917,13 @@ pgdú
 KERNBASE
 , 0);
 
-297 
+303 
 i
  = 0; i < 
 NPDENTRIES
 ; i++){
 
-298 if(
+304 if(
 pgdú
 [
 i
@@ -58053,7 +54931,7 @@ i
 PTE_P
 ){
 
-299 * 
+305 * 
 v
  = 
 	`P2V
@@ -58065,23 +54943,23 @@ pgdú
 i
 ]));
 
-300 
+306 
 	`k‰ì
 (
 v
 );
 
-303 
+309 
 	`k‰ì
 ((*)
 pgdú
 );
 
-304 
+310 
 	}
 }
 
-309 
+315 
 	$˛óΩãu
 (
 pde_t
@@ -58091,13 +54969,13 @@ pgdú
 uva
 )
 
-311 
+317 
 ±e_t
  *
 ±e
 ;
 
-313 
+319 
 ±e
  = 
 	`wÆkpgdú
@@ -58107,29 +54985,29 @@ pgdú
 uva
 , 0);
 
-314 if(
+320 if(
 ±e
  == 0)
 
-315 
+321 
 	`∑nic
 ("clearpteu");
 
-316 *
+322 *
 ±e
  &~
 PTE_U
 ;
 
-317 
+323 
 	}
 }
 
-321 
+327 
 pde_t
 *
 
-322 
+328 
 	$c›yuvm
 (
 pde_t
@@ -58141,19 +55019,19 @@ uöt
 sz
 )
 
-324 
+330 
 pde_t
  *
 d
 ;
 
-325 
+331 
 ±e_t
  *
 ±e
 ;
 
-326 
+332 
 uöt
  
 ∑
@@ -58163,17 +55041,17 @@ i
 Êags
 ;
 
-327 *
+333 *
 mem
 ;
 
-329 if((
+335 if((
 d
  = 
 	`£tupkvm
 ()) == 0)
 
-331 
+337 
 i
  = 0; i < 
 sz
@@ -58181,7 +55059,7 @@ sz
 PGSIZE
 ){
 
-332 if((
+338 if((
 ±e
  = 
 	`wÆkpgdú
@@ -58191,21 +55069,21 @@ pgdú
 i
 , 0)) == 0)
 
-333 
+339 
 	`∑nic
 ("copyuvm:Öte shouldÉxist");
 
-334 if(!(*
+340 if(!(*
 ±e
  & 
 PTE_P
 ))
 
-335 
+341 
 	`∑nic
 ("copyuvm:ÖageÇotÖresent");
 
-336 
+342 
 ∑
  = 
 	`PTE_ADDR
@@ -58213,7 +55091,7 @@ PTE_P
 ±e
 );
 
-337 
+343 
 Êags
  = 
 	`PTE_FLAGS
@@ -58221,17 +55099,17 @@ PTE_P
 ±e
 );
 
-338 if((
+344 if((
 mem
  = 
 	`kÆloc
 ()) == 0)
 
-339 
+345 
 bad
 ;
 
-340 
+346 
 	`memmove
 (
 mem
@@ -58243,7 +55121,7 @@ mem
 PGSIZE
 );
 
-341 if(
+347 if(
 	`m≠∑ges
 (
 d
@@ -58259,29 +55137,29 @@ mem
 Êags
 ) < 0)
 
-342 
+348 
 bad
 ;
 
-344  
+350  
 d
 ;
 
-346 
+352 
 bad
 :
 
-347 
+353 
 	`‰ìvm
 (
 d
 );
 
-349 
+355 
 	}
 }
 
-354 
+360 
 	$uva2ka
 (
 pde_t
@@ -58291,13 +55169,13 @@ pgdú
 uva
 )
 
-356 
+362 
 ±e_t
  *
 ±e
 ;
 
-358 
+364 
 ±e
  = 
 	`wÆkpgdú
@@ -58307,19 +55185,19 @@ pgdú
 uva
 , 0);
 
-359 if((*
+365 if((*
 ±e
  & 
 PTE_P
 ) == 0)
 
-361 if((*
+367 if((*
 ±e
  & 
 PTE_U
 ) == 0)
 
-363  (*)
+369  (*)
 	`P2V
 (
 	`PTE_ADDR
@@ -58327,11 +55205,11 @@ PTE_U
 ±e
 ));
 
-364 
+370 
 	}
 }
 
-370 
+376 
 	$c›yout
 (
 pde_t
@@ -58347,13 +55225,13 @@ p
 Àn
 )
 
-372 *
+378 *
 buf
 , *
 ∑0
 ;
 
-373 
+379 
 uöt
  
 n
@@ -58361,17 +55239,17 @@ n
 va0
 ;
 
-375 
+381 
 buf
  = (*)
 p
 ;
 
-376 
+382 
 Àn
  > 0){
 
-377 
+383 
 va0
  = (
 uöt
@@ -58381,7 +55259,7 @@ uöt
 va
 );
 
-378 
+384 
 ∑0
  = 
 	`uva2ka
@@ -58391,11 +55269,11 @@ pgdú
 va0
 );
 
-379 if(
+385 if(
 ∑0
  == 0)
 
-381 
+387 
 n
  = 
 PGSIZE
@@ -58405,19 +55283,19 @@ va
 va0
 );
 
-382 if(
+388 if(
 n
  > 
 Àn
 )
 
-383 
+389 
 n
  = 
 Àn
 ;
 
-384 
+390 
 	`memmove
 (
 ∑0
@@ -58431,19 +55309,19 @@ buf
 n
 );
 
-385 
+391 
 Àn
  -
 n
 ;
 
-386 
+392 
 buf
  +
 n
 ;
 
-387 
+393 
 va
  = 
 va0
@@ -58451,7 +55329,7 @@ va0
 PGSIZE
 ;
 
-390 
+396 
 	}
 }
 
@@ -59411,8 +56289,8 @@ ush‹t
 1
 .
 0
-95
-849
+94
+837
 asm.h
 bio.c
 bootasm.S
@@ -59465,7 +56343,6 @@ prac_syscall.c
 printf.c
 proc.c
 proc.h
-proc_temp.c
 rm.c
 sh.c
 sleeplock.c

@@ -7,6 +7,12 @@
 #include "proc.h"
 #include "spinlock.h"
 
+#ifdef TEMP_BUG
+int stride_queue_delete_is_execute = 0;
+int after_for_loop = 0;
+int in_find_idx = 0;
+#endif
+
 struct {
   struct spinlock lock;
 
@@ -498,9 +504,68 @@ void stride_queue_delete(struct proc* p) {
     panic("exit(): a process is not in the stride scheduler");
   }
 
+#ifdef TEMP_BUG
+  int i;
+  struct proc* pr;
+  int print_head = 1;
+  cprintf("(TEMP_BUG) in stride_queue_delete. before removing\n");
+  for (i = 1; i <= ptable.stride_queue_size + 10; ++i) {
+    cprintf("(TEMP_BUG) stride_queue[%d]:%p\n", i, ptable.stride_queue[i]);
+  }
+
+  for (pr = ptable.proc; pr < &ptable.proc[NPROC]; ++pr) {
+    if (pr->cpu_share > 0) {
+      if (print_head) {
+        cprintf("** This process or thread is in stride **\n");
+        print_head = 0;
+      }
+      cprintf("(TEMP_BUG) proc_name:%s, ", pr->name);
+      cprintf("proc_id:%d, ", pr->pid);
+      cprintf("proc_tid:%d, ", pr->tid);
+      cprintf("proc_state:%d, ", pr->state);
+      cprintf("original_cpu_share:%d, ", pr->original_cpu_share);
+      cprintf("cpu_share:%d, ", pr->cpu_share);
+      cprintf("sum_cpu_share: %d, ", ptable.sum_cpu_share);
+      cprintf("stride:%d, ", pr->stride);
+      cprintf("stride_count:%d\n", pr->stride_count);
+    }
+  }
+#endif
+
+
   // delete a process from the heap
   ptable.stride_queue[stride_idx] = ptable.stride_queue[ptable.stride_queue_size];
   ptable.stride_queue[ptable.stride_queue_size--] = 0;
+
+#ifdef TEMP_BUG
+  {
+    int i;
+    struct proc* pr;
+    int print_head = 1;
+    cprintf("(TEMP_BUG) in stride_queue_delete. after removing, before heapifying\n");
+    for (i = 1; i <= ptable.stride_queue_size + 10; ++i) {
+      cprintf("(TEMP_BUG) stride_queue[%d]:%p\n", i, ptable.stride_queue[i]);
+    }
+
+    for (pr = ptable.proc; pr < &ptable.proc[NPROC]; ++pr) {
+      if (pr->cpu_share > 0) {
+        if (print_head) {
+          cprintf("** This process or thread is in stride **\n");
+          print_head = 0;
+        }
+        cprintf("(TEMP_BUG) proc_name:%s, ", pr->name);
+        cprintf("proc_id:%d, ", pr->pid);
+        cprintf("proc_tid:%d, ", pr->tid);
+        cprintf("proc_state:%d, ", pr->state);
+        cprintf("original_cpu_share:%d, ", pr->original_cpu_share);
+        cprintf("cpu_share:%d, ", pr->cpu_share);
+        cprintf("sum_cpu_share: %d, ", ptable.sum_cpu_share);
+        cprintf("stride:%d, ", pr->stride);
+        cprintf("stride_count:%d\n", pr->stride_count);
+      }
+    }
+  }
+#endif
 
   // do heapify
   if(stride_idx == 1){
@@ -508,9 +573,18 @@ void stride_queue_delete(struct proc* p) {
     heapify_up = 0;
   }else{
     //select heapify_up or down
-    heapify_up = ptable.stride_queue[stride_idx]->stride_count 
+    
+    // Deleting laste element of heap dose not need heapifying.
+    // That is a corner case. In this case, ptable.stride_queue[stride_idx] == 0
+    // So null pointer refernce is occurred. 
+    if (stride_idx <= ptable.stride_queue_size && stride_idx != 1) {
+      heapify_up = ptable.stride_queue[stride_idx]->stride_count 
                  < ptable.stride_queue[stride_idx / 2]->stride_count 
                  ? 1 : 0;
+    } else {
+      // Here is a corner case which is mentioned above.
+      // Do nothing. Heapify is not needed.
+    }
   }
 
   if(ptable.stride_queue_size == 0 || ptable.stride_queue_size == 1){
@@ -523,6 +597,38 @@ void stride_queue_delete(struct proc* p) {
       stride_queue_heapify_up(stride_idx);
     }
   }
+
+
+#ifdef TEMP_BUG
+  {
+    int i;
+    struct proc* pr;
+    int print_head = 1;
+    cprintf("(TEMP_BUG) in stride_queue_delete. after heapifying\n");
+    for (i = 1; i <= ptable.stride_queue_size + 10; ++i) {
+      cprintf("(TEMP_BUG) stride_queue[%d]:%p\n", i, ptable.stride_queue[i]);
+    }
+
+    for (pr = ptable.proc; pr < &ptable.proc[NPROC]; ++pr) {
+      if (pr->cpu_share > 0) {
+        if (print_head) {
+          cprintf("** This process or thread is in stride **\n");
+          print_head = 0;
+        }
+        cprintf("(TEMP_BUG) proc_name:%s, ", pr->name);
+        cprintf("proc_id:%d, ", pr->pid);
+        cprintf("proc_tid:%d, ", pr->tid);
+        cprintf("proc_state:%d, ", pr->state);
+        cprintf("original_cpu_share:%d, ", pr->original_cpu_share);
+        cprintf("cpu_share:%d, ", pr->cpu_share);
+        cprintf("sum_cpu_share: %d, ", ptable.sum_cpu_share);
+        cprintf("stride:%d, ", pr->stride);
+        cprintf("stride_count:%d\n", pr->stride_count);
+      }
+    }
+  }
+#endif
+
 
 }
 
@@ -552,7 +658,9 @@ common_exit(struct proc* proc)
 
   // delete a process in stride queue
   if(proc->cpu_share != 0){
+    acquire(&thread_lock);
     stride_queue_delete(proc);
+    release(&thread_lock);
   }
 
   // Parent might be sleeping in wait().
@@ -879,7 +987,6 @@ stride_queue_heapify_up(int stride_idx)
   }
   // locate a process to right position
   ptable.stride_queue[stride_idx] = target_proc;
-
 }
 
 void
@@ -926,7 +1033,6 @@ stride_queue_heapify_down(int stride_idx)
   
   // current process' place
   ptable.stride_queue[stride_idx] = p;
-
 }
 
 int
@@ -965,6 +1071,37 @@ find_idx_of_stride_to_run(void)
       // Check children's existence.
       switch(child_status){
         case BOTH:
+#ifdef TEMP_BUG
+    if (in_find_idx) {
+      int i;
+      struct proc* p;
+      int print_head = 1;
+      cprintf("(TEMP_BUG) in find idx. stride is selected. BOTH. where is the panic point? child_status:%d\n", child_status);
+      cprintf("(TEMP_BUG) left_child:%p, right_child:%p\n", ptable.stride_queue[left_child], ptable.stride_queue[right_child]);
+      for (i = 1; i <= ptable.stride_queue_size + 10; ++i) {
+        cprintf("(TEMP_BUG) stride_queue[%d]:%p\n", i, ptable.stride_queue[i]);
+      }
+
+      for (p = ptable.proc; p < &ptable.proc[NPROC]; ++p) {
+        if (p->cpu_share > 0) {
+          if (print_head) {
+            cprintf("** This process or thread is in stride **\n");
+            print_head = 0;
+          }
+          cprintf("(TEMP_BUG) proc_name:%s, ", p->name);
+          cprintf("proc_id:%d, ", p->pid);
+          cprintf("proc_tid:%d, ", p->tid);
+          cprintf("proc_state:%d, ", p->state);
+          cprintf("original_cpu_share:%d, ", p->original_cpu_share);
+          cprintf("cpu_share:%d, ", p->cpu_share);
+          cprintf("sum_cpu_share: %d, ", ptable.sum_cpu_share);
+          cprintf("stride:%d, ", p->stride);
+          cprintf("stride_count:%d\n", p->stride_count);
+        }
+      }
+      
+    }
+#endif
           // Left and right children is exist.
           if(ptable.stride_queue[left_child]->stride_count
               < ptable.stride_queue[right_child]->stride_count){
@@ -989,8 +1126,10 @@ find_idx_of_stride_to_run(void)
         default:
           panic("error in find_idx_of_stride_to_run().");
           break;
+
       }
     }
+
   }
 
   // A process is not found. Find any runnable process in stride queue.
@@ -1005,6 +1144,7 @@ find_idx_of_stride_to_run(void)
     // do nothing. process is found.
   }
 
+
   // return value is larger than size when no process is runnable in stride.
   // exception handling code is in scheduler()
   return stride_find_idx;
@@ -1013,18 +1153,32 @@ find_idx_of_stride_to_run(void)
 int
 select_stride_or_MLFQ()
 {
-  static int randstate = 1;
-  int queue_selector;
-  randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
-  queue_selector = randstate % 100;
+  static int queue_selector = -1;
+  acquire(&thread_lock);
+  queue_selector++;
+  queue_selector %= 100;
+  release(&thread_lock);
 
   if(queue_selector < ptable.sum_cpu_share){
     // The stride queue is selected.
     return 1;
   }else{
     // MLFQ is selected
-    return 0;;
+    return 0;
   }
+
+/**   static int randstate = 1;
+  *   int queue_selector;
+  *   randstate = randstate * 1664525 + 1013904223; // in usertests.c : rand() of xv6
+  *   queue_selector = randstate % 100;
+  *
+  *   if(queue_selector < ptable.sum_cpu_share){
+  *     // The stride queue is selected.
+  *     return 1;
+  *   }else{
+  *     // MLFQ is selected
+  *     return 0;
+  *   } */
 }
 
 //PAGEBREAK: 42
@@ -1076,10 +1230,18 @@ scheduler(void)
           // do nothing. keep finding a process in MLFQ
         }
 
+
         // Design document 1-1-2-5. Finding a process to be run
         if(stride_is_selected){
           // The stride queue is selceted.
           
+#ifdef TEMP_BUG
+        if (after_for_loop) {
+          cprintf("(TEMP_BUG) in after sched() after for loop. stride is selected. where is the panic point?\n");
+          after_for_loop = 0;
+          in_find_idx = 1;
+        }
+#endif
           int stride_idx_to_be_run;
           // Find a process whose state is RUNNABLE in the stride queue
           stride_idx_to_be_run = find_idx_of_stride_to_run();
@@ -1095,6 +1257,12 @@ scheduler(void)
             continue;
           }
         }else{
+#ifdef TEMP_BUG
+        if (after_for_loop) {
+          cprintf("(TEMP_BUG) in after sched() after for loop. MLFQ is selected. where is the panic point?\n");
+          after_for_loop = 0;
+        }
+#endif
           // The MLFQ is selected. Find a process in MLFQ.
           // A process can be run whose priority is equal or higher than ptable.queue_level_at_most.
           
@@ -1241,6 +1409,13 @@ scheduler(void)
           p = p_mlfq;
           p--;
         }
+
+#ifdef TEMP_BUG
+        if (stride_queue_delete_is_execute) {
+          cprintf("(TEMP_BUG) in after sched(). where is the panic point?\n");
+          after_for_loop = 1;
+        }
+#endif
       }
 
       if(ptable.min_of_run_proc_level == NMLFQ - 1)  {
@@ -1687,6 +1862,13 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
   arg_ptr = (void**)(np->tf->esp + 4);
   *arg_ptr = arg; // argument
 
+  acquire(&ptable.lock);
+
+  np->state = RUNNABLE;
+
+  //Design Document 1-1-2-5. A new process is generated.
+
+  release(&ptable.lock);
 
   if (proc->cpu_share != 0) {
 #ifdef THREAD_DEBUGGING
@@ -1695,7 +1877,10 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
     int share_per_thread = proc->original_cpu_share / (proc->num_of_threads + 1);
     struct proc* p;
     //TODO: change master threads' cpu_share and creating threads
-    set_cpu_share_in_thread_create(share_per_thread, np, proc);
+    if (set_cpu_share_in_thread_create(share_per_thread, np, proc)) {
+      cprintf("(thread_create) proc->original_cpu_share:%d, proc->num_of_threads:%d, share_per_thread:%d\n", proc->original_cpu_share, proc->num_of_threads, share_per_thread);
+      panic("(thread_create) making a new thread in stride is failed.\n ");
+    }
 
     // find every threads including master thread and change cpu_share
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -1706,13 +1891,6 @@ thread_create(thread_t * thread, void * (*start_routine)(void *), void *arg)
     }
   }
 
-  acquire(&ptable.lock);
-
-  np->state = RUNNABLE;
-
-  //Design Document 1-1-2-5. A new process is generated.
-
-  release(&ptable.lock);
 
   return 0;
 }
@@ -1768,7 +1946,9 @@ thread_exit(void *retval)
 
   // delete a process in stride queue
   if(proc->cpu_share != 0){
+    acquire(&thread_lock);
     stride_queue_delete(proc);
+    release(&thread_lock);
   }
 
   // Parent might be sleeping in wait().
@@ -1783,8 +1963,15 @@ thread_exit(void *retval)
     }
   }
 
+
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
+
+#ifdef TEMP_BUG
+  cprintf("(TEMP_BUG) in stride_queue_delete. where is the panic point?\n");
+  stride_queue_delete_is_execute = 1;
+#endif
+
   sched();
   panic("zombie exit");
 

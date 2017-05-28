@@ -110,6 +110,10 @@ trap(struct trapframe *tf)
       // In kernel, it must be our mistake.
       cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
               tf->trapno, cpunum(), tf->eip, rcr2());
+
+      cprintf("cause. proc:%p (tf->cs&3):%d\n", proc, tf->cs&3);
+
+
       panic("trap");
     }
     // In user space, assume process misbehaved.

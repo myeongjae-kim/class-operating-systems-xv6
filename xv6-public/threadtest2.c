@@ -2,7 +2,7 @@
 #include "stat.h"
 #include "user.h"
 
-#define NUM_THREAD 1
+#define NUM_THREAD 10
 #define NTEST 15
 
 // Show race condition
