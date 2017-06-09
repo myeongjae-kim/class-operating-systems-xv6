@@ -1371,8 +1371,6 @@ scheduler(void)
         }
 #endif
 
-
-
         proc = p;
         switchuvm(p);
         p->state = RUNNING;

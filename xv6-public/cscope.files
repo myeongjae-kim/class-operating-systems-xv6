@@ -20,6 +20,7 @@
 ./test_t2.c
 ./my_userapp.c
 ./mmu.h
+./hugefiletest.c
 ./ide.c
 ./proc.h
 ./elf.h
@@ -61,6 +62,7 @@
 ./test_yield.c
 ./asm.h
 ./buf.h
+./exectest_linux.c
 ./trap.c
 ./test_master_mj.c
 ./bootasm.S
@@ -79,7 +81,6 @@
 ./printf.c
 ./fcntl.h
 ./syscall.c
-./vectors.S
 ./main.c
 ./console.c
 ./param.h
