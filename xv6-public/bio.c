@@ -99,6 +99,11 @@ bread(uint dev, uint blockno)
   struct buf *b;
 
   b = bget(dev, blockno);
+
+  if (b->blockno >= FSSIZE) {
+    cprintf("(bread) blockno is bigger or same than FSSIZE. b:%p, b->blockno:%d, FSSIZE:%d\n", b, b->blockno, FSSIZE);
+  }
+
   if(!(b->flags & B_VALID)) {
     iderw(b);
   }
@@ -112,6 +117,7 @@ bwrite(struct buf *b)
   if(!holdingsleep(&b->lock))
     panic("bwrite");
   b->flags |= B_DIRTY;
+
   iderw(b);
 }
 

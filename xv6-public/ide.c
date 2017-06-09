@@ -77,7 +77,7 @@ idestart(struct buf *b)
   if(b == 0)
     panic("idestart");
   if(b->blockno >= FSSIZE) {
-    cprintf("(idestart) p->blockno = %x, FSSIZE = %x\n", b->blockno, FSSIZE);
+    cprintf("(idestart) p->blockno = %d, FSSIZE = %d\n", b->blockno, FSSIZE);
     panic("incorrect blockno");
   }
   int sector_per_block =  BSIZE/SECTOR_SIZE;
@@ -158,8 +158,14 @@ iderw(struct buf *b)
   *pp = b;
 
   // Start disk if necessary.
-  if(idequeue == b)
+  /** if(idequeue == b)
+    *   idestart(b); */
+  if(idequeue == b) {
+    if (b->blockno >= FSSIZE) {
+      cprintf("(iderw) blockno is bigger or same than FSSIZE. b:%p, b->blockno:%d, FSSIZE:%d\n", b, b->blockno, FSSIZE);
+    }
     idestart(b);
+  }
 
   // Wait for request to finish.
   while((b->flags & (B_VALID|B_DIRTY)) != B_VALID){

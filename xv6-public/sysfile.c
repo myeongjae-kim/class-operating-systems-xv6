@@ -214,6 +214,7 @@ sys_unlink(void)
     goto bad;
   }
 
+
   memset(&de, 0, sizeof(de));
   if(writei(dp, (char*)&de, off, sizeof(de)) != sizeof(de))
     panic("unlink: writei");
@@ -222,10 +223,12 @@ sys_unlink(void)
     iupdate(dp);
   }
   iunlockput(dp);
-
   ip->nlink--;
   iupdate(ip);
   iunlockput(ip);
+#ifdef FS2
+  cprintf("(sys_unlink)here!\n");
+#endif
 
   end_op();
 

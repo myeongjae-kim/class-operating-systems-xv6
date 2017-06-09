@@ -388,17 +388,34 @@ bmap(struct inode *ip, uint bn)
     d = (uint*)db_bp->data;
 
     // indirect pointer accessing
-    if ((addr = d[bn / BSIZE]) == 0) 
-      d[bn / BSIZE] = addr = balloc(ip->dev);
-    bp = bread(ip->dev, addr);
-    a = (uint*)bp->data;
-    if((addr = a[bn % BSIZE]) == 0){
-      a[bn % BSIZE] = addr = balloc(ip->dev);
-      log_write(bp);
+    if ((addr = d[bn / NINDIRECT]) == 0)  {
+      d[bn / NINDIRECT] = addr = balloc(ip->dev);
+      log_write(db_bp);
     }
 
+    if (addr >= FSSIZE) {
+      cprintf("(bmap) blockno is bigger or same than FSSIZE. addr:%d, FSSIZE:%d\n", addr, FSSIZE);
+    }
+
+
+    bp = bread(ip->dev, addr);
+    a = (uint*)bp->data;
+#ifdef FS_DEBUGGING
+    cprintf("(bmap) addr check1:%d\n", addr);
+#endif
+    if((addr = a[bn % NINDIRECT]) == 0){
+      a[bn % NINDIRECT] = addr = balloc(ip->dev);
+#ifdef FS_DEBUGGING
+    cprintf("(bmap) addr check2:%d, bn:%d, bn % NINDIRECT: %d\n", addr, bn, bn % NINDIRECT);
+#endif
+      log_write(bp);
+    }
     brelse(bp);
     brelse(db_bp);
+
+#ifdef FS_DEBUGGING
+    cprintf("(bmap) bmap Double indirect works well. return:%d\n", addr);
+#endif
     return addr;
   }
 
@@ -413,9 +430,9 @@ bmap(struct inode *ip, uint bn)
 static void
 itrunc(struct inode *ip)
 {
-  int i, j;
-  struct buf *bp;
-  uint *a;
+  int i, j, k;
+  struct buf *bp, *db_bp;
+  uint *a, *d;
 
   for(i = 0; i < NDIRECT; i++){
     if(ip->addrs[i]){
@@ -434,6 +451,30 @@ itrunc(struct inode *ip)
     brelse(bp);
     bfree(ip->dev, ip->addrs[NDIRECT]);
     ip->addrs[NDIRECT] = 0;
+  }
+
+  // double indirect delete
+  if(ip->addrs[NDIRECT + 1]){
+    db_bp = bread(ip->dev, ip->addrs[NDIRECT]);
+    d = (uint*)bp->data;
+
+    for(j = 0; j < NDBINDIRECT; j++){
+      if (d[j]) {
+        bp = bread(ip->dev, d[j]);
+        a = (uint*)bp->data;
+        for(k = 0; k < NINDIRECT; k++){
+          if(a[k])
+            bfree(ip->dev, a[k]);
+        }
+        brelse(bp);
+        bfree(ip->dev, d[j]);
+        d[j] = 0;
+      }
+    }
+
+    brelse(db_bp);
+    bfree(ip->dev, ip->addrs[NDIRECT + 1]);
+    ip->addrs[NDIRECT + 1] = 0;
   }
 
   ip->size = 0;
@@ -506,7 +547,14 @@ writei(struct inode *ip, char *src, uint off, uint n)
     return -1;
 
   for(tot=0; tot<n; tot+=m, off+=m, src+=m){
+
+#ifdef FS_DEBUGGING
+    cprintf("(writei) off:%d, off/BSIZE:%d\n", off, off/BSIZE);
+#endif
     bp = bread(ip->dev, bmap(ip, off/BSIZE));
+#ifdef FS_DEBUGGING
+    cprintf("(writei) bread() works well.\n");
+#endif
     m = min(n - tot, BSIZE - off%BSIZE);
     memmove(bp->data + off%BSIZE, src, m);
     log_write(bp);

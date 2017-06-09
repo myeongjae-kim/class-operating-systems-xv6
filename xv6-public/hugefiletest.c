@@ -4,6 +4,8 @@
 #include "fs.h"
 #include "fcntl.h"
 
+#define ITER 1024
+
 int
 main(int argc, char *argv[])
 {
@@ -22,7 +24,7 @@ main(int argc, char *argv[])
 
   printf(1, "1. create test\n");
   fd = open(path, O_CREATE | O_RDWR);
-  for(i = 0; i < 1024; i++){
+  for(i = 0; i < ITER; i++){
     if (i % 100 == 0){
       printf(1, "%d bytes written\n", i * 512);
     }
@@ -31,12 +33,12 @@ main(int argc, char *argv[])
       exit();
     }
   }
-  printf(1, "%d bytes written\n", 1024 * 512);
+  printf(1, "%d bytes written\n", ITER * 512);
   close(fd);
 
   printf(1, "2. read test\n");
   fd = open(path, O_RDONLY);
-  for (i = 0; i < 1024; i++){
+  for (i = 0; i < ITER; i++){
     if (i % 100 == 0){
       printf(1, "%d bytes read\n", i * 512);
     }
@@ -51,7 +53,7 @@ main(int argc, char *argv[])
       }
     }
   }
-  printf(1, "%d bytes read\n", 1024 * 512);
+  printf(1, "%d bytes read\n", ITER* 512);
   close(fd);
 
   printf(1, "3. stress test\n");
@@ -62,9 +64,10 @@ main(int argc, char *argv[])
       printf(1, "rm: %s failed to delete\n", path);
       exit();
     }
+    printf(1, "unlin() success.\n");
     
     fd = open(path, O_CREATE | O_RDWR);
-      for(j = 0; j < 1024; j++){
+      for(j = 0; j < ITER; j++){
         if (j % 100 == 0){
           printf(1, "%d bytes totally written\n", total);
         }
