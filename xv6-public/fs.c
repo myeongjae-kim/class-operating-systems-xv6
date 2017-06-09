@@ -85,6 +85,12 @@ bfree(int dev, uint b)
   int bi, m;
 
   readsb(dev, &sb);
+
+
+#ifdef FS2
+  cprintf("(bfree) Here! dev:%d, BBLOCK(b, sb):%d\n", dev, BBLOCK(b, sb));
+#endif
+
   bp = bread(dev, BBLOCK(b, sb));
   bi = b % BPB;
   m = 1 << (bi % 8);
@@ -397,17 +403,10 @@ bmap(struct inode *ip, uint bn)
       cprintf("(bmap) blockno is bigger or same than FSSIZE. addr:%d, FSSIZE:%d\n", addr, FSSIZE);
     }
 
-
     bp = bread(ip->dev, addr);
     a = (uint*)bp->data;
-#ifdef FS_DEBUGGING
-    cprintf("(bmap) addr check1:%d\n", addr);
-#endif
     if((addr = a[bn % NINDIRECT]) == 0){
       a[bn % NINDIRECT] = addr = balloc(ip->dev);
-#ifdef FS_DEBUGGING
-    cprintf("(bmap) addr check2:%d, bn:%d, bn % NINDIRECT: %d\n", addr, bn, bn % NINDIRECT);
-#endif
       log_write(bp);
     }
     brelse(bp);
@@ -455,10 +454,9 @@ itrunc(struct inode *ip)
 
   // double indirect delete
   if(ip->addrs[NDIRECT + 1]){
-    db_bp = bread(ip->dev, ip->addrs[NDIRECT]);
-    d = (uint*)bp->data;
-
-    for(j = 0; j < NDBINDIRECT; j++){
+    db_bp = bread(ip->dev, ip->addrs[NDIRECT + 1]);
+    d = (uint*)db_bp->data;
+    for(j = 0; j < NINDIRECT; j++){
       if (d[j]) {
         bp = bread(ip->dev, d[j]);
         a = (uint*)bp->data;

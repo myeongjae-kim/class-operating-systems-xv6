@@ -223,12 +223,10 @@ sys_unlink(void)
     iupdate(dp);
   }
   iunlockput(dp);
+
   ip->nlink--;
   iupdate(ip);
   iunlockput(ip);
-#ifdef FS2
-  cprintf("(sys_unlink)here!\n");
-#endif
 
   end_op();
 
