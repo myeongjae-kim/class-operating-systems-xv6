@@ -1,4 +1,4 @@
 ls
 ls -a
 ls -alF
-ls ;pwd ;cat batchExample ;; ;  ;           ;; ; ;  ;; ;;;;;;
+ls ;pwd ;cat batchExample ;; ;  ;           ;; ; ;  ;; ;;;;;;ls
