@@ -4,8 +4,9 @@ This repository is a result of projects which I designed and implemented in Oper
 
 ## Project 0: Simple Unix Shell
 
-[Codes](https://github.com/hrzon/Class_OperatingSystems_xv6/blob/master/proj_shell/shell.c)<br>
-[Go to Wiki]()
+[Wiki](https://github.com/hrzon/Class_OperatingSystems_xv6/wiki/shell)
+
+[Codes](https://github.com/hrzon/Class_OperatingSystems_xv6/blob/master/proj_shell/shell.c)
 
 It was warming-up project. Mimicking simple unix shell taught me how programs are executed through system calls.
 
