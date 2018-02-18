@@ -2,7 +2,7 @@
 
 This repository is a result of projects which I designed and implemented in Operating System class at Hanyang University. Most of the projects was adding new features to [xv6](https://github.com/mit-pdos/xv6-public), which is maintained by MIT. It was great time to understand operating systems which had seemed just like magic.
 
-## Table of Contetns
+## Table of Contetnts
 
 * [Project 0: Simple Unix Shell](#project-0-simple-unix-shell)
 * [Project 1: MLFQ and Stride scheduling](#project-1-mlfq-and-stride-scheduling)
